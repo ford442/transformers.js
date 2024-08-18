@@ -6,7 +6,6 @@ export default defineConfig({
    rollupOptions: {
       input: {
         main: './main.js',  // First entry point
-        secondary: './loader.js' // Second entry point
       }
     }
 });
