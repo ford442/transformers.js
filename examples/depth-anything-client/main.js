@@ -152,12 +152,19 @@ function loadGLTFScene(gltfFilePath) {
     } else {
       console.warn("No mesh found in the glTF scene.");
     }
+        scene.add(plane);
+
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
     const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
     camera.position.z = 2;
     scene.add(camera);
-    animate();
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setAnimationLoop(() => {
+        renderer.render(scene, camera);
+    });
   }, undefined, function (error) {
     console.error(error);
   });
