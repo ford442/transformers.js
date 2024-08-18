@@ -151,7 +151,9 @@ function loadGLTFScene(gltfFilePath) {
     }
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
-    camera.position.z = 5;
+    const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
+    camera.position.z = 2;
+    scene.add(camera);
     animate();
   }, undefined, function (error) {
     console.error(error);
