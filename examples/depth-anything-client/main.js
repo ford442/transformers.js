@@ -30,8 +30,7 @@ status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 
-let onSliderChange;
-let scene;
+let onSliderChange,scene,camera,renderer;
 
 // Predict depth map for the given image
 async function predict(imageDataURL) {
@@ -77,14 +76,14 @@ async function predict(imageDataURL) {
 }
 
 function setupScene(imageDataURL, w, h) {
-    const canvas = document.createElement('canvas');
+    canvas = document.createElement('canvas');
     const width = canvas.width = imageContainer.offsetWidth;
     const height = canvas.height = imageContainer.offsetHeight;
     scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
+    camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
     camera.position.z = 2;
     scene.add(camera);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     const light = new THREE.AmbientLight(0xffffff, 2);
@@ -132,7 +131,7 @@ function setupScene(imageDataURL, w, h) {
 
 function loadGLTFScene(gltfFilePath) {
   const loader = new GLTFLoader();
-  const canvas = document.createElement('canvas');
+  canvas = document.createElement('canvas');
   const width = canvas.width = imageContainer.offsetWidth;
   const height = canvas.height = imageContainer.offsetHeight;
   scene = new THREE.Scene();
@@ -153,13 +152,12 @@ function loadGLTFScene(gltfFilePath) {
       console.warn("No mesh found in the glTF scene.");
     }
         scene.add(plane);
-
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
-    const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
+    camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
     camera.position.z = 2;
     scene.add(camera);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     animate();
