@@ -134,7 +134,10 @@ function loadGLTFScene(gltfFilePath) {
   const loader = new GLTFLoader();
   scene = new THREE.Scene();
   loader.load('./scene.glb', function (gltf) {
-    scene.add(gltf.scene);
+    console.log('load scene');
+    scene.add(gltf.scene); 
+    console.log('loaded scene');
+
     const plane = gltf.scene.children.find(child => child.isMesh);
     if (plane) {
       const material = plane.material;
