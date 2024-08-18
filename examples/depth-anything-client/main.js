@@ -152,7 +152,7 @@ function loadGLTFScene(gltfFilePath) {
     camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
     camera.position.z = 2;
     scene.add(camera);
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer = new THREE.WebGLRenderer({ loaderCanvas, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     animate();
