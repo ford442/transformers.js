@@ -27,6 +27,7 @@ const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anythin
 status.textContent = 'Ready';
 
 const channel = new BroadcastChannel('imageChannel');
+const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene;
@@ -137,6 +138,34 @@ function setupScene(imageDataURL, w, h) {
     };
 }
 
+function loadGLTFScene(gltfFilePath) {
+  loader.load(gltfFilePath, function (gltf) {
+    scene.add(gltf.scene);
+    const plane = gltf.scene.children.find(child => child.isMesh);
+    if (plane) {
+      const material = plane.material;
+      material.needsUpdate = true;
+      material.displacementScale = 0.5; 
+      // You might still need to set the displacementMap here if it's not embedded in the glTF
+      // For example, if you have a displacement map texture loaded elsewhere:
+      // material.displacementMap = yourDisplacementMapTexture;
+    } else {
+      console.warn("No mesh found in the glTF scene.");
+    }
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    camera.position.z = 5;
+    animate();
+  }, undefined, function (error) {
+    console.error(error);
+  });
+}
+
+loaderChannel.onmessage = async (event) => {
+const { glbLocation } = event.data;
+loadGLTFScene(glbLocation);
+};
+
 channel.onmessage = async (event) => {
   const { imageDataURL } = event.data;
   predict(imageDataURL);
@@ -149,7 +178,6 @@ async function saveSceneAsGLTF() {
       binary: true,
       embedImages: true // Embed all textures, including the displacement map
     };
-
     const gltf = await exporter.parseAsync(scene, options);
     const blob = new Blob([gltf], { type: 'application/octet-stream' });
     const link = document.createElement('a');
