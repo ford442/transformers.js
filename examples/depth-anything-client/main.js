@@ -2,6 +2,7 @@ import './style.css';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 
 import { pipeline, env, RawImage } from '@xenova/transformers';
 
@@ -12,7 +13,6 @@ env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 
 // Constants
-const EXAMPLE_URL = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/bread_small.png';
 const DEFAULT_SCALE = 0.75;
 
 // Reference the elements that we will need
@@ -26,44 +26,41 @@ status.textContent = 'Loading model...';
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf');
 status.textContent = 'Ready';
 
-example.addEventListener('click', (e) => {
-    e.preventDefault();
-    predict(EXAMPLE_URL);
-});
-
-fileUpload.addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (!file) {
-        return;
-    }
-
-    const reader = new FileReader();
-
-    // Set up a callback when the file is loaded
-    reader.onload = e2 => predict(e2.target.result);
-
-    reader.readAsDataURL(file);
-});
+const channel = new BroadcastChannel('imageChannel');
 
 let onSliderChange;
+let scene;
 
 // Predict depth map for the given image
-async function predict(url) {
-    imageContainer.innerHTML = '';
-    const image = await RawImage.fromURL(url);
+async function predict(imageDataURL) {
+  imageContainer.innerHTML = '';
+  // Load the image from the data URL
+  const img = new Image();
+  img.src = imageDataURL;
+
+  img.onload = async () => {
+   const canvas2 = document.createElement('canvas');
+    canvas2.width = img.width;
+    canvas2.height = img.height;
+    const ctx = canvas2.getContext('2d',{alpha:true});
+
+    ctx.drawImage(img, 0, 0);
+
+    // Get the image data from the canvas
+    const imageData = ctx.getImageData(0,
+ 0, img.width, img.height);
+
+    // Create a RawImage from the imageData
+    const image = new RawImage(imageData.data, img.width, img.height,4);
 
     // Set up scene and slider controls
-    const { canvas, setDisplacementMap } = setupScene(url, image.width, image.height);
-
+    const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
     imageContainer.append(canvas);
-
     status.textContent = 'Analysing...';
     const { depth } = await depth_estimator(image);
-
     setDisplacementMap(depth.toCanvas());
     status.textContent = '';
-
-    // Add slider control
+     // Add slider control
     const slider = document.createElement('input');
     slider.type = 'range';
     slider.min = 0;
@@ -74,9 +71,10 @@ async function predict(url) {
     });
     slider.defaultValue = DEFAULT_SCALE;
     imageContainer.append(slider);
+  };
 }
 
-function setupScene(url, w, h) {
+function setupScene(imageDataURL, w, h) {
 
     // Create new scene
     const canvas = document.createElement('canvas');
@@ -93,19 +91,52 @@ function setupScene(url, w, h) {
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
+  // 1. Create the Snow Globe Sphere
+    const globeGeometry = new THREE.SphereGeometry(2, 32, 32); // Adjust radius and segments as needed
+    const globeMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0x87CEEB, // Light blue color, adjust as desired
+      transparent: true,
+      opacity: 0.5 
+    });
+    const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+    scene.add(globe);
+
+    // 2. Create Snow Particles
+    const snowGeometry = new THREE.BufferGeometry();
+    const numParticles = 100; // Adjust the number of snow particles
+    const positions = new Float32Array(numParticles * 3);
+
+    for (let i = 0; i < numParticles; i++) {
+      const x = Math.random() * 4 - 2; // Random position within the globe
+      const y = Math.random() * 4 - 2;
+      const z = Math.random() * 4 - 2;
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+    }
+
+    snowGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    const snowMaterial = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.05, // Adjust snow particle size
+    });
+
+    const snowParticles = new THREE.Points(snowGeometry, snowMaterial);
+    scene.add(snowParticles);
 
     // Add ambient light
     const light = new THREE.AmbientLight(0xffffff, 2);
     scene.add(light);
 
-    // Load depth texture
-    const image = new THREE.TextureLoader().load(url);
-    image.colorSpace = THREE.SRGBColorSpace;
-    const material = new THREE.MeshStandardMaterial({
-        map: image,
-        side: THREE.DoubleSide,
-    });
-    material.displacementScale = DEFAULT_SCALE;
+
+  const image = new THREE.TextureLoader().load(imageDataURL);
+  image.colorSpace = THREE.SRGBColorSpace;
+  const material = new THREE.MeshStandardMaterial({
+    map: image,
+    side: THREE.DoubleSide,
+  });
+  material.displacementScale = DEFAULT_SCALE;
 
     const setDisplacementMap = (canvas) => {
         material.displacementMap = new THREE.CanvasTexture(canvas);
@@ -148,3 +179,34 @@ function setupScene(url, w, h) {
         setDisplacementMap,
     };
 }
+channel.onmessage = async (event) => {
+  const { imageDataURL } = event.data;
+  predict(imageDataURL);
+};
+
+
+async function saveSceneAsGLTF() {
+  const exporter = new GLTFExporter();
+
+  try {
+  const options = {
+      binary: true,
+      embedImages: true // Embed all textures, including the displacement map
+    };
+
+    const gltf = await exporter.parseAsync(scene, options);
+    const blob = new Blob([gltf], { type: 'application/octet-stream' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download
+ = 'scene.glb'; // Use .glb extension for binary glTF
+    link.click();
+  } catch (error) {
+    console.error('Error exporting glTF:', error);
+    // Handle the error appropriately (e.g., show a message to the user)
+  }
+}
+document.querySelector('#savegltf').addEventListener('click',function(){
+    saveSceneAsGLTF();
+});
+
