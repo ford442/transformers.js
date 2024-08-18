@@ -133,6 +133,7 @@ function setupScene(imageDataURL, w, h) {
 function loadGLTFScene(gltfFilePath) {
   const loader = new GLTFLoader();
   const loadCanvas = document.createElement('canvas');
+  imageContainer.append(loadCanvas);
   const width = loadCanvas.width = imageContainer.offsetWidth;
   const height = loadCanvas.height = imageContainer.offsetHeight;
   scene = new THREE.Scene();
