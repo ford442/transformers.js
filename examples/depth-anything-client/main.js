@@ -81,54 +81,18 @@ function setupScene(imageDataURL, w, h) {
     const width = canvas.width = imageContainer.offsetWidth;
     const height = canvas.height = imageContainer.offsetHeight;
 
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
 
     // Create camera and add it to the scene
     const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
     camera.position.z = 2;
     scene.add(camera);
-
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
-  // 1. Create the Snow Globe Sphere
-    const globeGeometry = new THREE.SphereGeometry(2, 32, 32); // Adjust radius and segments as needed
-    const globeMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x87CEEB, // Light blue color, adjust as desired
-      transparent: true,
-      opacity: 0.5 
-    });
-    const globe = new THREE.Mesh(globeGeometry, globeMaterial);
-    scene.add(globe);
-
-    // 2. Create Snow Particles
-    const snowGeometry = new THREE.BufferGeometry();
-    const numParticles = 100; // Adjust the number of snow particles
-    const positions = new Float32Array(numParticles * 3);
-
-    for (let i = 0; i < numParticles; i++) {
-      const x = Math.random() * 4 - 2; // Random position within the globe
-      const y = Math.random() * 4 - 2;
-      const z = Math.random() * 4 - 2;
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = y;
-      positions[i * 3 + 2] = z;
-    }
-
-    snowGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    const snowMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 0.05, // Adjust snow particle size
-    });
-
-    const snowParticles = new THREE.Points(snowGeometry, snowMaterial);
-    scene.add(snowParticles);
-
     // Add ambient light
     const light = new THREE.AmbientLight(0xffffff, 2);
     scene.add(light);
-
 
   const image = new THREE.TextureLoader().load(imageDataURL);
   image.colorSpace = THREE.SRGBColorSpace;
@@ -137,33 +101,27 @@ function setupScene(imageDataURL, w, h) {
     side: THREE.DoubleSide,
   });
   material.displacementScale = DEFAULT_SCALE;
-
     const setDisplacementMap = (canvas) => {
         material.displacementMap = new THREE.CanvasTexture(canvas);
         material.needsUpdate = true;
     }
-
     const setDisplacementScale = (scale) => {
         material.displacementScale = scale;
         material.needsUpdate = true;
     }
     onSliderChange = setDisplacementScale;
-
     // Create plane and rescale it so that max(w, h) = 1
     const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
     const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
-
     // Add orbit controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-
     renderer.setAnimationLoop(() => {
         renderer.render(scene, camera);
         controls.update();
     });
-
     window.addEventListener('resize', () => {
         const width = imageContainer.offsetWidth;
         const height = imageContainer.offsetHeight;
@@ -173,21 +131,19 @@ function setupScene(imageDataURL, w, h) {
 
         renderer.setSize(width, height);
     }, false);
-
     return {
         canvas: renderer.domElement,
         setDisplacementMap,
     };
 }
+
 channel.onmessage = async (event) => {
   const { imageDataURL } = event.data;
   predict(imageDataURL);
 };
 
-
 async function saveSceneAsGLTF() {
   const exporter = new GLTFExporter();
-
   try {
   const options = {
       binary: true,
@@ -206,7 +162,8 @@ async function saveSceneAsGLTF() {
     // Handle the error appropriately (e.g., show a message to the user)
   }
 }
+
 document.querySelector('#savegltf').addEventListener('click',function(){
-    saveSceneAsGLTF();
+saveSceneAsGLTF();
 });
 
