@@ -6,5 +6,5 @@ export default defineConfig({
     resolve: {
     alias: {
       'three/addons/loaders/GLTFLoader.js': 'three/examples/jsm/loaders/GLTFLoader.js'
-    }
+    }}
 });
