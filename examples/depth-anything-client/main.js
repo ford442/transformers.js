@@ -125,16 +125,16 @@ setDisplacementMap,
 }
 
 function loadGLTFScene(gltfFilePath) {
+imageContainer.innerHTML = '';
 const loader = new GLTFLoader();
 const loadCanvas = document.createElement('canvas');
-  loadCanvas.id='lcanvas';
+loadCanvas.id='lcanvas';
 const width = loadCanvas.width = imageContainer.offsetWidth;
 const height = loadCanvas.height = imageContainer.offsetHeight;
 scene = new THREE.Scene();
 loader.load('./scene.glb', function (gltf) {
 console.log('load scene');
 scene.add(gltf.scene); 
-console.log('loaded scene');
 const plane = gltf.scene.children.find(child => child.isMesh);
 if (plane) {
 const material = plane.material;
@@ -155,9 +155,12 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-  imageContainer.append(loadCanvas);
-
-animate();
+imageContainer.append(loadCanvas);
+console.log('append canvas and render');
+renderer.setAnimationLoop(() => {
+renderer.render(scene, camera);
+controls.update();
+});
 }, undefined, function (error) {
 console.error(error);
 });
@@ -189,8 +192,7 @@ const gltf = await exporter.parseAsync(scene, options);
 const blob = new Blob([gltf], { type: 'application/octet-stream' });
 const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
-link.download
- = 'scene.glb'; // Use .glb extension for binary glTF
+link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
 } catch (error) {
 console.error('Error exporting glTF:', error);
