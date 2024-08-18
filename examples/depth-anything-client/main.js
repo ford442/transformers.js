@@ -4,12 +4,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
 import { pipeline, env, RawImage } from '@xenova/transformers';
 
 // Since we will download the model from the Hugging Face Hub, we can skip the local model check
 env.allowLocalModels = false;
-
 // Proxy the WASM backend to prevent the UI from freezing
 env.backends.onnx.wasm.proxy = true;
 
@@ -30,7 +28,7 @@ status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 
-let onSliderChange,scene,camera,renderer;
+let onSliderChange,scene,camera,renderer,loaderCanvas;
 
 // Predict depth map for the given image
 async function predict(imageDataURL) {
@@ -44,9 +42,7 @@ async function predict(imageDataURL) {
     canvas2.width = img.width;
     canvas2.height = img.height;
     const ctx = canvas2.getContext('2d',{alpha:true});
-
     ctx.drawImage(img, 0, 0);
-
     // Get the image data from the canvas
     const imageData = ctx.getImageData(0,
  0, img.width, img.height);
@@ -131,15 +127,14 @@ function setupScene(imageDataURL, w, h) {
 
 function loadGLTFScene(gltfFilePath) {
   const loader = new GLTFLoader();
-  canvas = document.createElement('canvas');
-  const width = canvas.width = imageContainer.offsetWidth;
-  const height = canvas.height = imageContainer.offsetHeight;
+  loaderCanvas = document.createElement('canvas');
+  const width = loaderCanvas.width = imageContainer.offsetWidth;
+  const height = loaderCanvas.height = imageContainer.offsetHeight;
   scene = new THREE.Scene();
   loader.load('./scene.glb', function (gltf) {
     console.log('load scene');
     scene.add(gltf.scene); 
     console.log('loaded scene');
-
     const plane = gltf.scene.children.find(child => child.isMesh);
     if (plane) {
       const material = plane.material;
