@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --outDir dist/main && vite build --entry ./loader.js --outDir dist/secondary" 
+    "build": "vite build --outDir dist/main && vite build --entry ./loader.js --outDir dist/secondary", 
     "preview": "vite preview"
   },
   "devDependencies": {
