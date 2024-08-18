@@ -77,25 +77,18 @@ async function predict(imageDataURL) {
 }
 
 function setupScene(imageDataURL, w, h) {
-
-    // Create new scene
     const canvas = document.createElement('canvas');
     const width = canvas.width = imageContainer.offsetWidth;
     const height = canvas.height = imageContainer.offsetHeight;
-
     scene = new THREE.Scene();
-
-    // Create camera and add it to the scene
     const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
     camera.position.z = 2;
     scene.add(camera);
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    // Add ambient light
     const light = new THREE.AmbientLight(0xffffff, 2);
     scene.add(light);
-
   const image = new THREE.TextureLoader().load(imageDataURL);
   image.colorSpace = THREE.SRGBColorSpace;
   const material = new THREE.MeshStandardMaterial({
@@ -127,10 +120,8 @@ function setupScene(imageDataURL, w, h) {
     window.addEventListener('resize', () => {
         const width = imageContainer.offsetWidth;
         const height = imageContainer.offsetHeight;
-
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-
         renderer.setSize(width, height);
     }, false);
     return {
@@ -141,7 +132,7 @@ function setupScene(imageDataURL, w, h) {
 
 function loadGLTFScene(gltfFilePath) {
   const loader = new GLTFLoader();
-  loader.load(gltfFilePath, function (gltf) {
+  loader.load('./scene.glb', function (gltf) {
     scene.add(gltf.scene);
     const plane = gltf.scene.children.find(child => child.isMesh);
     if (plane) {
