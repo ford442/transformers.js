@@ -29,10 +29,8 @@ h1 {
 
 #container {
   position: relative;
-  width: 640px;
-  height: 420px;
-  max-width: 100%;
-  max-height: 100%;
+  width: 85vh;
+  height: 85vh;
   border: 2px dashed #D1D5DB;
   border-radius: 0.75rem;
   overflow: hidden;
