@@ -162,12 +162,15 @@ function loadGLTFScene(gltfFilePath) {
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setAnimationLoop(() => {
-        renderer.render(scene, camera);
-    });
+    animate();
   }, undefined, function (error) {
     console.error(error);
   });
+}
+
+function animate() {
+requestAnimationFrame( animate );
+renderer.render( scene, camera );
 }
 
 loaderChannel.onmessage = async (event) => {
