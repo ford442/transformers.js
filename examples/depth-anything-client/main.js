@@ -132,6 +132,7 @@ function setupScene(imageDataURL, w, h) {
 
 function loadGLTFScene(gltfFilePath) {
   const loader = new GLTFLoader();
+  scene = new THREE.Scene();
   loader.load('./scene.glb', function (gltf) {
     scene.add(gltf.scene);
     const plane = gltf.scene.children.find(child => child.isMesh);
