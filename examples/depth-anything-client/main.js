@@ -139,7 +139,7 @@ const planeL = gltf.scene.children.find(child => child.isMesh);
 if (planeL) {
 const material = planeL.material;
 material.needsUpdate = true;
-material.displacementScale = 2.5; 
+material.displacementScale = 0.5; 
 // You might still need to set the displacementMap here if it's not embedded in the glTF
 // For example, if you have a displacement map texture loaded elsewhere:
 // material.displacementMap = yourDisplacementMapTexture;
@@ -187,7 +187,8 @@ const exporter = new GLTFExporter();
 try {
 const options = {
 binary: true,
-embedImages: true // Embed all textures, including the displacement map
+embedImages: true, // Embed all textures, including the displacement map
+extensionsUsed: [ 'KHR_materials_displacement' ] // Enable the extension
 };
 const gltf = await exporter.parseAsync(scene, options);
 const blob = new Blob([gltf], { type: 'application/octet-stream' });
