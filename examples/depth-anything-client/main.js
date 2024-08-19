@@ -38,16 +38,12 @@ function bakeDisplacement(mesh, displacementMap) {
   for (let i = 0; i < positionAttribute.count; i++) {
     const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
     const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
-
     const originalPosition = new THREE.Vector3();
     originalPosition.fromBufferAttribute(positionAttribute, i);
-
     const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
     const newPosition = originalPosition.add(offset);
-
     positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
   }
-
   geometry.attributes.position.needsUpdate = true;
   geometry.computeVertexNormals(); // Recalculate normals
 }
@@ -64,23 +60,23 @@ canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
 ctx.drawImage(img, 0, 0);
-
 // Get the image data from the canvas
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
-
 // Create a RawImage from the imageData
 const image = new RawImage(imageData.data, img.width, img.height,4);
-
 // Set up scene and slider controls
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
+  
 setDisplacementMap(depth.toCanvas());
- const planeE = scene.children.find(child => child.isMesh);
+if(depth){
+  const planeE = scene.children.find(child => child.isMesh);
   if (planeE) {
     bakeDisplacement(planeE, depth.texture); // Assuming depth.texture is the displacement map
   }
+}
 status.textContent = '';
  // Add slider control
 const slider = document.createElement('input');
