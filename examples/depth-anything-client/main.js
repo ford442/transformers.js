@@ -182,7 +182,7 @@ imageContainer.innerHTML = '';
 const loader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
 loadCanvas = document.createElement('canvas');
-loadCanvas.id='lcanvas';
+loadCanvas.id='mvi';
 const width = loadCanvas.width = imageContainer.offsetWidth;
 const height = loadCanvas.height = imageContainer.offsetHeight;
 sceneL = new THREE.Scene();
