@@ -249,7 +249,7 @@ const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
 link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
-const mapT = new THREE.TextureLoader().load(materialE.displacementMap);
+const mapT = new THREE.TextureLoader().load(materialE.displacementMap.image);
 const map = mapT.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
 // const blob2 = new Blob([map], { type: 'image/jpeg' });
 const link2 = document.createElement('a');
