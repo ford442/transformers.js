@@ -28,7 +28,7 @@ const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
-let scene,sceneL;
+let scene,sceneL,rendererL;
 
 // Predict depth map for the given image
 async function predict(imageDataURL) {
@@ -152,7 +152,7 @@ sceneL.add(ambientLight);
 const cameraL = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 cameraL.position.z = 2;
 sceneL.add(cameraL);
-const rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
+rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
 rendererL.setSize(width, height);
 rendererL.setPixelRatio(window.devicePixelRatio);
 imageContainer.append(loadCanvas);
