@@ -193,9 +193,10 @@ const planeL = gltf.scene.children.find(child => child.isMesh);
 if (planeL) {
 const material = planeL.material;
 material.needsUpdate = true;
-material.displacementScale = 0.5; 
-textureLoader.load(displacementMapPath, function(texture) {
+material.displacementScale = 0.5;
+textureLoader.load('./depth.jpg', function(texture) {
 material.displacementMap = texture;
+material.needsUpdate = true;
 });
 } else {
 console.warn("No mesh found in the glTF scene.");
