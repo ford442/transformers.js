@@ -244,7 +244,7 @@ binary: true,
 // embedImages: true, // Embed all textures, including the displacement map
 };
 const gltf = await exporter.parseAsync(scene, options);
-// const blob = new Blob([gltf], { type: 'application/octet-stream' });
+const blob = new Blob([gltf], { type: 'application/octet-stream' });
 const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
 link.download = 'scene.glb'; // Use .glb extension for binary glTF
