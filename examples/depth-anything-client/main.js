@@ -255,10 +255,10 @@ exportCanvas.width = displacementMap.image.width;
 exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
-const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
-const blob2 = new Blob([imageData.data], { type: 'image/jpeg' });
+const imageData = exportCanvas.toDataURL('image/jpeg',1.0); ;
+// const blob2 = new Blob([imageData.data], { type: 'image/jpeg' });
 const link2 = document.createElement('a');
-link2.href = URL.createObjectURL(blob2);
+link2.href = imageData;
 link2.download = 'displacementMap.jpg';
 link2.click();
 } catch (error) {
