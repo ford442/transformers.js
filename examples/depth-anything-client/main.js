@@ -157,7 +157,7 @@ rendererL.setSize(width, height);
 rendererL.setPixelRatio(window.devicePixelRatio);
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
-controlsL = new OrbitControls( camera, renderer.domElement );
+controlsL = new OrbitControls( cameraL, rendererL.domElement );
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
