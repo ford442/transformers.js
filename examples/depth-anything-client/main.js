@@ -28,7 +28,7 @@ const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
-let scene,sceneL,rendererL,cameraL,loadCanvas;
+let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 
 // Predict depth map for the given image
 async function predict(imageDataURL) {
@@ -157,6 +157,7 @@ rendererL.setSize(width, height);
 rendererL.setPixelRatio(window.devicePixelRatio);
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
+controlsL = new OrbitControls( camera, renderer.domElement );
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
@@ -168,6 +169,7 @@ console.error(error);
 function animate() {
 requestAnimationFrame( animate );
 rendererL.render( sceneL, cameraL );
+controlsL.update();
 }
 
 loaderChannel.onmessage = async (event) => {
