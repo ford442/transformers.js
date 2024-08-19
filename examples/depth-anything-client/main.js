@@ -93,7 +93,7 @@ if (!scene) {
     imageContainer.append(canvas3);
     onSliderChange = setDisplacementScale;
   }
-  imageContainer.append(canvas2);
+//  imageContainer.append(canvas2);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
   
