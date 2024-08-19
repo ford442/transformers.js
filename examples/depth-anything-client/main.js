@@ -11,7 +11,7 @@ env.allowLocalModels = false;
 // Proxy the WASM backend to prevent the UI from freezing
 env.backends.onnx.wasm.proxy = true;
 // Constants
-const DEFAULT_SCALE = 0.5;
+const DEFAULT_SCALE = 0.35;
 
 // Reference the elements that we will need
 const status = document.getElementById('status');
@@ -35,7 +35,7 @@ const displacementShaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
         map: { value: null }, // The base color texture
         displacementMap: { value: null }, // The displacement map texture
-        displacementScale: { value: 0.5 }, // Adjust the strength of the displacement
+        displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
         // Add other uniforms as needed (e.g., for lighting)
     },
     vertexShader: `
@@ -197,7 +197,7 @@ const planeL = gltf.scene.children.find(child => child.isMesh);
 if (planeL) {
 const material = planeL.material;
 material.needsUpdate = true;
-material.displacementScale = 0.5;
+material.displacementScale = 0.35;
 textureLoader.load(document.querySelector('#saveName').innerHTML+'.jpg', function(texture) {
 material.displacementMap = texture;
 material.needsUpdate = true;
