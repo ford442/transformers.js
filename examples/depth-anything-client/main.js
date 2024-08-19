@@ -257,7 +257,7 @@ const texture_data = new THREE.DataTexture( materialE.displacementMap.image.data
     console.log(texture_data.image);
     console.log(texture_data.data);
 
- const map = texture_data.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
+ const map = texture_data.image.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
  const link2 = document.createElement('a');
     link2.href =map;
    link2.download = 'displacementMap.jpg';
