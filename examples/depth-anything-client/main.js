@@ -177,7 +177,7 @@ setDisplacementMap,
 };
 }
 
-function loadGLTFScene(gltfFilePath, displacementMapPath) {
+function loadGLTFScene(gltfFilePath) {
 imageContainer.innerHTML = '';
 const loader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
@@ -235,8 +235,8 @@ controlsL.update();
 }
 
 loaderChannel.onmessage = async (event) => {
-const { glbLocation,displacementMapPath } = event.data;
-loadGLTFScene(glbLocation,displacementMapPath);
+const { glbLocation } = event.data;
+loadGLTFScene(glbLocation);
 };
 
 channel.onmessage = async (event) => {
