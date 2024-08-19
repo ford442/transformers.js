@@ -174,9 +174,10 @@ setDisplacementMap,
 };
 }
 
-function loadGLTFScene(gltfFilePath) {
+function loadGLTFScene(gltfFilePath, displacementMapPath) {
 imageContainer.innerHTML = '';
 const loader = new GLTFLoader();
+const textureLoader = new THREE.TextureLoader();
 loadCanvas = document.createElement('canvas');
 loadCanvas.id='lcanvas';
 const width = loadCanvas.width = imageContainer.offsetWidth;
@@ -190,9 +191,9 @@ if (planeL) {
 const material = planeL.material;
 material.needsUpdate = true;
 material.displacementScale = 0.5; 
-// You might still need to set the displacementMap here if it's not embedded in the glTF
-// For example, if you have a displacement map texture loaded elsewhere:
-// material.displacementMap = yourDisplacementMapTexture;
+textureLoader.load(displacementMapPath, function(texture) {
+material.displacementMap = texture;
+});
 } else {
 console.warn("No mesh found in the glTF scene.");
 }
@@ -228,8 +229,8 @@ loadGLTFScene(glbLocation);
 };
 
 channel.onmessage = async (event) => {
-const { imageDataURL } = event.data;
-predict(imageDataURL);
+const { imageDataURL,displacementMapPath  } = event.data;
+predict(imageDataURL,displacementMapPath );
 };
 
 async function saveSceneAsGLTF() {
@@ -237,8 +238,7 @@ const exporter = new GLTFExporter();
 try {
 const options = {
 binary: true,
-embedImages: true, // Embed all textures, including the displacement map
-extensionsUsed: [ 'KHR_materials_displacement' ] // Enable the extension
+// embedImages: true, // Embed all textures, including the displacement map
 };
 const gltf = await exporter.parseAsync(scene, options);
 const blob = new Blob([gltf], { type: 'application/octet-stream' });
@@ -246,6 +246,16 @@ const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
 link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
+    
+const map = depth.toCanvas();
+// const map = material.displacementMap;
+map.toBlob(function(blob) {
+    const link2 = document.createElement('a');
+    link2.href = URL.createObjectURL(blob);
+    link2.download = 'displacementMap.jpg';
+    link2.click();
+}, 'image/jpeg'); // Specify the desired MIME type (JPEG in this case)
+    
 } catch (error) {
 console.error('Error exporting glTF:', error);
 // Handle the error appropriately (e.g., show a message to the user)
