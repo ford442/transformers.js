@@ -24,30 +24,52 @@ status.textContent = 'Loading model...';
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf');
 status.textContent = 'Ready';
 
+
+const displacementShaderMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+        map: { value: null }, // The base color texture
+        displacementMap: { value: null }, // The displacement map texture
+        displacementScale: { value: 0.5 }, // Adjust the strength of the displacement
+        // Add other uniforms as needed (e.g., for lighting)
+    },
+    vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vNormal; // Varying for normal interpolation
+        uniform sampler2D displacementMap;
+        uniform float displacementScale;
+
+        void main() {
+            vUv = uv;
+            vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
+
+            // Sample the displacement map and apply it to the vertex position
+            vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
+        }
+    `,
+    fragmentShader: `
+        varying vec2 vUv;
+        varying vec3 vNormal; // Receive interpolated normal
+        uniform sampler2D map;
+        // Add other uniforms as needed (e.g., for lighting)
+
+        void main() {
+            // Basic lighting calculation (you can customize this)
+            vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
+            float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
+
+            gl_FragColor = texture2D( map, vUv ) * diffuse;
+        }
+    `
+});
+
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 
-function bakeDisplacement(mesh, displacementMap) {
-  const geometry = mesh.geometry;
-  const positionAttribute = geometry.attributes.position;
-  const uvAttribute = geometry.attributes.uv;
-if(displacementMap){
-  for (let i = 0; i < positionAttribute.count; i++) {
-    const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
-    const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
-    const originalPosition = new THREE.Vector3();
-    originalPosition.fromBufferAttribute(positionAttribute, i);
-    const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
-    const newPosition = originalPosition.add(offset);
-    positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
-  }
-}
-  geometry.attributes.position.needsUpdate = true;
-  geometry.computeVertexNormals(); // Recalculate normals
-}
 
 // Predict depth map for the given image
 async function predict(imageDataURL) {
@@ -66,17 +88,25 @@ const imageData = ctx.getImageData(0, 0, img.width, img.height);
 // Create a RawImage from the imageData
 const image = new RawImage(imageData.data, img.width, img.height,4);
 // Set up scene and slider controls
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
-imageContainer.append(canvas);
+if (!scene) {
+    const { canvas } = setupScene(imageDataURL, image.width, image.height, false); 
+    imageContainer.append(canvas);
+    onSliderChange = setDisplacementScale;
+  }
+  imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
   
+displacementShaderMaterial.uniforms.map.value = new THREE.TextureLoader().load(imageDataURL); 
+displacementShaderMaterial.uniforms.displacementMap.value = depth.texture; // Use depth.texture directly
+const [pw, ph] = image.width > image.height ? [1, image.height / image.width] : [image.width / image.height, 1];
+const geometry = new THREE.PlaneGeometry(pw, ph, image.width, image.height);
+const mesh = new THREE.Mesh( geometry, displacementShaderMaterial );
+scene.add( mesh );
+displacementShaderMaterial.uniforms.displacementScale.value = 0.3; // Or any other value
+
 setDisplacementMap(depth.toCanvas());
 
-  const planeE = scene.children.find(child => child.isMesh);
-  if (planeE) {
-    bakeDisplacement(planeE, depth.texture); // Assuming depth.texture is the displacement map
-  }
 status.textContent = '';
  // Add slider control
 const slider = document.createElement('input');
