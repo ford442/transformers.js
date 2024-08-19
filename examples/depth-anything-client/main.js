@@ -29,7 +29,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE;
+let depthE,materialE;
 
 const displacementShaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
