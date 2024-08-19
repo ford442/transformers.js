@@ -189,7 +189,6 @@ loadCanvas.style.top=0;
 const width = loadCanvas.width = window.innerHeight;
 const height = loadCanvas.height = window.innerHeight;
 sceneL = new THREE.Scene();
-loader.load('tiff.glb.jpg', function (gltf) {
 // loader.load(gltfFilePath, function (gltf) {
 console.log('load scene');
 sceneL.add(gltf.scene); 
@@ -199,7 +198,8 @@ const material = planeL.material;
 material.needsUpdate = true;
 material.displacementScale = 0.5;
 var txtloc=gltfFilePath+'.jpg';
-textureLoader.load(txtloc, function(texture) {
+var txtloc2='tiff2.glb.jpg';
+textureLoader.load(txtloc2, function(texture) {
 material.displacementMap = texture;
 material.needsUpdate = true;
 });
