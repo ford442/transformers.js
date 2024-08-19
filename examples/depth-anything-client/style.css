@@ -28,7 +28,7 @@ h1 {
 }
 
 #container {
-  position: relative;
+  position: absolute;
   width: 85vh;
   height: 85vh;
   border: 2px dashed #D1D5DB;
