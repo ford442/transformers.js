@@ -104,9 +104,6 @@ const geometry = new THREE.PlaneGeometry(pw, ph, image.width, image.height);
 const mesh = new THREE.Mesh( geometry, displacementShaderMaterial );
 scene.add( mesh );
 displacementShaderMaterial.uniforms.displacementScale.value = 0.3; // Or any other value
-
-setDisplacementMap(depth.toCanvas());
-
 status.textContent = '';
  // Add slider control
 const slider = document.createElement('input');
