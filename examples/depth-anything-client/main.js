@@ -189,7 +189,7 @@ loadCanvas.style.top=0;
 const width = loadCanvas.width = window.innerHeight;
 const height = loadCanvas.height = window.innerHeight;
 sceneL = new THREE.Scene();
-loader.load(gltfFilePath, function (gltf) {
+loader.load('tiff2.glb', function (gltf) {
 console.log('load scene');
 sceneL.add(gltf.scene); 
 const planeL = gltf.scene.children.find(child => child.isMesh);
@@ -198,7 +198,7 @@ const material = planeL.material;
 material.needsUpdate = true;
 material.displacementScale = 0.5;
 var txtloc2='tiff2.glb.jpg';
-textureLoader.load(txtloc2, function(texture) {
+textureLoader.load('tiff2.glb.jpg', function(texture) {
 material.displacementMap = texture;
 material.needsUpdate = true;
 });
