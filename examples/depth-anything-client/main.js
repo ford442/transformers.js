@@ -89,7 +89,7 @@ const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
 // Set up scene and slider controls
 if (!scene) {
-    const { canvas } = setupScene(imageDataURL, image.width, image.height, false); 
+    const { canvas, setDisplacementMap, setDisplacementScale } = setupScene(imageDataURL, image.width, image.height, false); 
     imageContainer.append(canvas);
     onSliderChange = setDisplacementScale;
   }
@@ -168,8 +168,7 @@ camera.updateProjectionMatrix();
 renderer.setSize(width, height);
 }, false);
 return {
-canvas: renderer.domElement,
-setDisplacementMap,
+canvas: renderer.domElement,setDisplacementMap,setDisplacementScale
 };
 }
 
