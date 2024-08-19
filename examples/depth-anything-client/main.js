@@ -255,13 +255,13 @@ const texture_data = new THREE.DataTexture( materialE.displacementMap.image.data
 
     console.log(texture_data);
     console.log(texture_data.image);
-    console.log(texture_data.image.data);
+    console.log(texture_data.data);
 
-// const map = mapT.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
-// const link2 = document.createElement('a');
-//    link2.href =map;
-//    link2.download = 'displacementMap.jpg';
-//    link2.click();
+ const map = texture_data.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
+ const link2 = document.createElement('a');
+    link2.href =map;
+   link2.download = 'displacementMap.jpg';
+   link2.click();
     
 } catch (error) {
 console.error('Error exporting glTF:', error);
