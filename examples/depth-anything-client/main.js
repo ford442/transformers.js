@@ -159,7 +159,6 @@ imageContainer.append(loadCanvas);
 console.log('append canvas and render');
 renderer.setAnimationLoop(() => {
 renderer.render(scene, camera);
-controls.update();
 });
 }, undefined, function (error) {
 console.error(error);
