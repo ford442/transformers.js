@@ -34,7 +34,7 @@ function bakeDisplacement(mesh, displacementMap) {
   const geometry = mesh.geometry;
   const positionAttribute = geometry.attributes.position;
   const uvAttribute = geometry.attributes.uv;
-
+if(displacementMap){
   for (let i = 0; i < positionAttribute.count; i++) {
     const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
     const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
@@ -44,6 +44,7 @@ function bakeDisplacement(mesh, displacementMap) {
     const newPosition = originalPosition.add(offset);
     positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
   }
+}
   geometry.attributes.position.needsUpdate = true;
   geometry.computeVertexNormals(); // Recalculate normals
 }
@@ -71,12 +72,11 @@ const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
   
 setDisplacementMap(depth.toCanvas());
-if(depth){
+
   const planeE = scene.children.find(child => child.isMesh);
   if (planeE) {
     bakeDisplacement(planeE, depth.texture); // Assuming depth.texture is the displacement map
   }
-}
 status.textContent = '';
  // Add slider control
 const slider = document.createElement('input');
