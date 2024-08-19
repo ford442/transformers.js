@@ -251,7 +251,7 @@ link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
     
 // const map = depthE.toCanvas();
-const map = materialE;
+const map = material.displacementMap.image; // Access the underlying canvas element
 const blob2= new Blob([map], { type: 'image/jpeg' });
 const link2 = document.createElement('a');
     link2.href = URL.createObjectURL(blob2);
