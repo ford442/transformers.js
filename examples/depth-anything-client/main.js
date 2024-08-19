@@ -249,12 +249,11 @@ link.click();
     
 const map = depth.toCanvas();
 // const map = material.displacementMap;
-map.toBlob(function(blob) {
-    const link2 = document.createElement('a');
-    link2.href = URL.createObjectURL(blob);
+const blob2= new Blob([materials.displacementMap], { type: 'image/jpeg' });
+const link2 = document.createElement('a');
+    link2.href = URL.createObjectURL(blob2);
     link2.download = 'displacementMap.jpg';
     link2.click();
-}, 'image/jpeg'); // Specify the desired MIME type (JPEG in this case)
     
 } catch (error) {
 console.error('Error exporting glTF:', error);
