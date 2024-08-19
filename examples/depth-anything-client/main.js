@@ -189,7 +189,8 @@ loadCanvas.style.top=0;
 const width = loadCanvas.width = window.innerHeight;
 const height = loadCanvas.height = window.innerHeight;
 sceneL = new THREE.Scene();
-loader.load(gltfFilePath, function (gltf) {
+loader.load('tiff.jpg', function (gltf) {
+// loader.load(gltfFilePath, function (gltf) {
 console.log('load scene');
 sceneL.add(gltf.scene); 
 const planeL = gltf.scene.children.find(child => child.isMesh);
