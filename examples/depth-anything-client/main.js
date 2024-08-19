@@ -149,7 +149,7 @@ console.warn("No mesh found in the glTF scene.");
 sceneL.add(planeL);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 sceneL.add(ambientLight);
-const cameraL = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
+cameraL = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 cameraL.position.z = 2;
 sceneL.add(cameraL);
 rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
