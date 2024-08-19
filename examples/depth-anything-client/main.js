@@ -210,7 +210,7 @@ sceneL.add(cameraL);
 rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
 rendererL.setSize(width, height);
 rendererL.setPixelRatio(window.devicePixelRatio);
-imageContainer.appendChild(loadCanvas);
+// imageContainer.appendChild(loadCanvas);
 rendererL.domElement.id='mvi';
 imageContainer.appendChild( rendererL.domElement );
 controlsL = new OrbitControls( cameraL, rendererL.domElement );
