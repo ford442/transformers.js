@@ -74,13 +74,13 @@ const image = new RawImage(imageData.data, img.width, img.height,4);
 // Set up scene and slider controls
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
-status.textContent = 'Analysing...';
 const { depth } = await depth_estimator(image);
+status.textContent = 'Analysing...';
+setDisplacementMap(depth.toCanvas());
  const planeE = scene.children.find(child => child.isMesh);
   if (planeE) {
     bakeDisplacement(planeE, depth.texture); // Assuming depth.texture is the displacement map
   }
-setDisplacementMap(depth.toCanvas());
 status.textContent = '';
  // Add slider control
 const slider = document.createElement('input');
