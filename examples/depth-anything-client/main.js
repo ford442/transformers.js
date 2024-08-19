@@ -254,7 +254,7 @@ const texture_data = new THREE.DataTexture( materialE.displacementMap.image.data
 
     console.log(texture_data);
     console.log(texture_data.image);
-const blob2 = new Blob([texture_data.image], { type: 'image/jpeg' });
+const blob2 = new Blob([texture_data], { type: 'image/jpeg' });
 
  const link2 = document.createElement('a');
 link2.href = URL.createObjectURL(blob2);
