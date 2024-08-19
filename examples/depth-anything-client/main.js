@@ -183,8 +183,8 @@ const loader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
 loadCanvas = document.createElement('canvas');
 loadCanvas.id='mvi';
-const width = loadCanvas.width = imageContainer.offsetWidth;
-const height = loadCanvas.height = imageContainer.offsetHeight;
+const width = loadCanvas.width = window.innerHeight;
+const height = loadCanvas.height = window.innerHeight;
 sceneL = new THREE.Scene();
 loader.load('./scene.glb', function (gltf) {
 console.log('load scene');
