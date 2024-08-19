@@ -214,9 +214,8 @@ rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
 rendererL.setSize(width, height);
 rendererL.setPixelRatio(window.devicePixelRatio);
 rendererL.domElement.id='mvi';
-    
 rendererL.domElement.style.position='absolute';
-rendererL.domElement.style.zindex=3200;
+rendererL.domElement.style.zindex=3150;
 rendererL.domElement.style.top=0px;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
@@ -236,13 +235,13 @@ controlsL.update();
 }
 
 loaderChannel.onmessage = async (event) => {
-const { glbLocation } = event.data;
-loadGLTFScene(glbLocation);
+const { glbLocation,displacementMapPath } = event.data;
+loadGLTFScene(glbLocation,displacementMapPath);
 };
 
 channel.onmessage = async (event) => {
-const { imageDataURL,displacementMapPath  } = event.data;
-predict(imageDataURL,displacementMapPath );
+const { imageDataURL  } = event.data;
+predict(imageDataURL );
 };
 
 async function saveSceneAsGLTF() {
