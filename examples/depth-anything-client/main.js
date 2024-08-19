@@ -249,18 +249,18 @@ const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
 link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
-    
-const texture_data = new THREE.DataTexture( materialE.displacementMap.image.data,imageContainer.offsetWidth, imageContainer.offsetHeight );
-
-    console.log(texture_data);
-    console.log(texture_data.data);
-const blob2 = new Blob([texture_data.data], { type: 'image/jpeg' });
-
- const link2 = document.createElement('a');
+const displacementMap = materialE.displacementMap;
+const exportCanvas = document.createElement('canvas');
+exportCanvas.width = displacementMap.image.width;
+exportCanvas.height = displacementMap.image.height;
+const ctx = exportCanvas.getContext('2d');
+ctx.drawImage(displacementMap.image, 0, 0);
+const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
+const blob2 = new Blob([imageData.data], { type: 'image/jpeg' });
+const link2 = document.createElement('a');
 link2.href = URL.createObjectURL(blob2);
-   link2.download = 'displacementMap.jpg';
-   link2.click();
-    
+link2.download = 'displacementMap.jpg';
+link2.click();
 } catch (error) {
 console.error('Error exporting glTF:', error);
 // Handle the error appropriately (e.g., show a message to the user)
