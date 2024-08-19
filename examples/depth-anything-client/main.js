@@ -249,8 +249,8 @@ const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
 link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
-const texture_data = new THREE.DataTexture( materialE.displacementMap.image.data,materialE.displacementMap.image.data.width, materialE.displacementMap.image.data.height );
-const imgData = new ImageData(texture_data.image.data,materialE.displacementMap.image.data.width,materialE.displacementMap.image.data.height);
+const texture_data = new THREE.DataTexture( materialE.displacementMap,imageContainer.width, imageContainer.height );
+const imgData = new ImageData(texture_data.image.data,materialE.imageContainer.width,imageContainer.height);
 
     console.log(imgData);
 
