@@ -255,7 +255,7 @@ const gltf = await exporter.parseAsync(scene, options);
 const blob = new Blob([gltf], { type: 'application/octet-stream' });
 const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
-link.download = document.querySelector('#saveName').innerHTML+'.glb'; // Use .glb extension for binary glTF
+link.download = document.querySelector('#saveName').value+'.glb'; // Use .glb extension for binary glTF
 link.click();
 const displacementMap = materialE.displacementMap;
 const exportCanvas = document.createElement('canvas');
@@ -267,7 +267,7 @@ const imageData = exportCanvas.toDataURL('image/jpeg',1.0); ;
 // const blob2 = new Blob([imageData.data], { type: 'image/jpeg' });
 const link2 = document.createElement('a');
 link2.href = imageData;
-link2.download = document.querySelector('#saveName').innerHTML+'.jpg';
+link2.download = document.querySelector('#saveName').value+'.jpg';
 link2.click();
 } catch (error) {
 console.error('Error exporting glTF:', error);
