@@ -252,7 +252,6 @@ link.click();
 const mapT = new THREE.TextureLoader().load(materialE.displacementMap.image.data);
     console.log(mapT);
     console.log(mapT.image);
-    console.log(mapT.image.data);
     console.log(materialE.displacementMap);
 // const map = mapT.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
 // const link2 = document.createElement('a');
