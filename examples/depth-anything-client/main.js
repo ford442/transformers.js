@@ -250,10 +250,9 @@ link.href = URL.createObjectURL(blob);
 link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
 const mapT = new THREE.TextureLoader().load(materialE.displacementMap.image);
-const map = mapT.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
-// const blob2 = new Blob([map], { type: 'image/jpeg' });
+const map = materialE.displacementMap.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
 const link2 = document.createElement('a');
-    link2.href = URL.createObjectURL(map);
+    link2.href =map;
     link2.download = 'displacementMap.jpg';
     link2.click();
     
