@@ -30,6 +30,40 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 
+const displacementShaderMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+        map: { value: null }, // The base color texture
+        displacementMap: { value: null }, // The displacement map texture
+        displacementScale: { value: 0.5 }, // Adjust the strength of the displacement
+        // Add other uniforms as needed (e.g., for lighting)
+    },
+    vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vNormal; // Varying for normal interpolation
+        uniform sampler2D displacementMap;
+        uniform float displacementScale;
+        void main() {
+            vUv = uv;
+            vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
+            // Sample the displacement map and apply it to the vertex position
+            vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
+        }
+    `,
+    fragmentShader: `
+        varying vec2 vUv;
+        varying vec3 vNormal; // Receive interpolated normal
+        uniform sampler2D map;
+        // Add other uniforms as needed (e.g., for lighting)
+        void main() {
+            // Basic lighting calculation (you can customize this)
+            vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
+            float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
+            gl_FragColor = texture2D( map, vUv ) * diffuse;
+        }
+    `
+});
+
 function bakeDisplacement(mesh, displacementMap) {
   const geometry = mesh.geometry;
   const positionAttribute = geometry.attributes.position;
@@ -70,13 +104,7 @@ const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, ima
 imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
-  
 setDisplacementMap(depth.toCanvas());
-
-  const planeE = scene.children.find(child => child.isMesh);
-  if (planeE) {
-    bakeDisplacement(planeE, depth.texture); // Assuming depth.texture is the displacement map
-  }
 status.textContent = '';
  // Add slider control
 const slider = document.createElement('input');
