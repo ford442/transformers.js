@@ -139,7 +139,7 @@ const planeL = gltf.scene.children.find(child => child.isMesh);
 if (planeL) {
 const material = planeL.material;
 material.needsUpdate = true;
-material.displacementScale = 0.5; 
+material.displacementScale = 2.5; 
 // You might still need to set the displacementMap here if it's not embedded in the glTF
 // For example, if you have a displacement map texture loaded elsewhere:
 // material.displacementMap = yourDisplacementMapTexture;
