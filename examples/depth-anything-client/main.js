@@ -197,7 +197,8 @@ if (planeL) {
 const material = planeL.material;
 material.needsUpdate = true;
 material.displacementScale = 0.5;
-textureLoader.load('./depth.jpg', function(texture) {
+var txtloc=gltfFilePath+'.jpg';
+textureLoader.load(txtloc, function(texture) {
 material.displacementMap = texture;
 material.needsUpdate = true;
 });
