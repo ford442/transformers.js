@@ -136,8 +136,8 @@ loader.load('./scene.glb', function (gltf) {
 console.log('load scene');
 sceneL.add(gltf.scene); 
 const planeL = gltf.scene.children.find(child => child.isMesh);
-if (plane) {
-const material = plane.material;
+if (planeL) {
+const material = planeL.material;
 material.needsUpdate = true;
 material.displacementScale = 0.5; 
 // You might still need to set the displacementMap here if it's not embedded in the glTF
@@ -146,7 +146,7 @@ material.displacementScale = 0.5;
 } else {
 console.warn("No mesh found in the glTF scene.");
 }
-sceneL.add(plane);
+sceneL.add(planeL);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 sceneL.add(ambientLight);
 const cameraL = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
