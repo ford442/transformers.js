@@ -251,8 +251,9 @@ link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
 const mapT = new THREE.TextureLoader().load(materialE.displacementMap.image.data);
     console.log(mapT);
-    console.log(mapT.image);
-    console.log(materialE.displacementMap);
+ mapT.onload= async () => {
+console.log(mapT);
+ }
 // const map = mapT.toDataURL('image/jpeg',1.0); // Access the underlying canvas element
 // const link2 = document.createElement('a');
 //    link2.href =map;
