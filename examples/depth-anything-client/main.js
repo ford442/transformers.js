@@ -28,7 +28,7 @@ const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
-let scene,sceneL,rendererL,cameraL;
+let scene,sceneL,rendererL,cameraL,loadCanvas;
 
 // Predict depth map for the given image
 async function predict(imageDataURL) {
@@ -127,7 +127,7 @@ setDisplacementMap,
 function loadGLTFScene(gltfFilePath) {
 imageContainer.innerHTML = '';
 const loader = new GLTFLoader();
-const loadCanvas = document.createElement('canvas');
+loadCanvas = document.createElement('canvas');
 loadCanvas.id='lcanvas';
 const width = loadCanvas.width = imageContainer.offsetWidth;
 const height = loadCanvas.height = imageContainer.offsetHeight;
