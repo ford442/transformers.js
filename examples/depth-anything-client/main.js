@@ -131,11 +131,11 @@ const loadCanvas = document.createElement('canvas');
 loadCanvas.id='lcanvas';
 const width = loadCanvas.width = imageContainer.offsetWidth;
 const height = loadCanvas.height = imageContainer.offsetHeight;
-scene = new THREE.Scene();
+sceneL = new THREE.Scene();
 loader.load('./scene.glb', function (gltf) {
 console.log('load scene');
-scene.add(gltf.scene); 
-const plane = gltf.scene.children.find(child => child.isMesh);
+sceneL.add(gltf.scene); 
+const planeL = gltf.scene.children.find(child => child.isMesh);
 if (plane) {
 const material = plane.material;
 material.needsUpdate = true;
@@ -146,28 +146,27 @@ material.displacementScale = 0.5;
 } else {
 console.warn("No mesh found in the glTF scene.");
 }
-scene.add(plane);
+sceneL.add(plane);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
-camera.position.z = 2;
-scene.add(camera);
-const renderer = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
-renderer.setSize(width, height);
-renderer.setPixelRatio(window.devicePixelRatio);
+sceneL.add(ambientLight);
+const cameraL = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
+cameraL.position.z = 2;
+sceneL.add(cameraL);
+const rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
+rendererL.setSize(width, height);
+rendererL.setPixelRatio(window.devicePixelRatio);
 imageContainer.append(loadCanvas);
 console.log('append canvas and render');
-renderer.setAnimationLoop(() => {
-renderer.render(scene, camera);
-});
+animate();
 }, undefined, function (error) {
 console.error(error);
 });
+ 
 }
 
 function animate() {
 requestAnimationFrame( animate );
-renderer.render( scene, camera );
+rendererL.render( sceneL, cameraL );
 }
 
 loaderChannel.onmessage = async (event) => {
