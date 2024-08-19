@@ -251,7 +251,7 @@ link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
     
 const texture_data = new THREE.DataTexture( materialE.displacementMap,imageContainer.offsetWidth, imageContainer.offsetHeight );
-const imgData = new ImageData(texture_data.image.data,parseInt(imageContainer.offsetWidth),parseInt(imageContainer.offsetHeight));
+const imgData = new ImageData(texture_data.image.data,1024);
 
     console.log(imgData);
 
