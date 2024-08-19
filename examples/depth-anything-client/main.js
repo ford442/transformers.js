@@ -29,6 +29,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
+let depthE;
 
 const displacementShaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
@@ -105,6 +106,7 @@ imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
+depthE=depth;
 status.textContent = '';
  // Add slider control
 const slider = document.createElement('input');
@@ -247,9 +249,9 @@ link.href = URL.createObjectURL(blob);
 link.download = 'scene.glb'; // Use .glb extension for binary glTF
 link.click();
     
-const map = depth.toCanvas();
+const map = depthE.toCanvas();
 // const map = material.displacementMap;
-const blob2= new Blob([materials.displacementMap], { type: 'image/jpeg' });
+const blob2= new Blob([map], { type: 'image/jpeg' });
 const link2 = document.createElement('a');
     link2.href = URL.createObjectURL(blob2);
     link2.download = 'displacementMap.jpg';
