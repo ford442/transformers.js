@@ -89,11 +89,11 @@ const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
 // Set up scene and slider controls
 if (!scene) {
-    const { canvas, setDisplacementMap, setDisplacementScale } = setupScene(imageDataURL, image.width, image.height, false); 
-    imageContainer.append(canvas);
+    const { canvas3, setDisplacementMap, setDisplacementScale } = setupScene(imageDataURL, image.width, image.height, false); 
+    imageContainer.append(canvas3);
     onSliderChange = setDisplacementScale;
   }
-  imageContainer.append(canvas);
+  imageContainer.append(canvas2);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
   
