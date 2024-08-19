@@ -156,7 +156,7 @@ rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
 rendererL.setSize(width, height);
 rendererL.setPixelRatio(window.devicePixelRatio);
 imageContainer.appendChild(loadCanvas);
-imageContainer.appendChild( renderer.domElement );
+imageContainer.appendChild( rendererL.domElement );
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
