@@ -11,7 +11,7 @@ env.allowLocalModels = false;
 // Proxy the WASM backend to prevent the UI from freezing
 env.backends.onnx.wasm.proxy = true;
 // Constants
-const DEFAULT_SCALE = 0.75;
+const DEFAULT_SCALE = 0.5;
 
 // Reference the elements that we will need
 const status = document.getElementById('status');
