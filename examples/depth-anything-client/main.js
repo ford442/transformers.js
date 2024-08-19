@@ -28,7 +28,7 @@ const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
-let scene,sceneL,rendererL;
+let scene,sceneL,rendererL,cameraL;
 
 // Predict depth map for the given image
 async function predict(imageDataURL) {
