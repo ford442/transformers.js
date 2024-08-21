@@ -41,6 +41,7 @@ let prevTime = performance.now();
 
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
+let yawObject, pitchObject; // Declare these variables at a higher scope
 
 const displacementShaderMaterial = new THREE.ShaderMaterial({
 uniforms: {
