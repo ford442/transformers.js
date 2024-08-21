@@ -234,7 +234,20 @@ imageContainer.appendChild( rendererL.domElement );
 controlsL = new PointerLockControls(cameraL,rendererL.domElement);
 
 sceneL.add( controlsL.getObject() );
+ yawObject = controlsL.getObject();
+  pitchObject = yawObject.children[0]; // Assuming the camera is the first child of yawObject
+ controlsL.addEventListener('lock', function () {
+    rendererL.setAnimationLoop(animate);
+    // Add event listeners for mouse movement when Pointer Lock is activated
+    document.addEventListener('mousemove', onMouseMove, false);
+  });
 
+  controlsL.addEventListener('unlock', function () {
+    rendererL.setAnimationLoop(null);
+    // Remove the mousemove event listener when Pointer Lock is deactivated
+    document.removeEventListener('mousemove', onMouseMove, false);
+  });
+ 
 const onKeyDown = function ( event ) {
 switch ( event.code ) {
 case 'ArrowUp':
@@ -295,6 +308,19 @@ animate();
 console.error(error);
 });
  
+}
+
+function onMouseMove(event) {
+  if (controlsL.isLocked === true) {
+    const movementX = event.movementX || 0;
+    const movementY = event.movementY || 0;
+
+    yawObject.rotation.y -= movementX * 0.002;
+    pitchObject.rotation.x -= movementY * 0.002;
+
+    // Clamp the pitch rotation to prevent the camera from flipping upside down
+    pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
+  }
 }
 
 function animate() {
