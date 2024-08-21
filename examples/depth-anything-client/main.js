@@ -294,6 +294,7 @@ console.error(error);
 }
 
 function animate() {
+ /*
 const time = performance.now();
 const delta = ( time - prevTime ) / 1000;
 velocity.x -= velocity.x * 10.0 * delta;
@@ -308,6 +309,7 @@ controlsL.moveRight( -velocity.x * delta );
 controlsL.moveForward( -velocity.z * delta );
 controlsL.getObject().position.y += velocity.y * delta; 
 prevTime = time;
+*/
  requestAnimationFrame( animate );
 
 rendererL.render( sceneL, cameraL );
