@@ -320,8 +320,8 @@ function onMouseMove(event) {
     const movementX = event.movementX || 0;
     const movementY = event.movementY || 0;
 
-    yawObject.rotation.y -= movementX * 0.002;
-    pitchObject.rotation.x -= movementY * 0.002;
+    yawObject.rotation.y -= movementX * 0.0002;
+    pitchObject.rotation.x -= movementY * 0.0002;
 
     // Clamp the pitch rotation to prevent the camera from flipping upside down
     pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
@@ -349,7 +349,7 @@ function animate() {
   direction.x = Number(moveRight) - Number(moveLeft);
   direction.normalize();   
 
-  if (moveForward || moveBackward) velocity.z -= direction.z * 10.0 * delta;
+  if (moveForward || moveBackward) velocity.z += direction.z * 10.0 * delta;
   if (moveLeft || moveRight) velocity.x -= direction.x * 10.0 * delta;   
 
   // Directly update the camera's position based on velocity and delta time
