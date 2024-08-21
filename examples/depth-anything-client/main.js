@@ -307,7 +307,7 @@ function animate() {
     velocity.y = 0;
     controlsL.getObject().position.y = 0;
   } else {
-    velocity.y -= 9.8 * 10.0 * delta; 
+    velocity.y -= 9.8 * delta; 
   }
 
   direction.z = Number(moveForward) - Number(moveBackward);
