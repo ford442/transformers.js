@@ -300,15 +300,14 @@ function animate() {
   const delta = (time - prevTime) / 1000;
 
   velocity.x -= velocity.x * 10.0 * delta;
-  velocity.z -= velocity.z   
- * 10.0 * delta;
+  velocity.z -= velocity.z * 10.0 * delta;
 
   // Prevent the camera from falling below a certain height (e.g., y = 0)
   if (controlsL.getObject().position.y < 0) {
     velocity.y = 0;
     controlsL.getObject().position.y = 0;
   } else {
-    velocity.y -= 9.8 * 100.0 * delta; 
+    velocity.y -= 9.8 * 10.0 * delta; 
   }
 
   direction.z = Number(moveForward) - Number(moveBackward);
@@ -316,8 +315,8 @@ function animate() {
   direction.normalize();   
  
 
-  if (moveForward || moveBackward) velocity.z -= direction.z * 50.0 * delta;
-  if (moveLeft || moveRight) velocity.x -= direction.x * 50.0 * delta;   
+  if (moveForward || moveBackward) velocity.z -= direction.z * 10.0 * delta;
+  if (moveLeft || moveRight) velocity.x -= direction.x * 10.0 * delta;   
 
 
   // Directly update the camera's position based on velocity and delta time
