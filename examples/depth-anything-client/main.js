@@ -356,7 +356,7 @@ function animate() {
     right.applyQuaternion(cameraL.quaternion);
 
     // Calculate movement direction based on camera's orientation
-    direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
+   // direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
     direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
     direction.normalize(); 
 
