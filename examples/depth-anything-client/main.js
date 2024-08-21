@@ -233,7 +233,7 @@ imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
 controlsL = new PointerLockControls(cameraL,rendererL.domElement);
     
-				scene.add( controls.getObject() );
+				scene.add( controlsL.getObject() );
 
 				const onKeyDown = function ( event ) {
 
@@ -325,10 +325,10 @@ requestAnimationFrame( animate );
 					if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
 					if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
 
-					controls.moveRight( - velocity.x * delta );
-					controls.moveForward( - velocity.z * delta );
+					controlsL.moveRight( - velocity.x * delta );
+					controlsL.moveForward( - velocity.z * delta );
 
-					controls.getObject().position.y += ( velocity.y * delta ); // new behavior
+					controlsL.getObject().position.y += ( velocity.y * delta ); // new behavior
 				prevTime = time;
 rendererL.render( sceneL, cameraL );
 }
