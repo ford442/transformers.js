@@ -360,10 +360,9 @@ function animate() {
     
  direction.normalize();   
 
-  if (moveForward || moveBackward || moveLeft || moveRight) {
-        velocity.x -= direction.x * 5.0 * delta;
-        velocity.z -= direction.z * 5.0 * delta;
-    }
+  if (moveForward || moveBackward) velocity.z += direction.z * 5.0 * delta;
+  if (moveLeft || moveRight) velocity.x -= direction.x * 5.0 * delta;   
+
   // Directly update the camera's position based on velocity and delta time
   controlsL.getObject().position.x -= velocity.x * delta;
   controlsL.getObject().position.z -= velocity.z * delta;
