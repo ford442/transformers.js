@@ -359,6 +359,7 @@ direction.normalize();
 
 if (moveForward || moveBackward || moveLeft || moveRight) {
     velocity.x -= direction.x * 5.0 * delta;
+    velocity.y -= direction.y * 5.0 * delta;
     velocity.z += direction.z * 5.0 * delta; // Keep the '+' here as it's now working correctly
   }
   // Directly update the camera's position based on velocity and delta time
