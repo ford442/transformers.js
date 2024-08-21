@@ -284,7 +284,7 @@ break;
 
 document.addEventListener( 'keydown', onKeyDown );
 document.addEventListener( 'keyup', onKeyUp );
-document.body.addEventListener( 'click', controlsL.lock(); );
+document.querySelector('#scanvas').addEventListener( 'click', controlsL.lock(); );
  
 
  
