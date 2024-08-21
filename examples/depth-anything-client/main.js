@@ -329,7 +329,7 @@ function animate() {
  requestAnimationFrame(animate);
 
   const time = performance.now();
-  const delta = (time - prevTime) / 1000;
+  const delta = (time - prevTime) / 1000.0;
 
   velocity.x -= velocity.x * 10.0 * delta;
   velocity.z -= velocity.z * 10.0 * delta;
@@ -353,9 +353,9 @@ function animate() {
     right.applyQuaternion(cameraL.quaternion);
 
     // Calculate movement direction based on camera's orientation
-   // direction.copy(forward).multiplyScalar(Number(moveForward) + Number(moveBackward));
-   //  direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
-    direction.normalize(); 
+direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
+direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
+direction.normalize(); 
 
   if (moveForward || moveBackward) velocity.z += direction.z * 5.0 * delta;
   if (moveLeft || moveRight) velocity.x -= direction.x * 5.0 * delta;   
