@@ -12,7 +12,7 @@ env.allowLocalModels = false;
 // Proxy the WASM backend to prevent the UI from freezing
 env.backends.onnx.wasm.proxy = true;
 // Constants
-const DEFAULT_SCALE = 0.35;
+const DEFAULT_SCALE = 0.25;
 
 // Reference the elements that we will need
 const status = document.getElementById('status');
@@ -31,6 +31,16 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
+
+			let moveForward = false;
+			let moveBackward = false;
+			let moveLeft = false;
+			let moveRight = false;
+			let canJump = false;
+			let prevTime = performance.now();
+
+			const velocity = new THREE.Vector3();
+			const direction = new THREE.Vector3();
 
 const displacementShaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
@@ -159,7 +169,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
 // Add orbit controls
-const controls = new PointerLockControls( camera, renderer.domElement );
+const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
 renderer.render(scene, camera);
@@ -222,6 +232,73 @@ rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
 controlsL = new PointerLockControls(cameraL,rendererL.domElement);
+    
+				scene.add( controls.getObject() );
+
+				const onKeyDown = function ( event ) {
+
+					switch ( event.code ) {
+
+						case 'ArrowUp':
+						case 'KeyW':
+							moveForward = true;
+							break;
+
+						case 'ArrowLeft':
+						case 'KeyA':
+							moveLeft = true;
+							break;
+
+						case 'ArrowDown':
+						case 'KeyS':
+							moveBackward = true;
+							break;
+
+						case 'ArrowRight':
+						case 'KeyD':
+							moveRight = true;
+							break;
+
+						case 'Space':
+							if ( canJump === true ) velocity.y += 350;
+							canJump = false;
+							break;
+
+					}
+
+				};
+
+				const onKeyUp = function ( event ) {
+
+					switch ( event.code ) {
+
+						case 'ArrowUp':
+						case 'KeyW':
+							moveForward = false;
+							break;
+
+						case 'ArrowLeft':
+						case 'KeyA':
+							moveLeft = false;
+							break;
+
+						case 'ArrowDown':
+						case 'KeyS':
+							moveBackward = false;
+							break;
+
+						case 'ArrowRight':
+						case 'KeyD':
+							moveRight = false;
+							break;
+
+					}
+
+				};
+
+				document.addEventListener( 'keydown', onKeyDown );
+				document.addEventListener( 'keyup', onKeyUp );
+
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
@@ -232,8 +309,28 @@ console.error(error);
 
 function animate() {
 requestAnimationFrame( animate );
+				const time = performance.now();
+
+					const delta = ( time - prevTime ) / 1000;
+
+					velocity.x -= velocity.x * 10.0 * delta;
+					velocity.z -= velocity.z * 10.0 * delta;
+
+					velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+					direction.z = Number( moveForward ) - Number( moveBackward );
+					direction.x = Number( moveRight ) - Number( moveLeft );
+					direction.normalize(); // this ensures consistent movements in all directions
+
+					if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
+					if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
+
+					controls.moveRight( - velocity.x * delta );
+					controls.moveForward( - velocity.z * delta );
+
+					controls.getObject().position.y += ( velocity.y * delta ); // new behavior
+				prevTime = time;
 rendererL.render( sceneL, cameraL );
-controlsL.update();
 }
 
 loaderChannel.onmessage = async (event) => {
