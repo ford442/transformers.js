@@ -32,11 +32,11 @@ let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
 
-let moveForward = false;
-let moveBackward = false;
-let moveLeft = false;
-let moveRight = false;
-let canJump = false;
+let moveForward;
+let moveBackward;
+let moveLeft;
+let moveRight;
+let canJump;
 let prevTime = performance.now();
 
 const velocity = new THREE.Vector3();
@@ -335,12 +335,12 @@ function animate() {
   velocity.z -= velocity.z * 10.0 * delta;
 
   // Prevent the camera from falling below a certain height (e.g., y = 0)
-  if (controlsL.getObject().position.y < 0) {
-    velocity.y = 0;
-    controlsL.getObject().position.y = 0;
-  } else {
+ // if (controlsL.getObject().position.y < 0) {
+  //  velocity.y = 0;
+ //   controlsL.getObject().position.y = 0;
+ // } else {
   //  velocity.y -= 9.8 * delta; 
-  }
+//  }
 
   direction.z = Number(moveForward) - Number(moveBackward);
   direction.x = Number(moveRight) - Number(moveLeft);
