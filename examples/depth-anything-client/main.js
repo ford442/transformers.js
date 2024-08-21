@@ -358,7 +358,17 @@ function animate() {
     direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
     direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
     */
- direction.normalize();   
+    // Get the camera's forward and right directions
+    const forward = new THREE.Vector3(0, 0, -1);
+    forward.applyQuaternion(cameraL.quaternion); 
+
+    const right = new THREE.Vector3(1, 0, 0);
+    right.applyQuaternion(cameraL.quaternion);
+
+    // Calculate movement direction based on camera's orientation
+    direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
+    direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
+    direction.normalize(); 
 
   if (moveForward || moveBackward) velocity.z += direction.z * 10.0 * delta;
   if (moveLeft || moveRight) velocity.x -= direction.x * 10.0 * delta;   
