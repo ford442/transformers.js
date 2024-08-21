@@ -353,13 +353,12 @@ function animate() {
     right.applyQuaternion(cameraL.quaternion);
 
     // Calculate movement direction based on camera's orientation
-direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
-direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
+// direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
+// direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
 direction.normalize(); 
 
 if (moveForward || moveBackward || moveLeft || moveRight) {
     velocity.x -= direction.x * 5.0 * delta;
-    velocity.y -= direction.y * 5.0 * delta;
     velocity.z += direction.z * 5.0 * delta; // Keep the '+' here as it's now working correctly
   }
   // Directly update the camera's position based on velocity and delta time
