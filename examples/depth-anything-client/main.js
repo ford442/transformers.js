@@ -308,8 +308,9 @@ controlsL.moveRight( -velocity.x * delta );
 controlsL.moveForward( -velocity.z * delta );
 controlsL.getObject().position.y += velocity.y * delta; 
 prevTime = time;
+ requestAnimationFrame( animate );
+
 rendererL.render( sceneL, cameraL );
-requestAnimationFrame( animate );
 
 }
 
