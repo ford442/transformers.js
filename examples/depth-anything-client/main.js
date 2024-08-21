@@ -232,8 +232,8 @@ rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
 controlsL = new PointerLockControls(cameraL,rendererL.domElement);
-    /*
-				scene.add( controlsL.getObject() );
+    
+				sceneL.add( controlsL.getObject() );
 
 				const onKeyDown = function ( event ) {
 
@@ -298,7 +298,7 @@ controlsL = new PointerLockControls(cameraL,rendererL.domElement);
 
 				document.addEventListener( 'keydown', onKeyDown );
 				document.addEventListener( 'keyup', onKeyUp );
-*/
+
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
