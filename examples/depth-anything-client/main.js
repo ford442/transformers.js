@@ -357,8 +357,8 @@ direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward
 direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
 direction.normalize(); 
 
-  if (moveForward || moveBackward) velocity.z += direction.z * 5.0 * delta;
-  if (moveLeft || moveRight) velocity.x -= direction.x * 5.0 * delta;   
+if (moveForward || moveBackward) velocity.z += direction.z * 5.0 * delta; // Changed from '-=' to '+='
+if (moveLeft || moveRight) velocity.x -= direction.x * 5.0 * delta;
 
   // Directly update the camera's position based on velocity and delta time
   controlsL.getObject().position.x -= velocity.x * delta;
