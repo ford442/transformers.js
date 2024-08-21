@@ -342,7 +342,7 @@ function animate() {
   //  velocity.y -= 9.8 * delta; 
   }
 
-  direction.z = Number(moveForward) + Number(moveBackward);
+  direction.z = Number(moveForward) - Number(moveBackward);
   direction.x = Number(moveRight) - Number(moveLeft);
 
     // Get the camera's forward and right directions
@@ -357,7 +357,7 @@ function animate() {
     direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
     direction.normalize(); 
 
-  if (moveForward || moveBackward) velocity.z -= direction.z * 5.0 * delta;
+  if (moveForward || moveBackward) velocity.z += direction.z * 5.0 * delta;
   if (moveLeft || moveRight) velocity.x -= direction.x * 5.0 * delta;   
 
   // Directly update the camera's position based on velocity and delta time
