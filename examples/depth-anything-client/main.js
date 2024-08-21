@@ -236,12 +236,9 @@ controlsL = new PointerLockControls(cameraL,rendererL.domElement);
 
 sceneL.add( controlsL.getObject() );
 yawObject = controlsL.getObject();
- console.log(yawObject);
- console.log(yawObject.children);
 pitchObject = cameraL; // Assuming the camera is the first child of yawObject
-
  
- controlsL.addEventListener('lock', function () {
+controlsL.addEventListener('lock', function () {
 rendererL.setAnimationLoop(animate);
     // Add event listeners for mouse movement when Pointer Lock is activated
 document.addEventListener('mousemove', onMouseMove, false);
@@ -345,7 +342,7 @@ function animate() {
   //  velocity.y -= 9.8 * delta; 
   }
 
-  direction.z = Number(moveForward) - Number(moveBackward);
+  direction.z = Number(moveForward) + Number(moveBackward);
   direction.x = Number(moveRight) - Number(moveLeft);
 
     // Get the camera's forward and right directions
@@ -356,8 +353,8 @@ function animate() {
     right.applyQuaternion(cameraL.quaternion);
 
     // Calculate movement direction based on camera's orientation
-   // direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
-   // direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
+    direction.copy(forward).multiplyScalar(Number(moveForward) + Number(moveBackward));
+    direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
     direction.normalize(); 
 
   if (moveForward || moveBackward) velocity.z -= direction.z * 5.0 * delta;
