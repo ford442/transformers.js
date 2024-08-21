@@ -221,7 +221,7 @@ rendererL.domElement.style.zindex=2950;
 rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
-controlsL = new PointerLockControls‎( cameraL, rendererL.domElement );
+controlsL = new PointerLockControls(cameraL,rendererL.domElement);
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
