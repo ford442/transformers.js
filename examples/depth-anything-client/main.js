@@ -300,6 +300,7 @@ const delta = ( time - prevTime ) / 1000;
 velocity.x -= velocity.x * 10.0 * delta;
 velocity.z -= velocity.z * 10.0 * delta;
 velocity.y -= 9.8 * 100.0 * delta;
+*/
 direction.z = Number( moveForward ) - Number( moveBackward );
 direction.x = Number( moveRight ) - Number( moveLeft );
 direction.normalize(); // this ensures consistent movements in all directions
@@ -309,11 +310,9 @@ controlsL.moveRight( -velocity.x * delta );
 controlsL.moveForward( -velocity.z * delta );
 controlsL.getObject().position.y += velocity.y * delta; 
 prevTime = time;
-*/
- requestAnimationFrame( animate );
 
+requestAnimationFrame( animate );
 rendererL.render( sceneL, cameraL );
-
 }
 
 loaderChannel.onmessage = async (event) => {
