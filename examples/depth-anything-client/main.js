@@ -236,7 +236,9 @@ controlsL = new PointerLockControls(cameraL,rendererL.domElement);
 
 sceneL.add( controlsL.getObject() );
 yawObject = controlsL.getObject();
-pitchObject = yawObject.children[1]; // Assuming the camera is the first child of yawObject
+ console.log(yawObject);
+ console.log(yawObject.children);
+pitchObject = yawObject.children[2]; // Assuming the camera is the first child of yawObject
 controlsL.addEventListener('lock', function () {
 rendererL.setAnimationLoop(animate);
     // Add event listeners for mouse movement when Pointer Lock is activated
@@ -344,11 +346,9 @@ function animate() {
   direction.z = Number(moveForward) - Number(moveBackward);
   direction.x = Number(moveRight) - Number(moveLeft);
   direction.normalize();   
- 
 
   if (moveForward || moveBackward) velocity.z -= direction.z * 10.0 * delta;
   if (moveLeft || moveRight) velocity.x -= direction.x * 10.0 * delta;   
-
 
   // Directly update the camera's position based on velocity and delta time
   controlsL.getObject().position.x -= velocity.x * delta;
