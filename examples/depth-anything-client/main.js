@@ -284,7 +284,9 @@ break;
 
 document.addEventListener( 'keydown', onKeyDown );
 document.addEventListener( 'keyup', onKeyUp );
-
+ 
+controlsL.lock();
+ 
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
@@ -307,7 +309,7 @@ function animate() {
     velocity.y = 0;
     controlsL.getObject().position.y = 0;
   } else {
-    velocity.y -= 9.8 * delta; 
+  //  velocity.y -= 9.8 * delta; 
   }
 
   direction.z = Number(moveForward) - Number(moveBackward);
