@@ -43,56 +43,56 @@ let depthE,materialE;
 			const direction = new THREE.Vector3();
 
 const displacementShaderMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-        map: { value: null }, // The base color texture
-        displacementMap: { value: null }, // The displacement map texture
-        displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
-        // Add other uniforms as needed (e.g., for lighting)
-    },
-    vertexShader: `
-        varying vec2 vUv;
-        varying vec3 vNormal; // Varying for normal interpolation
-        uniform sampler2D displacementMap;
-        uniform float displacementScale;
-        void main() {
-            vUv = uv;
-            vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
-            // Sample the displacement map and apply it to the vertex position
-            vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
-        }
-    `,
-    fragmentShader: `
-        varying vec2 vUv;
-        varying vec3 vNormal; // Receive interpolated normal
-        uniform sampler2D map;
-        // Add other uniforms as needed (e.g., for lighting)
-        void main() {
-            // Basic lighting calculation (you can customize this)
-            vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
-            float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
-            gl_FragColor = texture2D( map, vUv ) * diffuse;
-        }
-    `
+uniforms: {
+map: { value: null }, // The base color texture
+displacementMap: { value: null }, // The displacement map texture
+displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
+// Add other uniforms as needed (e.g., for lighting)
+},
+vertexShader: `
+varying vec2 vUv;
+varying vec3 vNormal; // Varying for normal interpolation
+uniform sampler2D displacementMap;
+uniform float displacementScale;
+void main() {
+vUv = uv;
+vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
+// Sample the displacement map and apply it to the vertex position
+vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
+gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
+}
+`,
+fragmentShader: `
+varying vec2 vUv;
+varying vec3 vNormal; // Receive interpolated normal
+uniform sampler2D map;
+// Add other uniforms as needed (e.g., for lighting)
+void main() {
+// Basic lighting calculation (you can customize this)
+vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
+float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
+gl_FragColor = texture2D( map, vUv ) * diffuse;
+}
+`
 });
 
 function bakeDisplacement(mesh, displacementMap) {
-  const geometry = mesh.geometry;
-  const positionAttribute = geometry.attributes.position;
-  const uvAttribute = geometry.attributes.uv;
+const geometry = mesh.geometry;
+const positionAttribute = geometry.attributes.position;
+const uvAttribute = geometry.attributes.uv;
 if(displacementMap){
-  for (let i = 0; i < positionAttribute.count; i++) {
-    const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
-    const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
-    const originalPosition = new THREE.Vector3();
-    originalPosition.fromBufferAttribute(positionAttribute, i);
-    const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
-    const newPosition = originalPosition.add(offset);
-    positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
-  }
+for (let i = 0; i < positionAttribute.count; i++) {
+const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
+const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
+const originalPosition = new THREE.Vector3();
+originalPosition.fromBufferAttribute(positionAttribute, i);
+const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
+const newPosition = originalPosition.add(offset);
+positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
 }
-  geometry.attributes.position.needsUpdate = true;
-  geometry.computeVertexNormals(); // Recalculate normals
+}
+geometry.attributes.position.needsUpdate = true;
+geometry.computeVertexNormals(); // Recalculate normals
 }
 
 // Predict depth map for the given image
@@ -232,72 +232,58 @@ rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
 controlsL = new PointerLockControls(cameraL,rendererL.domElement);
-    
-				sceneL.add( controlsL.getObject() );
 
-				const onKeyDown = function ( event ) {
+sceneL.add( controlsL.getObject() );
 
-					switch ( event.code ) {
+const onKeyDown = function ( event ) {
+switch ( event.code ) {
+case 'ArrowUp':
+case 'KeyW':
+moveForward = true;
+break;
+case 'ArrowLeft':
+case 'KeyA':
+moveLeft = true;
+break;
+case 'ArrowDown':
+case 'KeyS':
+moveBackward = true;
+break;
+case 'ArrowRight':
+case 'KeyD':
+moveRight = true;
+break;
+case 'Space':
+if ( canJump === true ) velocity.y += 350;
+canJump = false;
+break;
+}
+};
 
-						case 'ArrowUp':
-						case 'KeyW':
-							moveForward = true;
-							break;
+const onKeyUp = function ( event ) {
+switch ( event.code ) {
+case 'ArrowUp':
+case 'KeyW':
+moveForward = false;
+break;
+case 'ArrowLeft':
+case 'KeyA':
+moveLeft = false;
+break;
+case 'ArrowDown':
+case 'KeyS':
+moveBackward = false;
+break;
+case 'ArrowRight':
+case 'KeyD':
+moveRight = false;
+break;
+}
 
-						case 'ArrowLeft':
-						case 'KeyA':
-							moveLeft = true;
-							break;
+};
 
-						case 'ArrowDown':
-						case 'KeyS':
-							moveBackward = true;
-							break;
-
-						case 'ArrowRight':
-						case 'KeyD':
-							moveRight = true;
-							break;
-
-						case 'Space':
-							if ( canJump === true ) velocity.y += 350;
-							canJump = false;
-							break;
-
-					}
-
-				};
-
-				const onKeyUp = function ( event ) {
-
-					switch ( event.code ) {
-
-						case 'ArrowUp':
-						case 'KeyW':
-							moveForward = false;
-							break;
-
-						case 'ArrowLeft':
-						case 'KeyA':
-							moveLeft = false;
-							break;
-
-						case 'ArrowDown':
-						case 'KeyS':
-							moveBackward = false;
-							break;
-
-						case 'ArrowRight':
-						case 'KeyD':
-							moveRight = false;
-							break;
-
-					}
-
-				};
-
-				document.addEventListener( 'keydown', onKeyDown );
-				document.addEventListener( 'keyup', onKeyUp );
+document.addEventListener( 'keydown', onKeyDown );
+document.addEventListener( 'keyup', onKeyUp );
 
 console.log('append canvas and render');
 animate();
@@ -319,9 +305,9 @@ direction.x = Number( moveRight ) - Number( moveLeft );
 direction.normalize(); // this ensures consistent movements in all directions
 if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
 if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
-controlsL.moveRight( - velocity.x * delta );
-controlsL.moveForward( - velocity.z * delta );
-controlsL.getObject().position.y += ( velocity.y * delta ); // new behavior
+controlsL.moveRight( -velocity.x * delta );
+controlsL.moveForward( -velocity.z * delta );
+controlsL.getObject().position.y += velocity.y * delta; 
 prevTime = time;
 rendererL.render( sceneL, cameraL );
 }
@@ -332,7 +318,7 @@ loadGLTFScene(glbLocation);
 };
 
 channel.onmessage = async (event) => {
-const { imageDataURL  } = event.data;
+const { imageDataURL} = event.data;
 predict(imageDataURL );
 };
 
