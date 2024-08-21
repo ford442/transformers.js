@@ -235,19 +235,19 @@ imageContainer.appendChild( rendererL.domElement );
 controlsL = new PointerLockControls(cameraL,rendererL.domElement);
 
 sceneL.add( controlsL.getObject() );
- yawObject = controlsL.getObject();
-  pitchObject = yawObject.children[0]; // Assuming the camera is the first child of yawObject
- controlsL.addEventListener('lock', function () {
-    rendererL.setAnimationLoop(animate);
+yawObject = controlsL.getObject();
+pitchObject = yawObject.children[1]; // Assuming the camera is the first child of yawObject
+controlsL.addEventListener('lock', function () {
+rendererL.setAnimationLoop(animate);
     // Add event listeners for mouse movement when Pointer Lock is activated
-    document.addEventListener('mousemove', onMouseMove, false);
-  });
+document.addEventListener('mousemove', onMouseMove, false);
+});
 
-  controlsL.addEventListener('unlock', function () {
-    rendererL.setAnimationLoop(null);
+controlsL.addEventListener('unlock', function () {
+rendererL.setAnimationLoop(null);
     // Remove the mousemove event listener when Pointer Lock is deactivated
-    document.removeEventListener('mousemove', onMouseMove, false);
-  });
+document.removeEventListener('mousemove', onMouseMove, false);
+});
  
 const onKeyDown = function ( event ) {
 switch ( event.code ) {
