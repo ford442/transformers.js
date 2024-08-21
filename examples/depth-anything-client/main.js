@@ -238,8 +238,10 @@ sceneL.add( controlsL.getObject() );
 yawObject = controlsL.getObject();
  console.log(yawObject);
  console.log(yawObject.children);
-pitchObject = yawObject.children[2]; // Assuming the camera is the first child of yawObject
-controlsL.addEventListener('lock', function () {
+pitchObject = cameraL; // Assuming the camera is the first child of yawObject
+
+ 
+ controlsL.addEventListener('lock', function () {
 rendererL.setAnimationLoop(animate);
     // Add event listeners for mouse movement when Pointer Lock is activated
 document.addEventListener('mousemove', onMouseMove, false);
