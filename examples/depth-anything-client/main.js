@@ -314,8 +314,8 @@ const delta = ( time - prevTime ) / 1000;
   direction.normalize();   
  
 
-  if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
-  if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;   
+  if (moveForward || moveBackward) velocity.z -= direction.z * 50.0 * delta;
+  if (moveLeft || moveRight) velocity.x -= direction.x * 50.0 * delta;   
 
 
   // Directly update the camera's position based on velocity and delta time
