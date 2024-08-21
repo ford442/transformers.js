@@ -304,9 +304,10 @@ velocity.y -= 9.8 * 100.0 * delta;
 direction.z = Number( moveForward ) - Number( moveBackward );
 direction.x = Number( moveRight ) - Number( moveLeft );
 direction.normalize(); // this ensures consistent movements in all directions
- /*
+
 if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
 if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
+ /*
 controlsL.moveRight( -velocity.x * delta );
 controlsL.moveForward( -velocity.z * delta );
 controlsL.getObject().position.y += velocity.y * delta; 
