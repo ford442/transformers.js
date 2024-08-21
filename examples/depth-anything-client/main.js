@@ -294,9 +294,11 @@ console.error(error);
 }
 
 function animate() {
+ requestAnimationFrame(animate);
 
-const time = performance.now();
-const delta = ( time - prevTime ) / 1000;
+  const time = performance.now();
+  const delta = (time - prevTime) / 1000;
+
   velocity.x -= velocity.x * 10.0 * delta;
   velocity.z -= velocity.z   
  * 10.0 * delta;
@@ -323,62 +325,10 @@ const delta = ( time - prevTime ) / 1000;
   controlsL.getObject().position.z -= velocity.z * delta;
   controlsL.getObject().position.y += velocity.y * delta;
 
-  velocity.x -= velocity.x * 10.0 * delta;
-  velocity.z -= velocity.z   
- * 10.0 * delta;
+  prevTime = time;
 
-  // Prevent the camera from falling below a certain height (e.g., y = 0)
-  if (controlsL.getObject().position.y < 0) {
-    velocity.y = 0;
-    controlsL.getObject().position.y = 0;
-  } else {
-    velocity.y -= 9.8 * 100.0 * delta; 
-  }
-
-  direction.z = Number(moveForward) - Number(moveBackward);
-  direction.x = Number(moveRight) - Number(moveLeft);
-  direction.normalize();   
+  rendererL.render(sceneL, cameraL);
  
-
-  if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
-  if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;   
-
-
-  // Directly update the camera's position based on velocity and delta time
-  controlsL.getObject().position.x -= velocity.x * delta;
-  controlsL.getObject().position.z -= velocity.z * delta;
-  controlsL.getObject().position.y += velocity.y * delta;
-
-  velocity.x -= velocity.x * 10.0 * delta;
-  velocity.z -= velocity.z   
- * 10.0 * delta;
-
-  // Prevent the camera from falling below a certain height (e.g., y = 0)
-  if (controlsL.getObject().position.y < 0) {
-    velocity.y = 0;
-    controlsL.getObject().position.y = 0;
-  } else {
-    velocity.y -= 9.8 * 100.0 * delta; 
-  }
-
-  direction.z = Number(moveForward) - Number(moveBackward);
-  direction.x = Number(moveRight) - Number(moveLeft);
-  direction.normalize();   
- 
-
-  if (moveForward || moveBackward) velocity.z -= direction.z * 50.0 * delta;
-  if (moveLeft || moveRight) velocity.x -= direction.x *50.0 * delta;   
-
-
-  // Directly update the camera's position based on velocity and delta time
-  controlsL.getObject().position.x -= velocity.x * delta;
-  controlsL.getObject().position.z -= velocity.z * delta;
-  controlsL.getObject().position.y += velocity.y * delta;
-
-prevTime = time;
-
-requestAnimationFrame( animate );
-rendererL.render( sceneL, cameraL );
 }
 
 loaderChannel.onmessage = async (event) => {
