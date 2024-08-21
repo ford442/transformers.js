@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 // Since we will download the model from the Hugging Face Hub, we can skip the local model check
 env.allowLocalModels = false;
@@ -158,7 +159,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
 // Add orbit controls
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new PointerLockControls‎(camera, renderer.domElement);
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
 renderer.render(scene, camera);
@@ -220,7 +221,7 @@ rendererL.domElement.style.zindex=2950;
 rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
-controlsL = new OrbitControls( cameraL, rendererL.domElement );
+controlsL = new PointerLockControls‎( cameraL, rendererL.domElement );
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
