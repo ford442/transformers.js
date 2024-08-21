@@ -32,15 +32,15 @@ let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
 
-			let moveForward = false;
-			let moveBackward = false;
-			let moveLeft = false;
-			let moveRight = false;
-			let canJump = false;
-			let prevTime = performance.now();
+let moveForward = false;
+let moveBackward = false;
+let moveLeft = false;
+let moveRight = false;
+let canJump = false;
+let prevTime = performance.now();
 
-			const velocity = new THREE.Vector3();
-			const direction = new THREE.Vector3();
+const velocity = new THREE.Vector3();
+const direction = new THREE.Vector3();
 
 const displacementShaderMaterial = new THREE.ShaderMaterial({
 uniforms: {
@@ -294,7 +294,6 @@ console.error(error);
 }
 
 function animate() {
-requestAnimationFrame( animate );
 const time = performance.now();
 const delta = ( time - prevTime ) / 1000;
 velocity.x -= velocity.x * 10.0 * delta;
@@ -310,6 +309,8 @@ controlsL.moveForward( -velocity.z * delta );
 controlsL.getObject().position.y += velocity.y * delta; 
 prevTime = time;
 rendererL.render( sceneL, cameraL );
+requestAnimationFrame( animate );
+
 }
 
 loaderChannel.onmessage = async (event) => {
