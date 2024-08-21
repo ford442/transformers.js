@@ -284,8 +284,9 @@ break;
 
 document.addEventListener( 'keydown', onKeyDown );
 document.addEventListener( 'keyup', onKeyUp );
+document.body.addEventListener( 'click', controlsL.lock(); );
  
-controlsL.lock();
+
  
 console.log('append canvas and render');
 animate();
