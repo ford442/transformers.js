@@ -284,10 +284,11 @@ break;
 
 document.addEventListener( 'keydown', onKeyDown );
 document.addEventListener( 'keyup', onKeyUp );
-document.querySelector('#controlBtn').addEventListener( 'click', controlsL.lock(); );
- 
 
- 
+document.querySelector('#controlBtn').addEventListener( 'click',function(){
+controlsL.lock();
+});
+
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
