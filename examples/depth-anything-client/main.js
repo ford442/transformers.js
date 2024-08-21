@@ -320,8 +320,8 @@ function onMouseMove(event) {
     const movementX = event.movementX || 0;
     const movementY = event.movementY || 0;
 
-    yawObject.rotation.y -= movementX * 0.0002;
-    pitchObject.rotation.x -= movementY * 0.0002;
+    yawObject.rotation.y -= movementX * 0.00001;
+    pitchObject.rotation.x -= movementY * 0.00001;
 
     // Clamp the pitch rotation to prevent the camera from flipping upside down
     pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
