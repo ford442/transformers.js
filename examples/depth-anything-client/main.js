@@ -159,7 +159,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
 // Add orbit controls
-const controls = new PointerLockControls‎(camera, renderer.domElement);
+const controls = new PointerLockControls(camera, renderer.domElement);
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
 renderer.render(scene, camera);
