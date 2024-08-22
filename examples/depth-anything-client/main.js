@@ -22,7 +22,7 @@ const example = document.getElementById('example');
 
 // Create a new depth-estimation pipeline
 status.textContent = 'Loading model...';
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf');
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
 status.textContent = 'Ready';
 
 const channel = new BroadcastChannel('imageChannel');
