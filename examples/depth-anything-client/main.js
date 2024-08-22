@@ -175,6 +175,15 @@ scene.add(plane);
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
+   // Object wobble
+  const time = performance.now() * 0.001; // Get time in seconds
+  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
+  const wobbleSpeed = 2; // Adjust the speed of the wobble
+    camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+    camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
+    camera.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
+  camera.lookAt(scene.position); // Make the camera look at the center
+
 renderer.render(scene, camera);
 controls.update();
 });
