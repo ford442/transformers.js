@@ -2,18 +2,51 @@ import './style.css';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import { AutoTokenizer, MusicgenForConditionalGeneration } from '@xenova/transformers';
+
+// Load tokenizer and model
+const tokenizer = await AutoTokenizer.from_pretrained('Xenova/musicgen-small');
+const model = await MusicgenForConditionalGeneration.from_pretrained('Xenova/musicgen-small', {
+  dtype: {
+    text_encoder: 'q8',
+    decoder_model_merged: 'q8',
+    encodec_decode: 'fp32',
+  },
+});
+
+// Prepare text input
+const prompt = 'a light and cheerly EDM track, with syncopated drums, aery pads, and strong emotions bpm: 130';
+const inputs = tokenizer(prompt);
+
+// Generate audio
+const audio_values = await model.generate({
+  ...inputs,
+  max_new_tokens: 500,
+  do_sample: true,
+  guidance_scale: 3,
+});
+
+// (Optional) Write the output to a WAV file
+import wavefile from 'wavefile';
+import fs from 'fs';
+const wav = new wavefile.WaveFile();
+wav.fromScratch(1, model.config.audio_encoder.sampling_rate, '32f', audio_values.data);
+// fs.writeFileSync('musicgen.wav', wav.toBuffer());
+const link2 = document.createElement('a');
+link2.href = wav.toBuffer();
+link2.download = 'save.wav';
+link2.click();
 
 // Since we will download the model from the Hugging Face Hub, we can skip the local model check
 env.allowLocalModels = false;
-
 // Proxy the WASM backend to prevent the UI from freezing
 env.backends.onnx.wasm.proxy = true;
-
 // Constants
-const EXAMPLE_URL = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/bread_small.png';
-const DEFAULT_SCALE = 0.75;
+const DEFAULT_SCALE = 0.25;
 
 // Reference the elements that we will need
 const status = document.getElementById('status');
@@ -23,128 +56,293 @@ const example = document.getElementById('example');
 
 // Create a new depth-estimation pipeline
 status.textContent = 'Loading model...';
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf');
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
 status.textContent = 'Ready';
 
-example.addEventListener('click', (e) => {
-    e.preventDefault();
-    predict(EXAMPLE_URL);
-});
-
-fileUpload.addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (!file) {
-        return;
-    }
-
-    const reader = new FileReader();
-
-    // Set up a callback when the file is loaded
-    reader.onload = e2 => predict(e2.target.result);
-
-    reader.readAsDataURL(file);
-});
+const channel = new BroadcastChannel('imageChannel');
+const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
+let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
+let depthE,materialE;
+
+let moveForward=false;
+let moveBackward=false;
+let moveLeft=false;
+let moveRight=false;
+let canJump=false;
+let prevTime = performance.now();
+
+const velocity = new THREE.Vector3();
+const direction = new THREE.Vector3();
+let yawObject, pitchObject; // Declare these variables at a higher scope
+
+const displacementShaderMaterial = new THREE.ShaderMaterial({
+uniforms: {
+map: { value: null }, // The base color texture
+displacementMap: { value: null }, // The displacement map texture
+displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
+// Add other uniforms as needed (e.g., for lighting)
+},
+vertexShader: `
+varying vec2 vUv;
+varying vec3 vNormal; // Varying for normal interpolation
+uniform sampler2D displacementMap;
+uniform float displacementScale;
+void main() {
+vUv = uv;
+vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
+// Sample the displacement map and apply it to the vertex position
+vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
+gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
+}
+`,
+fragmentShader: `
+varying vec2 vUv;
+varying vec3 vNormal; // Receive interpolated normal
+uniform sampler2D map;
+// Add other uniforms as needed (e.g., for lighting)
+void main() {
+// Basic lighting calculation (you can customize this)
+vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
+float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
+gl_FragColor = texture2D( map, vUv ) * diffuse;
+}
+`
+});
+
+function bakeDisplacement(mesh, displacementMap) {
+const geometry = mesh.geometry;
+const positionAttribute = geometry.attributes.position;
+const uvAttribute = geometry.attributes.uv;
+if(displacementMap){
+for (let i = 0; i < positionAttribute.count; i++) {
+const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
+const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
+const originalPosition = new THREE.Vector3();
+originalPosition.fromBufferAttribute(positionAttribute, i);
+const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
+const newPosition = originalPosition.add(offset);
+positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
+}
+}
+geometry.attributes.position.needsUpdate = true;
+geometry.computeVertexNormals(); // Recalculate normals
+}
 
 // Predict depth map for the given image
-async function predict(url) {
-    imageContainer.innerHTML = '';
-    const image = await RawImage.fromURL(url);
-
-    // Set up scene and slider controls
-    const { canvas, setDisplacementMap } = setupScene(url, image.width, image.height);
-
-    imageContainer.append(canvas);
-
-    status.textContent = 'Analysing...';
-    const { depth } = await depth_estimator(image);
-
-    setDisplacementMap(depth.toCanvas());
-    status.textContent = '';
-
-    // Add slider control
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.min = 0;
-    slider.max = 1;
-    slider.step = 0.01;
-    slider.addEventListener('input', (e) => {
-        onSliderChange(parseFloat(e.target.value));
-    });
-    slider.defaultValue = DEFAULT_SCALE;
-    imageContainer.append(slider);
+async function predict(imageDataURL) {
+imageContainer.innerHTML = '';
+// Load the image from the data URL
+const img = new Image();
+img.src = imageDataURL;
+img.onload = async () => {
+const canvas2 = document.createElement('canvas');
+canvas2.width = img.width;
+canvas2.height = img.height;
+const ctx = canvas2.getContext('2d',{alpha:true});
+ctx.drawImage(img, 0, 0);
+// Get the image data from the canvas
+const imageData = ctx.getImageData(0, 0, img.width, img.height);
+// Create a RawImage from the imageData
+const image = new RawImage(imageData.data, img.width, img.height,4);
+// Set up scene and slider controls
+const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
+imageContainer.append(canvas);
+const { depth } = await depth_estimator(image);
+status.textContent = 'Analysing...';
+setDisplacementMap(depth.toCanvas());
+depthE=depth;
+status.textContent = '';
+ // Add slider control
+const slider = document.createElement('input');
+slider.type = 'range';
+slider.min = 0;
+slider.max = 1;
+slider.step = 0.01;
+slider.addEventListener('input', (e) => {
+onSliderChange(parseFloat(e.target.value));
+});
+slider.defaultValue = DEFAULT_SCALE;
+imageContainer.append(slider);
+};
 }
 
-function setupScene(url, w, h) {
-
-    // Create new scene
-    const canvas = document.createElement('canvas');
-    const width = canvas.width = imageContainer.offsetWidth;
-    const height = canvas.height = imageContainer.offsetHeight;
-
-    const scene = new THREE.Scene();
-
-    // Create camera and add it to the scene
-    const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
-    camera.position.z = 2;
-    scene.add(camera);
-
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
-
-    // Add ambient light
-    const light = new THREE.AmbientLight(0xffffff, 2);
-    scene.add(light);
-
-    // Load depth texture
-    const image = new THREE.TextureLoader().load(url);
-    image.colorSpace = THREE.SRGBColorSpace;
-    const material = new THREE.MeshStandardMaterial({
-        map: image,
-        side: THREE.DoubleSide,
-    });
-    material.displacementScale = DEFAULT_SCALE;
-
-    const setDisplacementMap = (canvas) => {
-        material.displacementMap = new THREE.CanvasTexture(canvas);
-        material.needsUpdate = true;
-    }
-
-    const setDisplacementScale = (scale) => {
-        material.displacementScale = scale;
-        material.needsUpdate = true;
-    }
-    onSliderChange = setDisplacementScale;
-
-    // Create plane and rescale it so that max(w, h) = 1
-    const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
-    const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
-
-    // Add orbit controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-
-    renderer.setAnimationLoop(() => {
-        renderer.render(scene, camera);
-        controls.update();
-    });
-
-    window.addEventListener('resize', () => {
-        const width = imageContainer.offsetWidth;
-        const height = imageContainer.offsetHeight;
-
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(width, height);
-    }, false);
-
-    return {
-        canvas: renderer.domElement,
-        setDisplacementMap,
-    };
+function setupScene(imageDataURL, w, h) {
+const canvas = document.createElement('canvas');
+const width = canvas.width = imageContainer.offsetWidth;
+const height = canvas.height = imageContainer.offsetHeight;
+scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
+camera.position.z = 2;
+scene.add(camera);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setSize(width, height);
+renderer.setPixelRatio(window.devicePixelRatio);
+const light = new THREE.AmbientLight(0xffffff, 2);
+scene.add(light);
+const image = new THREE.TextureLoader().load(imageDataURL);
+image.colorSpace = THREE.SRGBColorSpace;
+// image.colorSpace = THREE.LinearSRGBColorSpace;
+  
+const material = new THREE.MeshStandardMaterial({
+map: image,
+side: THREE.DoubleSide,
+});
+material.displacementScale = DEFAULT_SCALE;
+const setDisplacementMap = (canvas) => {
+material.displacementMap = new THREE.CanvasTexture(canvas);
+materialE=material;
+material.needsUpdate = true;
 }
+const setDisplacementScale = (scale) => {
+material.displacementScale = scale;
+material.needsUpdate = true;
+}
+onSliderChange = setDisplacementScale;
+// Create plane and rescale it so that max(w, h) = 1
+const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
+const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
+const plane = new THREE.Mesh(geometry, material);
+scene.add(plane);
+// Add orbit controls
+const controls = new OrbitControls( camera, renderer.domElement );
+controls.enableDamping = true;
+renderer.setAnimationLoop(() => {
+   // Object wobble
+  const time = performance.now() * 0.001; // Get time in seconds
+  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
+  const wobbleSpeed = 2; // Adjust the speed of the wobble
+    camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+    camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
+    camera.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
+  camera.lookAt(scene.position); // Make the camera look at the center
+
+renderer.render(scene, camera);
+controls.update();
+});
+window.addEventListener('resize', () => {
+const width = imageContainer.offsetWidth;
+const height = imageContainer.offsetHeight;
+camera.aspect = width / height;
+camera.updateProjectionMatrix();
+renderer.setSize(width, height);
+}, false);
+return {
+canvas: renderer.domElement,
+setDisplacementMap,
+};
+}
+
+function loadGLTFScene(gltfFilePath) {
+console.log('got file path:',gltfFilePath);
+imageContainer.innerHTML = '';
+const loader = new GLTFLoader();
+const textureLoader = new THREE.TextureLoader();
+loadCanvas = document.createElement('canvas');
+loadCanvas.id='evi';
+loadCanvas.style.position='absolute';
+loadCanvas.style.zindex=2100;
+loadCanvas.style.top=0;
+const width = loadCanvas.width = window.innerHeight;
+const height = loadCanvas.height = window.innerHeight;
+sceneL = new THREE.Scene();
+loader.load(document.querySelector('#saveName').innerHTML+'.glb', function (gltf) {
+console.log('load scene');
+sceneL.add(gltf.scene);
+const planeL = gltf.scene.children.find(child => child.isMesh);
+if (planeL) {
+const material = planeL.material;
+material.needsUpdate = true;
+material.displacementScale = 0.35;
+textureLoader.load(document.querySelector('#saveName').innerHTML+'.jpg', function(texture) {
+material.displacementMap = texture;
+material.needsUpdate = true;
+});
+} else {
+console.warn("No mesh found in the glTF scene.");
+}
+sceneL.add(planeL);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+sceneL.add(ambientLight);
+cameraL = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
+cameraL.position.z = 2;
+sceneL.add(cameraL);
+rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
+rendererL.setSize(width, height);
+rendererL.setPixelRatio(window.devicePixelRatio);
+rendererL.domElement.id='mvi';
+rendererL.domElement.style.position='absolute';
+rendererL.domElement.style.zindex=2950;
+rendererL.domElement.style.top=0;
+imageContainer.appendChild(loadCanvas);
+imageContainer.appendChild( rendererL.domElement );
+controlsL = new OrbitControls( cameraL, rendererL.domElement );
+console.log('render');
+animate();
+}, undefined, function (error) {
+console.error(error);
+});
+ 
+}
+
+function animate() {
+requestAnimationFrame( animate );
+
+  // Object wobble
+  const time = performance.now() * 0.001; // Get time in seconds
+  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
+  const wobbleSpeed = 2; // Adjust the speed of the wobble
+    cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+    cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
+    cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
+  cameraL.lookAt(sceneL.position); // Make the camera look at the center
+
+rendererL.render( sceneL, cameraL );
+controlsL.update();
+}
+
+loaderChannel.onmessage = async (event) => {
+const { glbLocation } = event.data;
+loadGLTFScene(glbLocation);
+};
+
+channel.onmessage = async (event) => {
+const { imageDataURL} = event.data;
+predict(imageDataURL );
+};
+
+async function saveSceneAsGLTF() {
+const exporter = new GLTFExporter();
+try {
+const options = {
+binary: true,
+// embedImages: true, // Embed all textures, including the displacement map
+};
+const gltf = await exporter.parseAsync(scene, options);
+const blob = new Blob([gltf], { type: 'application/octet-stream' });
+const link = document.createElement('a');
+link.href = URL.createObjectURL(blob);
+link.download = document.querySelector('#saveName').innerHTML+'.glb'; // Use .glb extension for binary glTF
+link.click();
+const displacementMap = materialE.displacementMap;
+const exportCanvas = document.createElement('canvas');
+exportCanvas.width = displacementMap.image.width;
+exportCanvas.height = displacementMap.image.height;
+const ctx = exportCanvas.getContext('2d');
+ctx.drawImage(displacementMap.image, 0, 0);
+const imageData = exportCanvas.toDataURL('image/jpeg',1.0); ;
+// const blob2 = new Blob([imageData.data], { type: 'image/jpeg' });
+const link2 = document.createElement('a');
+link2.href = imageData;
+link2.download = document.querySelector('#saveName').innerHTML+'.jpg';
+link2.click();
+} catch (error) {
+console.error('Error exporting glTF:', error);
+// Handle the error appropriately (e.g., show a message to the user)
+}
+}
+
+document.querySelector('#savegltf').addEventListener('click',function(){
+saveSceneAsGLTF();
+});
