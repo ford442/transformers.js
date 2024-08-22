@@ -218,7 +218,6 @@ material.needsUpdate = true;
 console.warn("No mesh found in the glTF scene.");
 }
 sceneL.add(planeL);
-const controls = new OrbitControls(camera, renderer.domElement);
 controlsL = new OrbitControls(cameraL,rendererL.domElement);
 controlsL.enableDamping = true;
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
