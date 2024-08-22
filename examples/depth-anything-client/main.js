@@ -243,6 +243,15 @@ console.error(error);
 
 function animate() {
 requestAnimationFrame( animate );
+ const time = performance.now() * 0.001; // Get time in seconds
+  const radius = 1.5; // Radius of the circle
+  const speed = 0.5; // Speed of the circular motion
+
+  cameraL.position.x = radius * Math.cos(time * speed);
+  cameraL.position.z = radius * Math.sin(time * speed);
+  cameraL.lookAt(sceneL.position); // Make the camera look at the center
+
+ 
 rendererL.render( sceneL, cameraL );
 controlsL.update();
 }
