@@ -6,6 +6,40 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import { AutoTokenizer, MusicgenForConditionalGeneration } from '@xenova/transformers';
+
+// Load tokenizer and model
+const tokenizer = await AutoTokenizer.from_pretrained('Xenova/musicgen-small');
+const model = await MusicgenForConditionalGeneration.from_pretrained('Xenova/musicgen-small', {
+  dtype: {
+    text_encoder: 'q8',
+    decoder_model_merged: 'q8',
+    encodec_decode: 'fp32',
+  },
+});
+
+// Prepare text input
+const prompt = 'a light and cheerly EDM track, with syncopated drums, aery pads, and strong emotions bpm: 130';
+const inputs = tokenizer(prompt);
+
+// Generate audio
+const audio_values = await model.generate({
+  ...inputs,
+  max_new_tokens: 500,
+  do_sample: true,
+  guidance_scale: 3,
+});
+
+// (Optional) Write the output to a WAV file
+import wavefile from 'wavefile';
+import fs from 'fs';
+const wav = new wavefile.WaveFile();
+wav.fromScratch(1, model.config.audio_encoder.sampling_rate, '32f', audio_values.data);
+// fs.writeFileSync('musicgen.wav', wav.toBuffer());
+const link2 = document.createElement('a');
+link2.href = wav.toBuffer();
+link2.download = 'save.wav';
+link2.click();
 
 // Since we will download the model from the Hugging Face Hub, we can skip the local model check
 env.allowLocalModels = false;
@@ -213,10 +247,6 @@ loadCanvas.style.top=0;
 const width = loadCanvas.width = window.innerHeight;
 const height = loadCanvas.height = window.innerHeight;
 sceneL = new THREE.Scene();
- loader.load('Blue_end.glb', function (gltf) {
-  gltf.scene.position.set(-2, 0, 0); // Position to the left
-  sceneL.add(gltf.scene);
-});
 loader.load(document.querySelector('#saveName').innerHTML+'.glb', function (gltf) {
 console.log('load scene');
 sceneL.add(gltf.scene);
