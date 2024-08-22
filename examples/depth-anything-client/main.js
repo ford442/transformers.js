@@ -148,8 +148,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 const light = new THREE.AmbientLight(0xffffff, 2);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
-// image.colorSpace = THREE.SRGBColorSpace;
-image.colorSpace = THREE.LinearSRGBColorSpace;
+image.colorSpace = THREE.SRGBColorSpace;
+// image.colorSpace = THREE.LinearSRGBColorSpace;
   
 const material = new THREE.MeshStandardMaterial({
 map: image,
