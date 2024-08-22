@@ -5,13 +5,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 // Since we will download the model from the Hugging Face Hub, we can skip the local model check
 env.allowLocalModels = false;
 // Proxy the WASM backend to prevent the UI from freezing
 env.backends.onnx.wasm.proxy = true;
 // Constants
-const DEFAULT_SCALE = 0.35;
+const DEFAULT_SCALE = 0.25;
 
 // Reference the elements that we will need
 const status = document.getElementById('status');
@@ -31,57 +32,68 @@ let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
 
+let moveForward=false;
+let moveBackward=false;
+let moveLeft=false;
+let moveRight=false;
+let canJump=false;
+let prevTime = performance.now();
+
+const velocity = new THREE.Vector3();
+const direction = new THREE.Vector3();
+let yawObject, pitchObject; // Declare these variables at a higher scope
+
 const displacementShaderMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-        map: { value: null }, // The base color texture
-        displacementMap: { value: null }, // The displacement map texture
-        displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
-        // Add other uniforms as needed (e.g., for lighting)
-    },
-    vertexShader: `
-        varying vec2 vUv;
-        varying vec3 vNormal; // Varying for normal interpolation
-        uniform sampler2D displacementMap;
-        uniform float displacementScale;
-        void main() {
-            vUv = uv;
-            vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
-            // Sample the displacement map and apply it to the vertex position
-            vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
-        }
-    `,
-    fragmentShader: `
-        varying vec2 vUv;
-        varying vec3 vNormal; // Receive interpolated normal
-        uniform sampler2D map;
-        // Add other uniforms as needed (e.g., for lighting)
-        void main() {
-            // Basic lighting calculation (you can customize this)
-            vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
-            float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
-            gl_FragColor = texture2D( map, vUv ) * diffuse;
-        }
-    `
+uniforms: {
+map: { value: null }, // The base color texture
+displacementMap: { value: null }, // The displacement map texture
+displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
+// Add other uniforms as needed (e.g., for lighting)
+},
+vertexShader: `
+varying vec2 vUv;
+varying vec3 vNormal; // Varying for normal interpolation
+uniform sampler2D displacementMap;
+uniform float displacementScale;
+void main() {
+vUv = uv;
+vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
+// Sample the displacement map and apply it to the vertex position
+vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
+gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
+}
+`,
+fragmentShader: `
+varying vec2 vUv;
+varying vec3 vNormal; // Receive interpolated normal
+uniform sampler2D map;
+// Add other uniforms as needed (e.g., for lighting)
+void main() {
+// Basic lighting calculation (you can customize this)
+vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
+float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
+gl_FragColor = texture2D( map, vUv ) * diffuse;
+}
+`
 });
 
 function bakeDisplacement(mesh, displacementMap) {
-  const geometry = mesh.geometry;
-  const positionAttribute = geometry.attributes.position;
-  const uvAttribute = geometry.attributes.uv;
+const geometry = mesh.geometry;
+const positionAttribute = geometry.attributes.position;
+const uvAttribute = geometry.attributes.uv;
 if(displacementMap){
-  for (let i = 0; i < positionAttribute.count; i++) {
-    const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
-    const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
-    const originalPosition = new THREE.Vector3();
-    originalPosition.fromBufferAttribute(positionAttribute, i);
-    const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
-    const newPosition = originalPosition.add(offset);
-    positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
-  }
+for (let i = 0; i < positionAttribute.count; i++) {
+const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
+const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
+const originalPosition = new THREE.Vector3();
+originalPosition.fromBufferAttribute(positionAttribute, i);
+const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
+const newPosition = originalPosition.add(offset);
+positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
 }
-  geometry.attributes.position.needsUpdate = true;
-  geometry.computeVertexNormals(); // Recalculate normals
+}
+geometry.attributes.position.needsUpdate = true;
+geometry.computeVertexNormals(); // Recalculate normals
 }
 
 // Predict depth map for the given image
@@ -158,7 +170,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
 // Add orbit controls
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
 renderer.render(scene, camera);
@@ -220,7 +232,78 @@ rendererL.domElement.style.zindex=2950;
 rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
-controlsL = new OrbitControls( cameraL, rendererL.domElement );
+controlsL = new PointerLockControls(cameraL,rendererL.domElement);
+
+sceneL.add( controlsL.getObject() );
+yawObject = controlsL.getObject();
+pitchObject = cameraL; // Assuming the camera is the first child of yawObject
+ 
+controlsL.addEventListener('lock', function () {
+rendererL.setAnimationLoop(animate);
+    // Add event listeners for mouse movement when Pointer Lock is activated
+document.addEventListener('mousemove', onMouseMove, false);
+});
+
+controlsL.addEventListener('unlock', function () {
+rendererL.setAnimationLoop(null);
+    // Remove the mousemove event listener when Pointer Lock is deactivated
+document.removeEventListener('mousemove', onMouseMove, false);
+});
+ 
+const onKeyDown = function ( event ) {
+switch ( event.code ) {
+case 'ArrowUp':
+case 'KeyW':
+moveForward = true;
+break;
+case 'ArrowLeft':
+case 'KeyA':
+moveLeft = true;
+break;
+case 'ArrowDown':
+case 'KeyS':
+moveBackward = true;
+break;
+case 'ArrowRight':
+case 'KeyD':
+moveRight = true;
+break;
+case 'Space':
+if ( canJump === true ) velocity.y += 350;
+canJump = false;
+break;
+}
+};
+
+const onKeyUp = function ( event ) {
+switch ( event.code ) {
+case 'ArrowUp':
+case 'KeyW':
+moveForward = false;
+break;
+case 'ArrowLeft':
+case 'KeyA':
+moveLeft = false;
+break;
+case 'ArrowDown':
+case 'KeyS':
+moveBackward = false;
+break;
+case 'ArrowRight':
+case 'KeyD':
+moveRight = false;
+break;
+}
+
+};
+
+document.addEventListener( 'keydown', onKeyDown );
+document.addEventListener( 'keyup', onKeyUp );
+
+document.querySelector('#controlBtn').addEventListener( 'click',function(){
+controlsL.lock();
+});
+
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
@@ -229,10 +312,64 @@ console.error(error);
  
 }
 
+function onMouseMove(event) {
+  if (controlsL.isLocked === true) {
+    const movementX = event.movementX || 0;
+    const movementY = event.movementY || 0;
+
+    yawObject.rotation.y -= movementX * 0.00001;
+    pitchObject.rotation.x -= movementY * 0.00001;
+
+    // Clamp the pitch rotation to prevent the camera from flipping upside down
+    pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
+  }
+}
+
 function animate() {
-requestAnimationFrame( animate );
-rendererL.render( sceneL, cameraL );
-controlsL.update();
+ requestAnimationFrame(animate);
+
+  const time = performance.now();
+  const delta = (time - prevTime) / 1000.0;
+
+  velocity.x -= velocity.x * 10.0 * delta;
+  velocity.z -= velocity.z * 10.0 * delta;
+
+  // Prevent the camera from falling below a certain height (e.g., y = 0)
+ // if (controlsL.getObject().position.y < 0) {
+  //  velocity.y = 0;
+ //   controlsL.getObject().position.y = 0;
+ // } else {
+  //  velocity.y -= 9.8 * delta; 
+//  }
+
+  direction.z = Number(moveForward) - Number(moveBackward);
+  direction.x = Number(moveRight) - Number(moveLeft);
+
+    // Get the camera's forward and right directions
+    const forward = new THREE.Vector3(0, 0, -1);
+    forward.applyQuaternion(cameraL.quaternion); 
+
+    const right = new THREE.Vector3(1, 0, 0);
+    right.applyQuaternion(cameraL.quaternion);
+
+    // Calculate movement direction based on camera's orientation
+// direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
+// direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
+direction.normalize(); 
+
+if (moveForward || moveBackward || moveLeft || moveRight) {
+    velocity.x -= direction.x * 5.0 * delta;
+    velocity.z += direction.z * 5.0 * delta; // Keep the '+' here as it's now working correctly
+  }
+  // Directly update the camera's position based on velocity and delta time
+  controlsL.getObject().position.x -= velocity.x * delta;
+  controlsL.getObject().position.z -= velocity.z * delta;
+  controlsL.getObject().position.y += velocity.y * delta;
+
+  prevTime = time;
+
+  rendererL.render(sceneL, cameraL);
+ 
 }
 
 loaderChannel.onmessage = async (event) => {
@@ -241,7 +378,7 @@ loadGLTFScene(glbLocation);
 };
 
 channel.onmessage = async (event) => {
-const { imageDataURL  } = event.data;
+const { imageDataURL} = event.data;
 predict(imageDataURL );
 };
 
