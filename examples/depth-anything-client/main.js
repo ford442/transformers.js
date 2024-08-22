@@ -251,7 +251,7 @@ requestAnimationFrame( animate );
     cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
     cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
     cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
-//  cameraL.lookAt(sceneL.position); // Make the camera look at the center
+  cameraL.lookAt(sceneL.position); // Make the camera look at the center
 
 rendererL.render( sceneL, cameraL );
 controlsL.update();
