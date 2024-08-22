@@ -236,8 +236,10 @@ rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
 console.log('append canvas and render');
-animate();
-}, undefined, function (error) {
+rendererL.setAnimationLoop(() => {
+rendererL.render(sceneL, cameraL);
+controlsL.update();
+});}, undefined, function (error) {
 console.error(error);
 });
 }
