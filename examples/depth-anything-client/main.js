@@ -218,6 +218,9 @@ material.needsUpdate = true;
 console.warn("No mesh found in the glTF scene.");
 }
 sceneL.add(planeL);
+const controls = new OrbitControls(camera, renderer.domElement);
+controlsL = new OrbitControls(cameraL,rendererL.domElement);
+controlsL.enableDamping = true;
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 sceneL.add(ambientLight);
 cameraL = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
@@ -232,7 +235,6 @@ rendererL.domElement.style.zindex=2950;
 rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
-controlsL = new OrbitControls(cameraL,rendererL.domElement);
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
@@ -243,6 +245,7 @@ console.error(error);
 function animate() {
 requestAnimationFrame(animate);
 rendererL.render(sceneL, cameraL);
+controls.update();
 }
 
 loaderChannel.onmessage = async (event) => {
