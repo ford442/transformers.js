@@ -244,14 +244,19 @@ console.error(error);
 function animate() {
 requestAnimationFrame( animate );
 
- 
- const time = performance.now() * 0.001; // Get time in seconds
-  const radius = 1.5; // Radius of the circle
-  const speed = 0.5; // Speed of the circular motion
-  cameraL.position.x = radius * Math.cos(time * speed);
-  cameraL.position.z = radius * Math.sin(time * speed);
-  cameraL.lookAt(sceneL.position); // Make the camera look at the center
- 
+  // Object wobble
+  const time = performance.now() * 0.001; // Get time in seconds
+  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
+  const wobbleSpeed = 2; // Adjust the speed of the wobble
+
+  // Find the object you want to wobble (assuming it's the first child of the scene)
+  const objectToWobble = sceneL.children[0]; 
+
+  if (objectToWobble) {
+    objectToWobble.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+    objectToWobble.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
+    objectToWobble.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
+  }
 rendererL.render( sceneL, cameraL );
 controlsL.update();
 }
