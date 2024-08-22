@@ -206,7 +206,7 @@ const height = loadCanvas.height = window.innerHeight;
 sceneL = new THREE.Scene();
  loader.load('Blue_end.glb', function (gltf) {
   gltf.scene.position.set(-2, 0, 0); // Position to the left
-  scene.add(gltf.scene);
+  sceneL.add(gltf.scene);
 });
 loader.load(document.querySelector('#saveName').innerHTML+'.glb', function (gltf) {
 console.log('load scene');
