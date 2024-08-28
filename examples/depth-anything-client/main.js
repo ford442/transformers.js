@@ -96,8 +96,6 @@ geometry.attributes.position.needsUpdate = true;
 geometry.computeVertexNormals(); // Recalculate normals
 }
 
-const canvas2 = document.createElement('canvas');
-canvas2.id='mvi'
 // Predict depth map for the given image
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
@@ -105,6 +103,7 @@ imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
 img.onload = async () => {
+const canvas2 = document.createElement('canvas');
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
