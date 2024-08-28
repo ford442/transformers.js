@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 // Since we will download the model from the Hugging Face Hub, we can skip the local model check
 env.allowLocalModels = false;
@@ -12,7 +13,6 @@ env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 // Constants
 const DEFAULT_SCALE = 0.25;
-const canvas2 = document.createElement('canvas');
 
 // Reference the elements that we will need
 const status = document.getElementById('status');
@@ -22,7 +22,7 @@ const example = document.getElementById('example');
 
 // Create a new depth-estimation pipeline
 status.textContent = 'Loading model...';
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf');
 status.textContent = 'Ready';
 
 const channel = new BroadcastChannel('imageChannel');
@@ -103,6 +103,7 @@ imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
 img.onload = async () => {
+const canvas2 = document.createElement('canvas');
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
@@ -148,8 +149,6 @@ const light = new THREE.AmbientLight(0xffffff, 2);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-// image.colorSpace = THREE.LinearSRGBColorSpace;
-  
 const material = new THREE.MeshStandardMaterial({
 map: image,
 side: THREE.DoubleSide,
@@ -174,15 +173,6 @@ scene.add(plane);
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
-   // Object wobble
-  const time = performance.now() * 0.001; // Get time in seconds
-  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
-  const wobbleSpeed = 2; // Adjust the speed of the wobble
-    camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-    camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
-    camera.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
-  camera.lookAt(scene.position); // Make the camera look at the center
-
 renderer.render(scene, camera);
 controls.update();
 });
@@ -214,7 +204,7 @@ const height = loadCanvas.height = window.innerHeight;
 sceneL = new THREE.Scene();
 loader.load(document.querySelector('#saveName').innerHTML+'.glb', function (gltf) {
 console.log('load scene');
-sceneL.add(gltf.scene);
+sceneL.add(gltf.scene); 
 const planeL = gltf.scene.children.find(child => child.isMesh);
 if (planeL) {
 const material = planeL.material;
@@ -242,8 +232,79 @@ rendererL.domElement.style.zindex=2950;
 rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
-controlsL = new OrbitControls( cameraL, rendererL.domElement );
-console.log('render');
+controlsL = new PointerLockControls(cameraL,rendererL.domElement);
+
+sceneL.add( controlsL.getObject() );
+yawObject = controlsL.getObject();
+pitchObject = cameraL; // Assuming the camera is the first child of yawObject
+ 
+controlsL.addEventListener('lock', function () {
+rendererL.setAnimationLoop(animate);
+    // Add event listeners for mouse movement when Pointer Lock is activated
+document.addEventListener('mousemove', onMouseMove, false);
+});
+
+controlsL.addEventListener('unlock', function () {
+rendererL.setAnimationLoop(null);
+    // Remove the mousemove event listener when Pointer Lock is deactivated
+document.removeEventListener('mousemove', onMouseMove, false);
+});
+ 
+const onKeyDown = function ( event ) {
+switch ( event.code ) {
+case 'ArrowUp':
+case 'KeyW':
+moveForward = true;
+break;
+case 'ArrowLeft':
+case 'KeyA':
+moveLeft = true;
+break;
+case 'ArrowDown':
+case 'KeyS':
+moveBackward = true;
+break;
+case 'ArrowRight':
+case 'KeyD':
+moveRight = true;
+break;
+case 'Space':
+if ( canJump === true ) velocity.y += 350;
+canJump = false;
+break;
+}
+};
+
+const onKeyUp = function ( event ) {
+switch ( event.code ) {
+case 'ArrowUp':
+case 'KeyW':
+moveForward = false;
+break;
+case 'ArrowLeft':
+case 'KeyA':
+moveLeft = false;
+break;
+case 'ArrowDown':
+case 'KeyS':
+moveBackward = false;
+break;
+case 'ArrowRight':
+case 'KeyD':
+moveRight = false;
+break;
+}
+
+};
+
+document.addEventListener( 'keydown', onKeyDown );
+document.addEventListener( 'keyup', onKeyUp );
+
+document.querySelector('#controlBtn').addEventListener( 'click',function(){
+controlsL.lock();
+});
+
+console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
 console.error(error);
@@ -251,20 +312,64 @@ console.error(error);
  
 }
 
+function onMouseMove(event) {
+  if (controlsL.isLocked === true) {
+    const movementX = event.movementX || 0;
+    const movementY = event.movementY || 0;
+
+    yawObject.rotation.y -= movementX * 0.00001;
+    pitchObject.rotation.x -= movementY * 0.00001;
+
+    // Clamp the pitch rotation to prevent the camera from flipping upside down
+    pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
+  }
+}
+
 function animate() {
-requestAnimationFrame( animate );
+ requestAnimationFrame(animate);
 
-  // Object wobble
-  const time = performance.now() * 0.001; // Get time in seconds
-  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
-  const wobbleSpeed = 2; // Adjust the speed of the wobble
-    cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-    cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
-    cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
-  cameraL.lookAt(sceneL.position); // Make the camera look at the center
+  const time = performance.now();
+  const delta = (time - prevTime) / 1000.0;
 
-rendererL.render( sceneL, cameraL );
-controlsL.update();
+  velocity.x -= velocity.x * 10.0 * delta;
+  velocity.z -= velocity.z * 10.0 * delta;
+
+  // Prevent the camera from falling below a certain height (e.g., y = 0)
+ // if (controlsL.getObject().position.y < 0) {
+  //  velocity.y = 0;
+ //   controlsL.getObject().position.y = 0;
+ // } else {
+  //  velocity.y -= 9.8 * delta; 
+//  }
+
+  direction.z = Number(moveForward) - Number(moveBackward);
+  direction.x = Number(moveRight) - Number(moveLeft);
+
+    // Get the camera's forward and right directions
+    const forward = new THREE.Vector3(0, 0, -1);
+    forward.applyQuaternion(cameraL.quaternion); 
+
+    const right = new THREE.Vector3(1, 0, 0);
+    right.applyQuaternion(cameraL.quaternion);
+
+    // Calculate movement direction based on camera's orientation
+// direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
+// direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
+direction.normalize(); 
+
+if (moveForward || moveBackward || moveLeft || moveRight) {
+    velocity.x -= direction.x * 5.0 * delta;
+    velocity.z += direction.z * 5.0 * delta; // Keep the '+' here as it's now working correctly
+  }
+  // Directly update the camera's position based on velocity and delta time
+  controlsL.getObject().position.x -= velocity.x * delta;
+  controlsL.getObject().position.z -= velocity.z * delta;
+  controlsL.getObject().position.y += velocity.y * delta;
+
+  prevTime = time;
+
+  rendererL.render(sceneL, cameraL);
+ 
 }
 
 loaderChannel.onmessage = async (event) => {
