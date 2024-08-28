@@ -232,7 +232,78 @@ rendererL.domElement.style.zindex=2950;
 rendererL.domElement.style.top=0;
 imageContainer.appendChild(loadCanvas);
 imageContainer.appendChild( rendererL.domElement );
-controlsL = new OrbitControls( cameraL, rendererL.domElement );
+controlsL = new PointerLockControls(cameraL,rendererL.domElement);
+
+sceneL.add( controlsL.getObject() );
+yawObject = controlsL.getObject();
+pitchObject = cameraL; // Assuming the camera is the first child of yawObject
+ 
+controlsL.addEventListener('lock', function () {
+rendererL.setAnimationLoop(animate);
+    // Add event listeners for mouse movement when Pointer Lock is activated
+document.addEventListener('mousemove', onMouseMove, false);
+});
+
+controlsL.addEventListener('unlock', function () {
+rendererL.setAnimationLoop(null);
+    // Remove the mousemove event listener when Pointer Lock is deactivated
+document.removeEventListener('mousemove', onMouseMove, false);
+});
+ 
+const onKeyDown = function ( event ) {
+switch ( event.code ) {
+case 'ArrowUp':
+case 'KeyW':
+moveForward = true;
+break;
+case 'ArrowLeft':
+case 'KeyA':
+moveLeft = true;
+break;
+case 'ArrowDown':
+case 'KeyS':
+moveBackward = true;
+break;
+case 'ArrowRight':
+case 'KeyD':
+moveRight = true;
+break;
+case 'Space':
+if ( canJump === true ) velocity.y += 350;
+canJump = false;
+break;
+}
+};
+
+const onKeyUp = function ( event ) {
+switch ( event.code ) {
+case 'ArrowUp':
+case 'KeyW':
+moveForward = false;
+break;
+case 'ArrowLeft':
+case 'KeyA':
+moveLeft = false;
+break;
+case 'ArrowDown':
+case 'KeyS':
+moveBackward = false;
+break;
+case 'ArrowRight':
+case 'KeyD':
+moveRight = false;
+break;
+}
+
+};
+
+document.addEventListener( 'keydown', onKeyDown );
+document.addEventListener( 'keyup', onKeyUp );
+
+document.querySelector('#controlBtn').addEventListener( 'click',function(){
+controlsL.lock();
+});
+
 console.log('append canvas and render');
 animate();
 }, undefined, function (error) {
@@ -241,10 +312,64 @@ console.error(error);
  
 }
 
+function onMouseMove(event) {
+  if (controlsL.isLocked === true) {
+    const movementX = event.movementX || 0;
+    const movementY = event.movementY || 0;
+
+    yawObject.rotation.y -= movementX * 0.00001;
+    pitchObject.rotation.x -= movementY * 0.00001;
+
+    // Clamp the pitch rotation to prevent the camera from flipping upside down
+    pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
+  }
+}
+
 function animate() {
-requestAnimationFrame( animate );
-rendererL.render( sceneL, cameraL );
-controlsL.update();
+ requestAnimationFrame(animate);
+
+  const time = performance.now();
+  const delta = (time - prevTime) / 1000.0;
+
+  velocity.x -= velocity.x * 10.0 * delta;
+  velocity.z -= velocity.z * 10.0 * delta;
+
+  // Prevent the camera from falling below a certain height (e.g., y = 0)
+ // if (controlsL.getObject().position.y < 0) {
+  //  velocity.y = 0;
+ //   controlsL.getObject().position.y = 0;
+ // } else {
+  //  velocity.y -= 9.8 * delta; 
+//  }
+
+  direction.z = Number(moveForward) - Number(moveBackward);
+  direction.x = Number(moveRight) - Number(moveLeft);
+
+    // Get the camera's forward and right directions
+    const forward = new THREE.Vector3(0, 0, -1);
+    forward.applyQuaternion(cameraL.quaternion); 
+
+    const right = new THREE.Vector3(1, 0, 0);
+    right.applyQuaternion(cameraL.quaternion);
+
+    // Calculate movement direction based on camera's orientation
+// direction.copy(forward).multiplyScalar(Number(moveForward) - Number(moveBackward));
+// direction.add(right).multiplyScalar(Number(moveRight) - Number(moveLeft));
+direction.normalize(); 
+
+if (moveForward || moveBackward || moveLeft || moveRight) {
+    velocity.x -= direction.x * 5.0 * delta;
+    velocity.z += direction.z * 5.0 * delta; // Keep the '+' here as it's now working correctly
+  }
+  // Directly update the camera's position based on velocity and delta time
+  controlsL.getObject().position.x -= velocity.x * delta;
+  controlsL.getObject().position.z -= velocity.z * delta;
+  controlsL.getObject().position.y += velocity.y * delta;
+
+  prevTime = time;
+
+  rendererL.render(sceneL, cameraL);
+ 
 }
 
 loaderChannel.onmessage = async (event) => {
