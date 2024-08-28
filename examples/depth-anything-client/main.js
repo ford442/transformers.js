@@ -20,12 +20,6 @@ const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 
-// Create a new depth-estimation pipeline
-status.textContent = 'Loading model...';
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf');
-status.textContent = 'Ready';
-
-const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
@@ -42,97 +36,6 @@ let prevTime = performance.now();
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 let yawObject, pitchObject; // Declare these variables at a higher scope
-
-const displacementShaderMaterial = new THREE.ShaderMaterial({
-uniforms: {
-map: { value: null }, // The base color texture
-displacementMap: { value: null }, // The displacement map texture
-displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
-// Add other uniforms as needed (e.g., for lighting)
-},
-vertexShader: `
-varying vec2 vUv;
-varying vec3 vNormal; // Varying for normal interpolation
-uniform sampler2D displacementMap;
-uniform float displacementScale;
-void main() {
-vUv = uv;
-vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
-// Sample the displacement map and apply it to the vertex position
-vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
-gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
-}
-`,
-fragmentShader: `
-varying vec2 vUv;
-varying vec3 vNormal; // Receive interpolated normal
-uniform sampler2D map;
-// Add other uniforms as needed (e.g., for lighting)
-void main() {
-// Basic lighting calculation (you can customize this)
-vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
-float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
-gl_FragColor = texture2D( map, vUv ) * diffuse;
-}
-`
-});
-
-function bakeDisplacement(mesh, displacementMap) {
-const geometry = mesh.geometry;
-const positionAttribute = geometry.attributes.position;
-const uvAttribute = geometry.attributes.uv;
-if(displacementMap){
-for (let i = 0; i < positionAttribute.count; i++) {
-const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
-const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
-const originalPosition = new THREE.Vector3();
-originalPosition.fromBufferAttribute(positionAttribute, i);
-const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
-const newPosition = originalPosition.add(offset);
-positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
-}
-}
-geometry.attributes.position.needsUpdate = true;
-geometry.computeVertexNormals(); // Recalculate normals
-}
-
-// Predict depth map for the given image
-async function predict(imageDataURL) {
-imageContainer.innerHTML = '';
-// Load the image from the data URL
-const img = new Image();
-img.src = imageDataURL;
-img.onload = async () => {
-const canvas2 = document.createElement('canvas');
-canvas2.width = img.width;
-canvas2.height = img.height;
-const ctx = canvas2.getContext('2d',{alpha:true});
-ctx.drawImage(img, 0, 0);
-// Get the image data from the canvas
-const imageData = ctx.getImageData(0, 0, img.width, img.height);
-// Create a RawImage from the imageData
-const image = new RawImage(imageData.data, img.width, img.height,4);
-// Set up scene and slider controls
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
-imageContainer.append(canvas);
-const { depth } = await depth_estimator(image);
-status.textContent = 'Analysing...';
-setDisplacementMap(depth.toCanvas());
-depthE=depth;
-status.textContent = '';
- // Add slider control
-const slider = document.createElement('input');
-slider.type = 'range';
-slider.min = 0;
-slider.max = 1;
-slider.step = 0.01;
-slider.addEventListener('input', (e) => {
-onSliderChange(parseFloat(e.target.value));
-});
-slider.defaultValue = DEFAULT_SCALE;
-imageContainer.append(slider);
-};
-}
 
 function setupScene(imageDataURL, w, h) {
 const canvas = document.createElement('canvas');
@@ -369,50 +272,9 @@ if (moveForward || moveBackward || moveLeft || moveRight) {
   prevTime = time;
 
   rendererL.render(sceneL, cameraL);
- 
-}
+ }
 
 loaderChannel.onmessage = async (event) => {
 const { glbLocation } = event.data;
 loadGLTFScene(glbLocation);
 };
-
-channel.onmessage = async (event) => {
-const { imageDataURL} = event.data;
-predict(imageDataURL );
-};
-
-async function saveSceneAsGLTF() {
-const exporter = new GLTFExporter();
-try {
-const options = {
-binary: true,
-// embedImages: true, // Embed all textures, including the displacement map
-};
-const gltf = await exporter.parseAsync(scene, options);
-const blob = new Blob([gltf], { type: 'application/octet-stream' });
-const link = document.createElement('a');
-link.href = URL.createObjectURL(blob);
-link.download = document.querySelector('#saveName').innerHTML+'.glb'; // Use .glb extension for binary glTF
-link.click();
-const displacementMap = materialE.displacementMap;
-const exportCanvas = document.createElement('canvas');
-exportCanvas.width = displacementMap.image.width;
-exportCanvas.height = displacementMap.image.height;
-const ctx = exportCanvas.getContext('2d');
-ctx.drawImage(displacementMap.image, 0, 0);
-const imageData = exportCanvas.toDataURL('image/jpeg',1.0); ;
-// const blob2 = new Blob([imageData.data], { type: 'image/jpeg' });
-const link2 = document.createElement('a');
-link2.href = imageData;
-link2.download = document.querySelector('#saveName').innerHTML+'.jpg';
-link2.click();
-} catch (error) {
-console.error('Error exporting glTF:', error);
-// Handle the error appropriately (e.g., show a message to the user)
-}
-}
-
-document.querySelector('#savegltf').addEventListener('click',function(){
-saveSceneAsGLTF();
-});
