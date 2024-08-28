@@ -12,6 +12,7 @@ env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 // Constants
 const DEFAULT_SCALE = 0.25;
+const canvas2 = document.createElement('canvas');
 
 // Reference the elements that we will need
 const status = document.getElementById('status');
@@ -102,8 +103,6 @@ imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
 img.onload = async () => {
-// const canvas2 = document.createElement('canvas');
-const canvas2 = document.querySelector('#mvi');
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
