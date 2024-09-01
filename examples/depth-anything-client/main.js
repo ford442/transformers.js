@@ -116,12 +116,12 @@ const ctx = canvas2.getContext('2d',{alpha:true});
 ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
+const { depth } = await depth_estimator(image);
+depthE=depth;
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
-const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
-depthE=depth;
 status.textContent = '';
 const slider = document.createElement('input');
 slider.type = 'range';
@@ -174,7 +174,7 @@ cameraUniformsGroup.add( new THREE.Uniform( camera.matrixWorldInverse ) ); // vi
 const material = new THREE.RawShaderMaterial( {
 uniforms: {
 map:{value:image},
-displacementMap: { value: depth }, // The displacement map texture
+displacementMap: { value: depthE }, // The displacement map texture
 displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
 modelMatrix: { value: null },
 normalMatrix: { value: null }
