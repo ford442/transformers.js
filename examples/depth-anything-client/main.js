@@ -174,6 +174,8 @@ cameraUniformsGroup.add( new THREE.Uniform( camera.matrixWorldInverse ) ); // vi
 const material = new THREE.RawShaderMaterial( {
 uniforms: {
 map:{value:image},
+displacementMap: { value: depth }, // The displacement map texture
+displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
 modelMatrix: { value: null },
 normalMatrix: { value: null }
 },
@@ -224,7 +226,8 @@ mesh.position.z = k * spacing - ( gridSize.z * spacing ) / 2;
 }
 }
 }
-material.uniforms.map = { value: image }; 
+// material.uniforms.map = { value: image }; 
+// material.uniforms.displacementMap = { value: image }; 
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
