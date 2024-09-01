@@ -186,7 +186,6 @@ vertexShader: vertexShader,
 fragmentShader: fragmentShader,
 glslVersion: THREE.GLSL3
 } );
-material.uniforms.map = { value: image }; 
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
@@ -225,6 +224,7 @@ mesh.position.z = k * spacing - ( gridSize.z * spacing ) / 2;
 }
 }
 }
+material.uniforms.map = { value: image }; 
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
@@ -247,7 +247,6 @@ light.value.set( x, 1, z, 0 );
 renderer.render(scene, camera);
 controls.update();
 });
-  
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
 const height = imageContainer.offsetHeight;
