@@ -249,6 +249,16 @@ console.error('Error exporting glTF:', error);
 }
 }
 
+fileUpload.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) {
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = e2 => predict(e2.target.result);
+    reader.readAsDataURL(file);
+});
+
 document.querySelector('#savegltf').addEventListener('click',function(){
 saveSceneAsGLTF();
 });
