@@ -228,7 +228,7 @@ mesh.position.z = k * spacing - ( gridSize.z * spacing ) / 2;
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
-lightingUniformsGroup.uniforms[ 2 ].value =100;
+lightingUniformsGroup.uniforms[ 2 ].value =200;
 renderer.setAnimationLoop(() => {
   // Moving Lights
 const elapsedTime = clock.getElapsedTime();
