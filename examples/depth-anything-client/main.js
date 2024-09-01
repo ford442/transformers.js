@@ -197,7 +197,7 @@ const textureLoader = new THREE.TextureLoader();
 loadCanvas = document.createElement('canvas');
 loadCanvas.id='evi';
 loadCanvas.style.position='absolute';
-loadCanvas.style.zindex=2100;
+loadCanvas.style.zIndex=2100;
 loadCanvas.style.top=0;
 const width = loadCanvas.width = window.innerHeight;
 const height = loadCanvas.height = window.innerHeight;
