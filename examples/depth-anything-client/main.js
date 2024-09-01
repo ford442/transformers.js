@@ -113,8 +113,8 @@ spotLight1.target.position.set( 0, 0, 0 ); // Aim at the origin
 spotLight1.castShadow = true;
 spotLight1.angle = Math.PI / 8;
 spotLight1.penumbra = 0.52;
-spotLight1.decay = 2;
-spotLight1.distance = 30;
+spotLight1.decay = .02;
+spotLight1.distance = 5;
 scene.add( spotLight1 );
 scene.add( spotLight1.target ); 
 
@@ -122,6 +122,10 @@ const spotLight2 = new THREE.SpotLight( 0x00ff00, 2 ); // Green spotlight, inten
 spotLight2.position.set( 0, 3, 2 );
 spotLight2.target.position.set( 1, -2, 1 ); // Aim at another point
 spotLight2.castShadow = true;
+spotLight2.angle = Math.PI / 8;
+spotLight2.penumbra = 0.52;
+spotLight2.decay = .02;
+spotLight2.distance = 5;      
 scene.add( spotLight2 );
 scene.add( spotLight2.target );
 
