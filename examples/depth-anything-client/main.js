@@ -88,7 +88,7 @@ in vec3 vNormalEye;
 out vec4 fragColor;
    
 void main(){
-vec3 texColor = texture2D(map, vUv);
+vec3 texColor = texture(map, vUv);
 vec3 finalColor = vec3(0.0); // Initialize final color
 for (int x = 0; x < int(pointLightsCount); x++) {
 vec3 offset = lightPosition[x].xyz - vPositionEye;
