@@ -142,8 +142,8 @@ camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More v
 camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 camera.lookAt(scene.position); // Make the camera look at the center
 
-spotLight1.position.x -= Math.cos(time*0.01); // Simple example of movement
-spotLight2.target.position.y /= time*0.02; // Another movement example
+spotLight1.position.x += Math.cos(time*0.01); // Simple example of movement
+spotLight2.target.position.y -= time*0.02; // Another movement example
 
 renderer.render(scene, camera);
 controls.update();
