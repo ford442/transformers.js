@@ -144,9 +144,7 @@ camera.lookAt(scene.position); // Make the camera look at the center
 
 spotLight1.position.x -= Math.cos(time*0.01); // Simple example of movement
 spotLight2.target.position.y /= time*0.02; // Another movement example
-      
-lightHelper1.update();
-lightHelper2.update();
+
 renderer.render(scene, camera);
 controls.update();
 });
