@@ -126,6 +126,11 @@ spotLight2.target.position.set( 1, -2, 1 ); // Aim at another point
 scene.add( spotLight2 );
 scene.add( spotLight2.target );
       
+lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
+lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
+
+      scene.add( lightHelper1, lightHelper2
+                
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -144,7 +149,8 @@ camera.lookAt(scene.position); // Make the camera look at the center
 
 spotLight1.position.x += 0.01; // Simple example of movement
 spotLight2.target.position.y += 0.02; // Another movement example
-
+lightHelper1.update();
+lightHelper2.update();
 renderer.render(scene, camera);
 controls.update();
 });
