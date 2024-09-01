@@ -9,7 +9,7 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-const DEFAULT_SCALE = 0.25;
+const DEFAULT_SCALE = 0.42;
 
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
