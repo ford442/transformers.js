@@ -129,7 +129,7 @@ scene.add( spotLight2.target );
 const lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
 const lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
 
-      scene.add( lightHelper1, lightHelper2
+      scene.add( lightHelper1, lightHelper2);
                 
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
