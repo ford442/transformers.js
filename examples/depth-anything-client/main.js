@@ -107,6 +107,16 @@ scene.add(plane);
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
+      // Object dance - Faster and more energetic
+const time = performance.now() * 0.001; 
+const wobbleAmount = 0.03; // Increased amplitude for more pronounced movements
+const wobbleSpeed = 2;     // Faster wobble speed
+cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
+cameraL.position.z = wobbleAmount * 0.3 * Math.sin(time * wobbleSpeed * 0.7); // Add some z-axis movement
+cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); 
+cameraL.lookAt(sceneL.position); // Make the camera look at the center
+
 renderer.render(scene, camera);
 controls.update();
 });
@@ -178,8 +188,8 @@ function animate() {
 requestAnimationFrame( animate );
    // Object dance - Faster and more energetic
 const time = performance.now() * 0.001; 
-const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
-const wobbleSpeed = 4;     // Faster wobble speed
+const wobbleAmount = 0.03; // Increased amplitude for more pronounced movements
+const wobbleSpeed = 2;     // Faster wobble speed
 cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
 cameraL.position.z = wobbleAmount * 0.3 * Math.sin(time * wobbleSpeed * 0.7); // Add some z-axis movement
