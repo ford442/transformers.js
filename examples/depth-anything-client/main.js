@@ -190,8 +190,10 @@ glslVersion: THREE.GLSL3
 } );
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
-material.displacementMap = new THREE.CanvasTexture(canvas);
+material.displacementMap = depth;
+// material.displacementMap = new THREE.CanvasTexture(canvas);
 materialE=material;
+   
 material.needsUpdate = true;
 }
 const setDisplacementScale = (scale) => {
