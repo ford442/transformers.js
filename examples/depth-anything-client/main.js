@@ -117,7 +117,7 @@ ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
 imageContainer.append(canvas);
-{ depth } = await depth_estimator(image);
+depth = await depth_estimator(image);
 status.textContent = 'Analysing...';
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 setDisplacementMap(depth.toCanvas());
