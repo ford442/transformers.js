@@ -126,8 +126,8 @@ spotLight2.target.position.set( 1, -2, 1 ); // Aim at another point
 scene.add( spotLight2 );
 scene.add( spotLight2.target );
       
-lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
-lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
+const lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
+const lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
 
       scene.add( lightHelper1, lightHelper2
                 
