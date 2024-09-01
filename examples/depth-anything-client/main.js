@@ -10,106 +10,40 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 const DEFAULT_SCALE = 0.25;
+
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
+
 status.textContent = 'Loading model...';
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
 status.textContent = 'Ready';
+
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
+
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE,materialE,clock;
+let depthE,materialE;
+
 let moveForward=false;
 let moveBackward=false;
 let moveLeft=false;
 let moveRight=false;
 let canJump=false;
 let prevTime = performance.now();
+
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
-let yawObject, pitchObject;
-let lightingUniformsGroup, lightCenters;
-const container = document.getElementById( 'container' );
-const pointLightsMax = 300;
-const api = {
-count: 200,
-};
-
-const vertexShader=`
-uniform ViewData {
-mat4 projectionMatrix;
-mat4 viewMatrix;
-};
-uniform mat4 modelMatrix;
-uniform mat3 normalMatrix;
-in vec3 position;
-in vec3 normal;
-in vec2 uv;
-out vec2 vUv;
-out vec3 vPositionEye;
-out vec3 vNormalEye;
-void main(){
-vec4 vertexPositionEye = viewMatrix * modelMatrix * vec4( position, 1.0 );
-vPositionEye = (modelMatrix * vec4( position, 1.0 )).xyz;
-vNormalEye = (vec4(normal , 1.)).xyz;
-vUv = uv;
-gl_Position = projectionMatrix * vertexPositionEye;
-}
-`;
-
-const fragmentShader=`
-
-precision highp float;
-precision highp int;
-precision highp sampler2D;
-uniform sampler2D map;
-
-uniform LightingData{
-vec4 lightPosition[POINTLIGHTS_MAX];
-vec4 lightColor[POINTLIGHTS_MAX];
-float pointLightsCount;
-};
-
-#include <common>
-
-float getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {
-float distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );
-if ( cutoffDistance > 0.0 ) {
-distanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );
-}
-return distanceFalloff;
-}
-
-in vec2 vUv;
-in vec3 vPositionEye;
-in vec3 vNormalEye;
-out vec4 fragColor;
-   
-void main(){
-vec4 texColor = texture(map, vUv);
-vec3 finalColor = vec3(0.0); // Initialize final color
-for (int x = 0; x < int(pointLightsCount); x++) {
-vec3 offset = lightPosition[x].xyz - vPositionEye;
-vec3 dirToLight = normalize(offset);
-float distance = length(offset);
-float diffuse = max(0.0, dot(vNormalEye, dirToLight));
-float attenuation = 1.0 / (distance * distance);
-vec3 lightWeighting = lightColor[x].xyz * getDistanceAttenuation(distance, 4.0, 0.7);
-finalColor += texColor.rgb * diffuse * attenuation * lightWeighting; 
-}
-fragColor = vec4(finalColor, 1.0); 
-}
-`;
+let yawObject, pitchObject; // Declare these variables at a higher scope
 
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
 img.onload = async () => {
-const canvas2 = document.createElement('canvas');
+const canvas2 = document.querySelector('#mvi');
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
@@ -197,7 +131,7 @@ const textureLoader = new THREE.TextureLoader();
 loadCanvas = document.createElement('canvas');
 loadCanvas.id='evi';
 loadCanvas.style.position='absolute';
-loadCanvas.style.zIndex=2100;
+loadCanvas.style.zindex=2100;
 loadCanvas.style.top=0;
 const width = loadCanvas.width = window.innerHeight;
 const height = loadCanvas.height = window.innerHeight;
@@ -242,13 +176,24 @@ console.error(error);
 
 function animate() {
 requestAnimationFrame( animate );
-  // Object wobble
+   // Object dance - Faster and more energetic
+const time = performance.now() * 0.001; 
+const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
+const wobbleSpeed = 4;     // Faster wobble speed
+cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
+cameraL.position.z = wobbleAmount * 0.3 * Math.sin(time * wobbleSpeed * 0.7); // Add some z-axis movement
+cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); 
+
+   /*  // Object wobble
 const time = performance.now() * 0.001; // Get time in seconds
 const wobbleAmount = 0.05; // Adjust the intensity of the wobble
 const wobbleSpeed = 2; // Adjust the speed of the wobble
 cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
 cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
+*/
+
 cameraL.lookAt(sceneL.position); // Make the camera look at the center
 rendererL.render( sceneL, cameraL );
 controlsL.update();
