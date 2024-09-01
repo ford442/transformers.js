@@ -10,34 +10,27 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 const DEFAULT_SCALE = 0.25;
-
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
-
 status.textContent = 'Loading model...';
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
 status.textContent = 'Ready';
-
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
-
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE,clock;
-
 let moveForward=false;
 let moveBackward=false;
 let moveLeft=false;
 let moveRight=false;
 let canJump=false;
 let prevTime = performance.now();
-
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 let yawObject, pitchObject;
-
 let lightingUniformsGroup, lightCenters;
 const container = document.getElementById( 'container' );
 const pointLightsMax = 300;
@@ -46,65 +39,68 @@ count: 200,
 };
 
 const vertexShader=`
-			uniform ViewData {
-				mat4 projectionMatrix;
-				mat4 viewMatrix;
-			};
-			uniform mat4 modelMatrix;
-			uniform mat3 normalMatrix;
-			in vec3 position;
-			in vec3 normal;
-			in vec2 uv;
-			out vec2 vUv;
-			out vec3 vPositionEye;
-			out vec3 vNormalEye;
-			void main()	{
-				vec4 vertexPositionEye = viewMatrix * modelMatrix * vec4( position, 1.0 );
-				vPositionEye = (modelMatrix * vec4( position, 1.0 )).xyz;
-				vNormalEye = (vec4(normal , 1.)).xyz;
-				vUv = uv;
-				gl_Position = projectionMatrix * vertexPositionEye;
-			}
-			`;
+uniform ViewData {
+mat4 projectionMatrix;
+mat4 viewMatrix;
+};
+uniform mat4 modelMatrix;
+uniform mat3 normalMatrix;
+in vec3 position;
+in vec3 normal;
+in vec2 uv;
+out vec2 vUv;
+out vec3 vPositionEye;
+out vec3 vNormalEye;
+void main(){
+vec4 vertexPositionEye = viewMatrix * modelMatrix * vec4( position, 1.0 );
+vPositionEye = (modelMatrix * vec4( position, 1.0 )).xyz;
+vNormalEye = (vec4(normal , 1.)).xyz;
+vUv = uv;
+gl_Position = projectionMatrix * vertexPositionEye;
+}
+`;
 
 const fragmentShader=`
-			precision highp float;
-			precision highp int;
+
+precision highp float;
+precision highp int;
 uniform sampler2D map;
-			uniform LightingData {
-				vec4 lightPosition[POINTLIGHTS_MAX];
-				vec4 lightColor[POINTLIGHTS_MAX];
-				float pointLightsCount;
-			};
-			#include <common>
-			float getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {
-				float distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );
-				if ( cutoffDistance > 0.0 ) {
-					distanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );
-				}
-				return distanceFalloff;
-			}
-			in vec2 vUv;
-			in vec3 vPositionEye;
-			in vec3 vNormalEye;
-			out vec4 fragColor;
+
+uniform LightingData{
+vec4 lightPosition[POINTLIGHTS_MAX];
+vec4 lightColor[POINTLIGHTS_MAX];
+float pointLightsCount;
+};
+
+#include <common>
+
+float getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {
+float distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );
+if ( cutoffDistance > 0.0 ) {
+distanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );
+}
+return distanceFalloff;
+}
+
+in vec2 vUv;
+in vec3 vPositionEye;
+in vec3 vNormalEye;
+out vec4 fragColor;
    
-			void main()	{
-       vec4 texColor = texture2D(map, vUv);
-        vec3 finalColor = vec3(0.0); // Initialize final color
-        for (int x = 0; x < int(pointLightsCount); x++) {
-            vec3 offset = lightPosition[x].xyz - vPositionEye;
-            vec3 dirToLight = normalize(offset);
-            float distance = length(offset);
-            float diffuse = max(0.0, dot(vNormalEye, dirToLight));
-            float attenuation = 1.0 / (distance * distance);
-            vec3 lightWeighting = lightColor[x].xyz * getDistanceAttenuation(distance,   
- 4.0, 0.7);
-            // Combine texture color with lighting
-            finalColor += texColor.rgb * diffuse * attenuation * lightWeighting; 
-        }
-        fragColor = vec4(finalColor, 1.0); 
-			}
+void main(){
+vec4 texColor = texture2D(map, vUv);
+vec3 finalColor = vec3(0.0); // Initialize final color
+for (int x = 0; x < int(pointLightsCount); x++) {
+vec3 offset = lightPosition[x].xyz - vPositionEye;
+vec3 dirToLight = normalize(offset);
+float distance = length(offset);
+float diffuse = max(0.0, dot(vNormalEye, dirToLight));
+float attenuation = 1.0 / (distance * distance);
+vec3 lightWeighting = lightColor[x].xyz * getDistanceAttenuation(distance, 4.0, 0.7);
+finalColor += texColor.rgb * diffuse * attenuation * lightWeighting; 
+}
+fragColor = vec4(finalColor, 1.0); 
+}
 `;
 
 async function predict(imageDataURL) {
@@ -156,39 +152,39 @@ const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
 
 lightingUniformsGroup = new THREE.UniformsGroup();
-				lightingUniformsGroup.setName( 'LightingData' );
-				const data = [];
-				const dataColors = [];
-				lightCenters = [];
-				for ( let i = 0; i < pointLightsMax; i ++ ) {
-					const col = new THREE.Color( 0xffffff * Math.random() ).toArray();
-					const x = Math.random() * 50 - 25;
-					const z = Math.random() * 50 - 25;
-					data.push( new THREE.Uniform( new THREE.Vector4( x, 1, z, 0 ) ) ); // light position
-					dataColors.push( new THREE.Uniform( new THREE.Vector4( col[ 0 ], col[ 1 ], col[ 2 ], 0 ) ) ); // light color
-					lightCenters.push( { x, z } );
-				}
-				lightingUniformsGroup.add( data ); // light position
-				lightingUniformsGroup.add( dataColors ); // light position
-				lightingUniformsGroup.add( new THREE.Uniform( pointLightsMax ) ); // light position
-				const cameraUniformsGroup = new THREE.UniformsGroup();
-				cameraUniformsGroup.setName( 'ViewData' );
-				cameraUniformsGroup.add( new THREE.Uniform( camera.projectionMatrix ) ); // projection matrix
-				cameraUniformsGroup.add( new THREE.Uniform( camera.matrixWorldInverse ) ); // view matrix
-				const material = new THREE.RawShaderMaterial( {
-					uniforms: {
-						modelMatrix: { value: null },
-						normalMatrix: { value: null }
-					},
-				uniformsGroups: [ cameraUniformsGroup, lightingUniformsGroup ],
-					name: 'Box',
-					defines: {
-						POINTLIGHTS_MAX: pointLightsMax
-					},
-					vertexShader: document.getElementById( 'vertexShader' ).textContent,
-					fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-					glslVersion: THREE.GLSL3
-				} );
+lightingUniformsGroup.setName( 'LightingData' );
+const data = [];
+const dataColors = [];
+lightCenters = [];
+for ( let i = 0; i < pointLightsMax; i ++ ) {
+const col = new THREE.Color( 0xffffff * Math.random() ).toArray();
+const x = Math.random() * 50 - 25;
+const z = Math.random() * 50 - 25;
+data.push( new THREE.Uniform( new THREE.Vector4( x, 1, z, 0 ) ) ); // light position
+dataColors.push( new THREE.Uniform( new THREE.Vector4( col[ 0 ], col[ 1 ], col[ 2 ], 0 ) ) ); // light color
+lightCenters.push( { x, z } );
+}
+lightingUniformsGroup.add( data ); // light position
+lightingUniformsGroup.add( dataColors ); // light position
+lightingUniformsGroup.add( new THREE.Uniform( pointLightsMax ) ); // light position
+const cameraUniformsGroup = new THREE.UniformsGroup();
+cameraUniformsGroup.setName( 'ViewData' );
+cameraUniformsGroup.add( new THREE.Uniform( camera.projectionMatrix ) ); // projection matrix
+cameraUniformsGroup.add( new THREE.Uniform( camera.matrixWorldInverse ) ); // view matrix
+const material = new THREE.RawShaderMaterial( {
+uniforms: {
+modelMatrix: { value: null },
+normalMatrix: { value: null }
+},
+uniformsGroups: [ cameraUniformsGroup, lightingUniformsGroup ],
+name: 'Box',
+defines: {
+POINTLIGHTS_MAX: pointLightsMax
+},
+vertexShader: vertexShader,
+fragmentShader: fragmentShader,
+glslVersion: THREE.GLSL3
+} );
 material.uniforms.map = { value: image }; 
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
@@ -200,12 +196,10 @@ const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
 material.needsUpdate = true;
 }
-  
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
 const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 clock = new THREE.Clock();
-
 const plane = new THREE.Mesh(geometry, material);
 plane.material.uniformsGroups = [ cameraUniformsGroup, lightingUniformsGroup ];
 plane.material.uniforms.modelMatrix.value = plane.matrixWorld;
@@ -233,9 +227,7 @@ mesh.position.z = k * spacing - ( gridSize.z * spacing ) / 2;
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
-	
-  lightingUniformsGroup.uniforms[ 2 ].value =100;
-	
+lightingUniformsGroup.uniforms[ 2 ].value =100;
 renderer.setAnimationLoop(() => {
   // Moving Lights
 const elapsedTime = clock.getElapsedTime();
