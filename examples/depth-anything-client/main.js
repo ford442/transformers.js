@@ -110,38 +110,22 @@ scene.add(plane);
 const spotLight1 = new THREE.SpotLight( 0xff0000, 3 ); // Red spotlight, intensity 3
 spotLight1.position.set( 5, 5, 0 ); 
 spotLight1.target.position.set( 0, 0, 0 ); // Aim at the origin
-
 spotLight1.castShadow = true;
-spotLight1.shadow.mapSize.width = 1024;
-spotLight1.shadow.mapSize.height = 1024;
-spotLight1.shadow.camera.near = 500;
-spotLight1.shadow.camera.far = 4000;
-spotLight1.shadow.camera.fov = 30;
 spotLight1.angle = Math.PI / 8;
 spotLight1.penumbra = 0.52;
 spotLight1.decay = 2;
 spotLight1.distance = 30;
-
 scene.add( spotLight1 );
 scene.add( spotLight1.target ); 
-      
+
 const spotLight2 = new THREE.SpotLight( 0x00ff00, 2 ); // Green spotlight, intensity 2
 spotLight2.position.set( 0, 3, 2 );
 spotLight2.target.position.set( 1, -2, 1 ); // Aim at another point
 spotLight2.castShadow = true;
-spotLight2.shadow.mapSize.width = 1024;
-spotLight2.shadow.mapSize.height = 1024;
-spotLight2.shadow.camera.near = 500;
-spotLight2.shadow.camera.far = 4000;
-spotLight2.shadow.camera.fov = 30;
 scene.add( spotLight2 );
 scene.add( spotLight2.target );
-      
-const lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
-const lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
 
-scene.add( lightHelper1, lightHelper2);
-                
+         
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
