@@ -172,7 +172,7 @@ cameraUniformsGroup.add( new THREE.Uniform( camera.projectionMatrix ) ); // proj
 cameraUniformsGroup.add( new THREE.Uniform( camera.matrixWorldInverse ) ); // view matrix
 const material = new THREE.RawShaderMaterial( {
 uniforms: {
-map:{value:null},
+map:{value:image},
 modelMatrix: { value: null },
 normalMatrix: { value: null }
 },
