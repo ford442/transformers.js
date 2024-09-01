@@ -105,24 +105,24 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
       // Create Spotlights
-const spotlight1 = new THREE.SpotLight( 0xff0000, 3 ); // Red spotlight, intensity 3
-spotlight1.position.set( 5, 5, 0 ); 
-spotlight1.target.position.set( 0, 0, 0 ); // Aim at the origin
+const spotLight1 = new THREE.SpotLight( 0xff0000, 3 ); // Red spotlight, intensity 3
+spotLight1.position.set( 5, 5, 0 ); 
+spotLight1.target.position.set( 0, 0, 0 ); // Aim at the origin
 
 spotLight1.castShadow = true;
-spotLight.shadow.mapSize.width = 1024;
-spotLight.shadow.mapSize.height = 1024;
-spotLight.shadow.camera.near = 500;
-spotLight.shadow.camera.far = 4000;
-spotLight.shadow.camera.fov = 30;
-scene.add( spotlight1 );
-scene.add( spotlight1.target ); 
+spotLight1.shadow.mapSize.width = 1024;
+spotLight1.shadow.mapSize.height = 1024;
+spotLight1.shadow.camera.near = 500;
+spotLight1.shadow.camera.far = 4000;
+spotLight1.shadow.camera.fov = 30;
+scene.add( spotLight1 );
+scene.add( spotLight1.target ); 
       
-const spotlight2 = new THREE.SpotLight( 0x00ff00, 2 ); // Green spotlight, intensity 2
-spotlight2.position.set( 0, 3, 2 );
-spotlight2.target.position.set( 1, -2, 1 ); // Aim at another point
-scene.add( spotlight2 );
-scene.add( spotlight2.target );
+const spotLight2 = new THREE.SpotLight( 0x00ff00, 2 ); // Green spotlight, intensity 2
+spotLight2.position.set( 0, 3, 2 );
+spotLight2.target.position.set( 1, -2, 1 ); // Aim at another point
+scene.add( spotLight2 );
+scene.add( spotLight2.target );
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
@@ -137,8 +137,8 @@ camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More v
 camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 camera.lookAt(scene.position); // Make the camera look at the center
 
-spotlight1.position.x += 0.01; // Simple example of movement
-spotlight2.target.position.y += 0.02; // Another movement example
+spotLight1.position.x += 0.01; // Simple example of movement
+spotLight2.target.position.y += 0.02; // Another movement example
 
 renderer.render(scene, camera);
 controls.update();
