@@ -109,8 +109,8 @@ controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
       // Object dance - Faster and more energetic
 const time = performance.now() * 0.001; 
-const wobbleAmount = 0.03; // Increased amplitude for more pronounced movements
-const wobbleSpeed = 2;     // Faster wobble speed
+const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
+const wobbleSpeed = 3;     // Faster wobble speed
 camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.3 * Math.sin(time * wobbleSpeed * 0.7); // Add some z-axis movement
