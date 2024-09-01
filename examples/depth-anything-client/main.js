@@ -150,7 +150,6 @@ const light = new THREE.AmbientLight(0xffffff, 2);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-
 lightingUniformsGroup = new THREE.UniformsGroup();
 lightingUniformsGroup.setName( 'LightingData' );
 const data = [];
@@ -173,7 +172,7 @@ cameraUniformsGroup.add( new THREE.Uniform( camera.projectionMatrix ) ); // proj
 cameraUniformsGroup.add( new THREE.Uniform( camera.matrixWorldInverse ) ); // view matrix
 const material = new THREE.RawShaderMaterial( {
 uniforms: {
-map:(value:null),
+map:{value:null},
 modelMatrix: { value: null },
 normalMatrix: { value: null }
 },
