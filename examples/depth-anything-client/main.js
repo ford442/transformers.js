@@ -123,6 +123,9 @@ spotLight2.position.set( 0, 3, 2 );
 spotLight2.target.position.set( 1, -2, 1 ); // Aim at another point
 scene.add( spotLight2 );
 scene.add( spotLight2.target );
+      
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
