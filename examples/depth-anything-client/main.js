@@ -117,10 +117,10 @@ spotLight1.shadow.mapSize.height = 1024;
 spotLight1.shadow.camera.near = 500;
 spotLight1.shadow.camera.far = 4000;
 spotLight1.shadow.camera.fov = 30;
-spotLight1.angle = 0.3;
-spotLight1.penumbra = 0.2;
+spotLight1.angle = Math.PI / 8;
+spotLight1.penumbra = 0.52;
 spotLight1.decay = 2;
-spotLight1.distance = 50;
+spotLight1.distance = 30;
 
 scene.add( spotLight1 );
 scene.add( spotLight1.target ); 
