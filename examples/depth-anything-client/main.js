@@ -223,7 +223,6 @@ mesh.name = 'Sphere';
 mesh.material.uniformsGroups = [ cameraUniformsGroup, lightingUniformsGroup ];
 mesh.material.uniforms.modelMatrix.value = mesh.matrixWorld;
 mesh.material.uniforms.normalMatrix.value = mesh.normalMatrix;
-lightingUniformsGroup.uniforms[ 2 ].value = api.count;
 scene.add( mesh );
 mesh.position.x = i * spacing - ( gridSize.x * spacing ) / 2;
 mesh.position.y = 0;
@@ -234,7 +233,9 @@ mesh.position.z = k * spacing - ( gridSize.z * spacing ) / 2;
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
-  
+	
+  lightingUniformsGroup.uniforms[ 2 ].value =100;
+	
 renderer.setAnimationLoop(() => {
   // Moving Lights
 const elapsedTime = clock.getElapsedTime();
