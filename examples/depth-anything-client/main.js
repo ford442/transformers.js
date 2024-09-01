@@ -180,7 +180,7 @@ lightingUniformsGroup = new THREE.UniformsGroup();
 						modelMatrix: { value: null },
 						normalMatrix: { value: null }
 					},
-					// uniformsGroups: [ cameraUniformsGroup, lightingUniformsGroup ],
+				uniformsGroups: [ cameraUniformsGroup, lightingUniformsGroup ],
 					name: 'Box',
 					defines: {
 						POINTLIGHTS_MAX: pointLightsMax
@@ -189,8 +189,6 @@ lightingUniformsGroup = new THREE.UniformsGroup();
 					fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
 					glslVersion: THREE.GLSL3
 				} );
-
-  
 material.uniforms.map = { value: image }; 
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
