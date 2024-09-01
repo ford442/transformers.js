@@ -88,7 +88,7 @@ in vec3 vNormalEye;
 out vec4 fragColor;
    
 void main(){
-vec3 texColor = texture2D(map, vUv);
+vec4 texColor = texture2D(map, vUv);
 vec3 finalColor = vec3(0.0); // Initialize final color
 for (int x = 0; x < int(pointLightsCount); x++) {
 vec3 offset = lightPosition[x].xyz - vPositionEye;
@@ -173,6 +173,7 @@ cameraUniformsGroup.add( new THREE.Uniform( camera.projectionMatrix ) ); // proj
 cameraUniformsGroup.add( new THREE.Uniform( camera.matrixWorldInverse ) ); // view matrix
 const material = new THREE.RawShaderMaterial( {
 uniforms: {
+map:(value:null),
 modelMatrix: { value: null },
 normalMatrix: { value: null }
 },
