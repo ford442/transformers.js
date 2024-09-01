@@ -5,22 +5,17 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
-
-// Since we will download the model from the Hugging Face Hub, we can skip the local model check
 env.allowLocalModels = false;
-// Proxy the WASM backend to prevent the UI from freezing
 env.backends.onnx.wasm.proxy = true;
-// Constants
 const DEFAULT_SCALE = 0.25;
 
-// Reference the elements that we will need
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 
-// Create a new depth-estimation pipeline
 status.textContent = 'Loading model...';
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
 status.textContent = 'Ready';
@@ -43,76 +38,18 @@ const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 let yawObject, pitchObject; // Declare these variables at a higher scope
 
-const displacementShaderMaterial = new THREE.ShaderMaterial({
-uniforms: {
-map: { value: null }, // The base color texture
-displacementMap: { value: null }, // The displacement map texture
-displacementScale: { value: 0.35 }, // Adjust the strength of the displacement
-// Add other uniforms as needed (e.g., for lighting)
-},
-vertexShader: `
-varying vec2 vUv;
-varying vec3 vNormal; // Varying for normal interpolation
-uniform sampler2D displacementMap;
-uniform float displacementScale;
-void main() {
-vUv = uv;
-vNormal = normalize( normalMatrix * normal ); // Calculate and interpolate normals
-// Sample the displacement map and apply it to the vertex position
-vec3 displacedPosition = position + normal * texture2D( displacementMap, vUv ).r * displacementScale;
-gl_Position = projectionMatrix * modelViewMatrix * vec4( displacedPosition, 1.0 );
-}
-`,
-fragmentShader: `
-varying vec2 vUv;
-varying vec3 vNormal; // Receive interpolated normal
-uniform sampler2D map;
-// Add other uniforms as needed (e.g., for lighting)
-void main() {
-// Basic lighting calculation (you can customize this)
-vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
-float diffuse = clamp( dot( vNormal, lightDir ), 0.0, 1.0 );
-gl_FragColor = texture2D( map, vUv ) * diffuse;
-}
-`
-});
-
-function bakeDisplacement(mesh, displacementMap) {
-const geometry = mesh.geometry;
-const positionAttribute = geometry.attributes.position;
-const uvAttribute = geometry.attributes.uv;
-if(displacementMap){
-for (let i = 0; i < positionAttribute.count; i++) {
-const uv = new THREE.Vector2(uvAttribute.getX(i), uvAttribute.getY(i));
-const displacement = displacementMap.getPixel(uv.x, uv.y).r; // Assuming grayscale displacement map
-const originalPosition = new THREE.Vector3();
-originalPosition.fromBufferAttribute(positionAttribute, i);
-const offset = mesh.geometry.attributes.normal.clone().multiplyScalar(displacement * material.displacementScale);
-const newPosition = originalPosition.add(offset);
-positionAttribute.setXYZ(i, newPosition.x, newPosition.y, newPosition.z);
-}
-}
-geometry.attributes.position.needsUpdate = true;
-geometry.computeVertexNormals(); // Recalculate normals
-}
-
-// Predict depth map for the given image
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
-// Load the image from the data URL
 const img = new Image();
 img.src = imageDataURL;
 img.onload = async () => {
-const canvas2 = document.createElement('canvas');
+const canvas2 = document.querySelector('#mvi');
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
 ctx.drawImage(img, 0, 0);
-// Get the image data from the canvas
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
-// Create a RawImage from the imageData
 const image = new RawImage(imageData.data, img.width, img.height,4);
-// Set up scene and slider controls
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
@@ -120,7 +57,6 @@ status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
 depthE=depth;
 status.textContent = '';
- // Add slider control
 const slider = document.createElement('input');
 slider.type = 'range';
 slider.min = 0;
@@ -149,8 +85,6 @@ const light = new THREE.AmbientLight(0xffffff, 2);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-// image.colorSpace = THREE.LinearSRGBColorSpace;
-  
 const material = new THREE.MeshStandardMaterial({
 map: image,
 side: THREE.DoubleSide,
@@ -166,24 +100,13 @@ material.displacementScale = scale;
 material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
-// Create plane and rescale it so that max(w, h) = 1
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
 const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
-// Add orbit controls
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
-   // Object wobble
-  const time = performance.now() * 0.001; // Get time in seconds
-  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
-  const wobbleSpeed = 2; // Adjust the speed of the wobble
-    camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-    camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
-    camera.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
-  camera.lookAt(scene.position); // Make the camera look at the center
-
 renderer.render(scene, camera);
 controls.update();
 });
@@ -249,21 +172,18 @@ animate();
 }, undefined, function (error) {
 console.error(error);
 });
- 
 }
 
 function animate() {
 requestAnimationFrame( animate );
-
   // Object wobble
-  const time = performance.now() * 0.001; // Get time in seconds
-  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
-  const wobbleSpeed = 2; // Adjust the speed of the wobble
-    cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-    cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
-    cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
-  cameraL.lookAt(sceneL.position); // Make the camera look at the center
-
+const time = performance.now() * 0.001; // Get time in seconds
+const wobbleAmount = 0.05; // Adjust the intensity of the wobble
+const wobbleSpeed = 2; // Adjust the speed of the wobble
+cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
+cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
+cameraL.lookAt(sceneL.position); // Make the camera look at the center
 rendererL.render( sceneL, cameraL );
 controlsL.update();
 }
@@ -305,7 +225,6 @@ link2.download = document.querySelector('#saveName').innerHTML+'.jpg';
 link2.click();
 } catch (error) {
 console.error('Error exporting glTF:', error);
-// Handle the error appropriately (e.g., show a message to the user)
 }
 }
 
