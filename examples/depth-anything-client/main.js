@@ -30,7 +30,7 @@ let canJump=false;
 let prevTime = performance.now();
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
-let yawObject, pitchObject;
+let yawObject, pitchObject, depth;
 let lightingUniformsGroup, lightCenters;
 const container = document.getElementById( 'container' );
 const pointLightsMax = 300;
@@ -116,10 +116,10 @@ const ctx = canvas2.getContext('2d',{alpha:true});
 ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
-const { depth } = await depth_estimator(image);
+{ depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
+const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 setDisplacementMap(depth.toCanvas());
 depthE=depth;
 status.textContent = '';
@@ -173,7 +173,7 @@ cameraUniformsGroup.add( new THREE.Uniform( camera.projectionMatrix ) ); // proj
 cameraUniformsGroup.add( new THREE.Uniform( camera.matrixWorldInverse ) ); // view matrix
 const material = new THREE.RawShaderMaterial( {
 uniforms: {
-map:{value:image},
+map:{value:depth},
 modelMatrix: { value: null },
 normalMatrix: { value: null }
 },
