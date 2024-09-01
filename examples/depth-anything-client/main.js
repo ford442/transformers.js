@@ -7,20 +7,15 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
-// Since we will download the model from the Hugging Face Hub, we can skip the local model check
 env.allowLocalModels = false;
-// Proxy the WASM backend to prevent the UI from freezing
 env.backends.onnx.wasm.proxy = true;
-// Constants
 const DEFAULT_SCALE = 0.25;
 
-// Reference the elements that we will need
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 
-// Create a new depth-estimation pipeline
 status.textContent = 'Loading model...';
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
 status.textContent = 'Ready';
@@ -43,25 +38,18 @@ const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 let yawObject, pitchObject; // Declare these variables at a higher scope
 
-// Predict depth map for the given image
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
-// Load the image from the data URL
 const img = new Image();
 img.src = imageDataURL;
 img.onload = async () => {
-// const canvas2 = document.createElement('canvas');
 const canvas2 = document.querySelector('#mvi');
- 
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
 ctx.drawImage(img, 0, 0);
-// Get the image data from the canvas
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
-// Create a RawImage from the imageData
 const image = new RawImage(imageData.data, img.width, img.height,4);
-// Set up scene and slider controls
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
@@ -69,7 +57,6 @@ status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
 depthE=depth;
 status.textContent = '';
- // Add slider control
 const slider = document.createElement('input');
 slider.type = 'range';
 slider.min = 0;
@@ -98,8 +85,6 @@ const light = new THREE.AmbientLight(0xffffff, 2);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-// image.colorSpace = THREE.LinearSRGBColorSpace;
-  
 const material = new THREE.MeshStandardMaterial({
 map: image,
 side: THREE.DoubleSide,
@@ -115,12 +100,10 @@ material.displacementScale = scale;
 material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
-// Create plane and rescale it so that max(w, h) = 1
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
 const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
-// Add orbit controls
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
@@ -153,7 +136,6 @@ loadCanvas.style.top=0;
 const width = loadCanvas.width = window.innerHeight;
 const height = loadCanvas.height = window.innerHeight;
 sceneL = new THREE.Scene();
-
 loader.load(document.querySelector('#saveName').innerHTML+'.glb', function (gltf) {
 console.log('load scene');
 sceneL.add(gltf.scene);
@@ -190,21 +172,18 @@ animate();
 }, undefined, function (error) {
 console.error(error);
 });
- 
 }
 
 function animate() {
 requestAnimationFrame( animate );
-
   // Object wobble
-  const time = performance.now() * 0.001; // Get time in seconds
-  const wobbleAmount = 0.05; // Adjust the intensity of the wobble
-  const wobbleSpeed = 2; // Adjust the speed of the wobble
-    cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-    cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
-    cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
-  cameraL.lookAt(sceneL.position); // Make the camera look at the center
-
+const time = performance.now() * 0.001; // Get time in seconds
+const wobbleAmount = 0.05; // Adjust the intensity of the wobble
+const wobbleSpeed = 2; // Adjust the speed of the wobble
+cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.2); // Slightly different frequency for y
+cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); // Add some rotation for more 3D effect
+cameraL.lookAt(sceneL.position); // Make the camera look at the center
 rendererL.render( sceneL, cameraL );
 controlsL.update();
 }
@@ -246,7 +225,6 @@ link2.download = document.querySelector('#saveName').innerHTML+'.jpg';
 link2.click();
 } catch (error) {
 console.error('Error exporting glTF:', error);
-// Handle the error appropriately (e.g., show a message to the user)
 }
 }
 
