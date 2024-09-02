@@ -160,7 +160,7 @@ material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
-const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
+const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
