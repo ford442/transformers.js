@@ -81,7 +81,7 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const light = new THREE.AmbientLight(0xffffff, 3);
+const light = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
@@ -107,7 +107,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
       // Create Spotlights
-const spotLight1 = new THREE.SpotLight(0x1fe5d8, 5.0, 2.93, 0.35, 0.3, 0.18)
+const spotLight1 = new THREE.SpotLight(0x1fe5d8, 145.0, 2.93, 0.35, 0.3, 0.18)
 spotLight1.position.set( 100, 1000, 100 );
 spotLight1.castShadow = true;
 spotLight1.angle = .15;
