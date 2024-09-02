@@ -233,28 +233,13 @@ const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
 
 renderer.setAnimationLoop(() => {
-      // Object dance - Faster and more energetic
+      // Object wobble
 const time = performance.now() * 0.001; 
-const displacementMap = material.displacementMap; // Assuming you have a reference to the material
-const displacementData = displacementMap.image.data; // Assuming the displacement map is an image texture
-    // Iterate through displacement map pixels and move vertices accordingly
-const width = displacementMap.image.width;
-const height = displacementMap.image.height;
-for (let x = 0; x < width; x++) {
-for (let y = 0; y < height; y++) {
-const index = (y * width + x) * 4; // Assuming 4 channels per pixel (RGBA)
-// Get displacement value (you might need to adjust this based on your map)
-const displacementValue = displacementData[index]; 
-// Calculate vertex index based on x, y
-const vertexIndex = (y * (width + 1) + x) * 3; // Assuming a PlaneGeometry
-// Apply movement to the vertex based on displacement and time
 geometry.attributes.position.array[vertexIndex] += 
-wobbleAmount * displacementValue/255 * Math.sin(time * wobbleSpeed + x/width * Math.PI * 2);
+wobbleAmount *  Math.sin(time * wobbleSpeed + x/width * Math.PI * 2);
 geometry.attributes.position.array[vertexIndex + 1] += 
-wobbleAmount * displacementValue/255 * Math.cos(time * wobbleSpeed * 1.5 + y/height * Math.PI * 2);
+wobbleAmount *  Math.cos(time * wobbleSpeed * 1.5 + y/height * Math.PI * 2);
 // You can add z-axis movement as well if neededDamping = true;
-}
-}		
 /*	// camera wobble
 camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
