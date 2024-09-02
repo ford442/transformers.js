@@ -25,7 +25,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE,materialE,origImage;
+let depthE,materialE,origImage,imageData,rgbData;
 
 let moveForward=false;
 let moveBackward=false;
@@ -46,13 +46,10 @@ img.onload = async () => {
 const canvas2 = document.createElement('canvas');
 canvas2.width = img.width;
 canvas2.height = img.height;
-      
 const ctx = canvas2.getContext('2d',{alpha:true});
-      
 ctx.drawImage(img, 0, 0);
-      
-const imageData = ctx.getImageData(0, 0, img.width, img.height);
-const rgbData = [];
+imageData = ctx.getImageData(0, 0, img.width, img.height);
+rgbData = [];
 const mean = [0.485, 0.456, 0.406];
 const std = [0.229, 0.224, 0.225];
 for (let i = 0; i < imageData.data.length; i += 4) {
