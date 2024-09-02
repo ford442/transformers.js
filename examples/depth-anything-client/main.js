@@ -223,7 +223,7 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
-const controls = new FlyControls( camera, renderer.domElement );
+const controls = new OrbitControls( camera, renderer.domElement );
 	
 controls.enableDamping = true;
 	
