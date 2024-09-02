@@ -81,7 +81,7 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const light = new THREE.AmbientLight(0xffffff, 1);
+const light = new THREE.AmbientLight(0xffffff, 1.777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
@@ -152,8 +152,8 @@ camera.lookAt(scene.position); // Make the camera look at the center
 
 spotLight1.position.x *= Math.cos( time ) * 1.5;
 spotLight1.position.z = Math.sin( time ) * 12.5;
-spotLight2.position.z *= Math.cos( time ) * 1.5;
-spotLight2.position.x = Math.sin( time ) * .5;
+spotLight2.position.y *= Math.cos( time ) * 1.5;
+spotLight2.position.z = Math.sin( time ) * .5;
 
 // lightHelper1.update();
 // lightHelper2.update();
