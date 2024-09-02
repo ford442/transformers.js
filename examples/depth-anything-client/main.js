@@ -106,10 +106,20 @@ exportCanvas.width = displacementMap.image.width;
 exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
-const imageData = exportCanvas.toDataURL('image/jpeg',1.0);
-const bumpTexture = new THREE.TextureLoader().load(imageData);
+const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
+const data = imageData.data;
+// Invert the image data
+for (let i = 0; i < data.length; i += 4) {
+    data[i] = 255 - data[i];     // Red
+    data[i + 1] = 255 - data[i + 1]; // Green
+    data[i + 2] = 255 - data[i + 2]; // Blue
+    // data[i + 3] is the alpha channel, leave it unchanged
+}
+// Put the inverted data back on the canvas
+ctx.putImageData(imageData, 0, 0);
+const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);const bumpTexture = new THREE.TextureLoader().load(imageData);
 material.bumpMap=bumpTexture;
-material.bumpScale=.75;
+material.bumpScale=.5;
 materialE=material;
 material.needsUpdate = true;
 }
