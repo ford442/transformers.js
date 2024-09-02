@@ -87,8 +87,8 @@ scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 camera.position.z = 2;
 scene.add(camera);
-      
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
@@ -108,10 +108,9 @@ composer2.addPass( outputPass );
 
 			// FXAA is engineered to be applied towards the end of engine post processing after conversion to low dynamic range and conversion to the sRGB color space for display.
 composer2.addPass( fxaaPass );
-      
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const light = new THREE.AmbientLight(0xffffff, 1.305777);
+const light = new THREE.AmbientLight(0xe6ffff,.9305777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
@@ -135,15 +134,14 @@ exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
 // ctx.imageSmoothingEnabled =false;
-
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
 const data = imageData.data;
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
-    data[i] = 255 - data[i];     // Red
-    data[i + 1] = 255 - data[i + 1]; // Green
-    data[i + 2] = 255 - data[i + 2]; // Blue
-    // data[i + 3] is the alpha channel, leave it unchanged
+data[i] = 255 - data[i];     // Red
+data[i + 1] = 255 - data[i + 1]; // Green
+data[i + 2] = 255 - data[i + 2]; // Blue
+// data[i + 3] is the alpha channel, leave it unchanged
 }
 // Put the inverted data back on the canvas
 ctx.putImageData(imageData, 0, 0);
