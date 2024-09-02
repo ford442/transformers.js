@@ -247,8 +247,8 @@ plane.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 plane.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
 plane.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
-  // camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-  // camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
+camera.position.x = wobbleAmount * Math.sin(time * 3);
+ camera.position.y = wobbleAmount * Math.cos(time * 3 * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
   // camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 // camera.lookAt(scene.position); // Make the camera look at the center
