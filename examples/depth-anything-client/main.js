@@ -163,6 +163,7 @@ const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
 const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
+plane.castShadow = true;
 
 scene.add(plane);
       // Create Spotlights
