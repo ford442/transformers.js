@@ -236,32 +236,23 @@ positionAttribute.needsUpdate = true;
 
 renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
-      // Object wobble
-    // Iterate through vertices and apply movement
-for (let i = 0; i < positionAttribute.count; i++) {
-        const x = positionAttribute.getX(i);
-        const y = positionAttribute.getY(i);
-        // const z = positionAttribute.getZ(i);   
- // Uncomment if you need z-axis movement
+
         const wobbleAmount = 0.07;
         const wobbleSpeed = 5;
         // Apply wobble to x and y positions
 	const randomOffset = Math.random() * 0.5; // Adjust 0.5 for randomness intensity
 
-
-positionAttribute.setX(i, x + wobbleAmount * Math.sin(time * wobbleSpeed + i * 0.5 + randomOffset));
-positionAttribute.setY(i, y + wobbleAmount * Math.cos(time * wobbleSpeed * 1.5 + i * 0.3 + randomOffset));
-// positionAttribute.setZ(i, z + wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777)); 
-}
-    // Mark the position attribute as needing an update
-	
-/*	// camera wobble
-camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
+	//  wobble
+plane.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+plane.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
-camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
-camera.lookAt(scene.position); // Make the camera look at the center
-*/
+plane.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
+  // camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
+  // camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
+// camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
+  // camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
+// camera.lookAt(scene.position); // Make the camera look at the center
+
 	
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
