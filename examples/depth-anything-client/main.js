@@ -221,7 +221,7 @@ renderer.shadowMap.needsUpdate = true;
 renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
       
 // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.shadowMap.type = THREE.VSMShadowMap;
+// renderer.shadowMap.type = THREE.VSMShadowMap;
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
