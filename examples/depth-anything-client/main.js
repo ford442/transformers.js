@@ -14,6 +14,8 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 
+// import WebGPUBackend from './WebGPUBackend.js';
+
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 const DEFAULT_SCALE = 0.384;
@@ -89,6 +91,8 @@ camera.position.z = 2;
 scene.add(camera);
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
+// const rendererW = new THREE.WebGPU({ canvas, antialias: true,premultipliedAlpha:false });
+
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
