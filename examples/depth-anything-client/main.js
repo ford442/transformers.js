@@ -122,7 +122,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
       // Create Spotlights
-const spotLight1 = new THREE.SpotLight(0x1fe5d8, 4.420)
+const spotLight1 = new THREE.SpotLight(0x1fe5d8, 14.420)
 spotLight1.position.set(0, 1.38, 0.181)
 spotLight1.castShadow = true;
 spotLight1.angle = .15;
@@ -139,7 +139,7 @@ scene.add(spotLight1.shadow.camera);
 scene.add( spotLight1 );
 spotLight1.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight1.target ); 
-const spotLight2 = new THREE.SpotLight(0xbd1300, 4.420234)
+const spotLight2 = new THREE.SpotLight(0xbd1300, 24.420234)
 spotLight2.position.set(0, 2.38234, 0.81234)
 spotLight2.castShadow = true;
 spotLight2.angle = .2423232;
@@ -151,7 +151,7 @@ scene.add( spotLight2 );
 spotLight2.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight2.target );
       
-const spotLight3 = new THREE.SpotLight(0xe7ff15, 4.420234)
+const spotLight3 = new THREE.SpotLight(0xe7ff15, 9.420234)
 spotLight3.position.set(0, 1.38234, 0.81234)
 spotLight3.castShadow = true;
 spotLight3.angle = .12423232;
