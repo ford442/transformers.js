@@ -106,7 +106,8 @@ exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
 const imageData = exportCanvas.toDataURL('image/jpeg',1.0);
-material.bumpMap=imageData;
+const bumpTexture = new THREE.TextureLoader().load(imageData);
+material.bumpMap=bumpTexture;
 material.bumpScale=.5;
 
 materialE=material;
