@@ -162,7 +162,7 @@ material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
-const geometry = new THREE.PlaneGeometry(pw, ph, w*4, h*4);
+const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
@@ -231,12 +231,9 @@ const controls = new OrbitControls( camera, renderer.domElement );
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
-const positionAttribute = geometry.attributes.position;
-positionAttribute.needsUpdate = true; 
 
 renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
-
   
         // Apply wobble to x and y positions
 	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
