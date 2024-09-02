@@ -85,7 +85,7 @@ const light = new THREE.AmbientLight(0xffffff, .05777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-const material = new THREE.MeshLambertMaterial({
+const material = new THREE.MeshToonMaterial({
 map: image,
 side: THREE.DoubleSide,
 });
