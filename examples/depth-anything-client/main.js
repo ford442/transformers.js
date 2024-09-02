@@ -108,7 +108,7 @@ const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x1fe5d8, 75.0, 2.93, 0.35, 0.3, 0.18)
-spotLight2.position.set(0, 1.38, 0.181)
+spotLight1.position.set(0, 1.38, 0.181)
 spotLight1.castShadow = true;
 spotLight1.angle = .15;
 spotLight1.penumbra = 0.52;
