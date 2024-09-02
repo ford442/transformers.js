@@ -260,7 +260,6 @@ spotLight2.position.x = Math.cos( time ) * 1.15;
 spotLight2.position.z *= Math.sin( time ) * 1.25;
 spotLight3.position.x = Math.cos( time ) *  1.15;
 spotLight3.position.z = Math.sin( time ) *  .5;
-geometry.attributes.position.needsUpdate = true; 
 // lightHelper1.update();
 // lightHelper2.update();
 renderer.render(scene, camera);
