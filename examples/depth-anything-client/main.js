@@ -13,7 +13,6 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 
-
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 const DEFAULT_SCALE = 0.384;
@@ -160,7 +159,7 @@ material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
-const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
+const geometry = new THREE.PlaneGeometry(pw, ph, w*4, h*4);
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
