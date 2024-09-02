@@ -81,7 +81,7 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const light = new THREE.AmbientLight(0xffffff, .5777);
+const light = new THREE.AmbientLight(0xffffff, .05777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
