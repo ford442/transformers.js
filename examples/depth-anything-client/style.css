@@ -29,9 +29,9 @@ h1 {
 
 #container {
   position: absolute;
-  width: 85vh;
-  height: 85vh;
-  border: 2px dashed #D1D5DB;
+  width: 100vh;
+  height: 100vh;
+  border: 0px dashed #D1D5DB;
   border-radius: 0.75rem;
   overflow: hidden;
   margin-top: 1rem;
