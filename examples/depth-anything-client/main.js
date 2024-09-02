@@ -141,11 +141,11 @@ ctx.drawImage(displacementMap.image, 0, 0);
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
 dataE = imageData.data;
 // Invert the image data
-for (let i = 0; i < data.length; i += 4) {
-data[i] = 255 - data[i];     // Red
-data[i + 1] = 255 - data[i + 1]; // Green
-data[i + 2] = 255 - data[i + 2]; // Blue
-// data[i + 3] is the alpha channel, leave it unchanged
+for (let i = 0; i < dataE.length; i += 4) {
+dataE[i] = 255 - dataE[i];     // Red
+dataE[i + 1] = 255 - dataE[i + 1]; // Green
+dataE[i + 2] = 255 - dataE[i + 2]; // Blue
+// dataE[i + 3] is the alpha channel, leave it unchanged
 }
 // Put the inverted data back on the canvas
 ctx.putImageData(imageData, 0, 0);
