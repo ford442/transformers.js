@@ -119,7 +119,7 @@ scene.add( spotLight1 );
 spotLight1.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight1.target ); 
 
-const spotLight2 = new THREE.SpotLight(0xbb0707, 55.0, 2.93, 0.35, 0.3, 0.18)
+const spotLight2 = new THREE.SpotLight(0xbd1300, 45.0, 2.93, 0.35, 0.3, 0.18)
 spotLight2.position.set(0, 2.38, 0.81)
 spotLight2.castShadow = true;
 spotLight2.angle = .24;
@@ -130,9 +130,9 @@ spotLight2.visible = true;
 scene.add( spotLight2 );
 spotLight2.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight2.target );
-const lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
-const lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
-scene.add( lightHelper1, lightHelper2);
+// const lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
+// const lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
+// scene.add( lightHelper1, lightHelper2);
 
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -152,9 +152,11 @@ camera.lookAt(scene.position); // Make the camera look at the center
 
 spotLight1.position.x *= Math.cos( time ) * 1.5;
 spotLight1.position.z = Math.sin( time ) * 12.5;
+spotLight2.position.z *= Math.cos( time ) * 1.5;
+spotLight2.position.x = Math.sin( time ) * .5;
 
-lightHelper1.update();
-lightHelper2.update();
+// lightHelper1.update();
+// lightHelper2.update();
 renderer.render(scene, camera);
 controls.update();
 });
