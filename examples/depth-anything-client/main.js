@@ -113,7 +113,7 @@ renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
 const light = new THREE.AmbientLight(0xffffff, 1.305777);
 scene.add(light);
-const image = new THREE.TextureLoader().load({imageDataURL});
+const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
 const material = new THREE.MeshStandardMaterial({
 map: image,
@@ -147,8 +147,9 @@ for (let i = 0; i < data.length; i += 4) {
 }
 // Put the inverted data back on the canvas
 ctx.putImageData(imageData, 0, 0);
-const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);const bumpTexture = new THREE.TextureLoader().load(imageData);
-material.bumpMap=bumpTexture;
+const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
+const bumpTexture =new THREE.CanvasTexture(exportCanvas);
+	material.bumpMap=bumpTexture;
 material.bumpScale=.5;
 materialE=material;
 material.needsUpdate = true;
