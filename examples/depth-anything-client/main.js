@@ -222,7 +222,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.needsUpdate = true;
 renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
       
-// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -237,17 +237,17 @@ positionAttribute.needsUpdate = true;
 renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
 
-        const wobbleAmount = 0.07;
-        const wobbleSpeed = 5;
+  
         // Apply wobble to x and y positions
-	const randomOffset = Math.random() * 0.5; // Adjust 0.5 for randomness intensity
-
+	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
+      const wobbleAmount = 0.07;
+        const wobbleSpeed = 4+randomOffset;
 	//  wobble
-plane.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-plane.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
+plane.position.x = wobbleAmount * Math.sin(time * 4);
+plane.position.y = wobbleAmount * Math.cos(time * 3.13 * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
 plane.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
-camera.position.x = wobbleAmount * Math.sin(time * 3);
+camera.position.x = wobbleAmount * Math.sin(time * 2);
  camera.position.y = wobbleAmount * Math.cos(time * 3 * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
   // camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
