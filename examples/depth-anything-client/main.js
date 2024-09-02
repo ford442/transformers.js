@@ -61,10 +61,10 @@ const ctx = canvas2.getContext('2d',{alpha:true});
 ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
-imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
+const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
+imageContainer.append(canvas);
 setDisplacementMap(depth.toCanvas());
 depthE=depth;
 status.textContent = '';
@@ -228,10 +228,8 @@ const wobbleSpeed = 5;     // Faster wobble speed
 renderer.setAnimationLoop(() => {
       // Object dance - Faster and more energetic
 const time = performance.now() * 0.001; 
-
 	
 const displacementMap = material.displacementMap; // Assuming you have a reference to the material
-
 	
 const displacementData = displacementMap.image.data; // Assuming the displacement map is an image texture
     // Iterate through displacement map pixels and move vertices accordingly
