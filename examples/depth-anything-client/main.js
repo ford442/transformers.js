@@ -226,15 +226,16 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
 const controls = new OrbitControls( camera, renderer.domElement );
-controls.enableDamping = true;
+controls.enable
 	
-renderer.setAnimationLoop(() => {
-      // Object dance - Faster and more energetic
-const time = performance.now() * 0.001; 
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
-const displacementMap = material.displacementMap; // Assuming you have a reference to the material
+
+renderer.setAnimationLoop(() => {
+      // Object dance - Faster and more energetic
+const time = performance.now() * 0.001; 
+	const displacementMap = material.displacementMap; // Assuming you have a reference to the material
 const displacementData = displacementMap.image.data; // Assuming the displacement map is an image texture
     // Iterate through displacement map pixels and move vertices accordingly
 const width = displacementMap.image.width;
@@ -247,14 +248,13 @@ const displacementValue = displacementData[index];
 // Calculate vertex index based on x, y
 const vertexIndex = (y * (width + 1) + x) * 3; // Assuming a PlaneGeometry
 // Apply movement to the vertex based on displacement and time
-const wobbleAmount = 0.07;
-const wobbleSpeed = 5;
 geometry.attributes.position.array[vertexIndex] += 
 wobbleAmount * displacementValue/255 * Math.sin(time * wobbleSpeed + x/width * Math.PI * 2);
 geometry.attributes.position.array[vertexIndex + 1] += 
 wobbleAmount * displacementValue/255 * Math.cos(time * wobbleSpeed * 1.5 + y/height * Math.PI * 2);
-// You can add z-axis movement as well if needed
-		
+// You can add z-axis movement as well if neededDamping = true;
+}
+}		
 /*	// camera wobble
 camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
@@ -269,6 +269,7 @@ spotLight2.position.x = Math.cos( time ) * 1.15;
 spotLight2.position.z *= Math.sin( time ) * 1.25;
 spotLight3.position.x = Math.cos( time ) *  1.15;
 spotLight3.position.z = Math.sin( time ) *  .5;
+    geometry.attributes.position.needsUpdate = true; 
 
 // lightHelper1.update();
 // lightHelper2.update();
