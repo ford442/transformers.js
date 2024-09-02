@@ -25,7 +25,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE,materialE,origImage,imageData,rgbData;
+let depthE,materialE;
 
 let moveForward=false;
 let moveBackward=false;
@@ -48,20 +48,8 @@ canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
 ctx.drawImage(img, 0, 0);
-imageData = ctx.getImageData(0, 0, img.width, img.height);
-rgbData = [];
-const mean = [0.485, 0.456, 0.406];
-const std = [0.229, 0.224, 0.225];
-for (let i = 0; i < imageData.data.length; i += 4) {
-for (let j = 0; j < 3; j++) {
-const pixelValue = imageData.data[i + j] / 255.0;
-const normalizedValue = (pixelValue - mean[j]) / std[j];
-rgbData.push(normalizedValue);
-}
-}
-
-origImage = new RawImage(imageData.data, img.width, img.height,4);
-const image = new RawImage(rgbData.data, img.width, img.height,4);
+const imageData = ctx.getImageData(0, 0, img.width, img.height);
+const image = new RawImage(imageData.data, img.width, img.height,4);
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
@@ -93,12 +81,12 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const light = new THREE.AmbientLight(0xffffff, 1.05777);
+const light = new THREE.AmbientLight(0xffffff, 2.05777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-const material = new THREE.MeshStandardMaterial({
-map: origImage,
+const material = new THREE.MeshToonMaterial({
+map: image,
 side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
