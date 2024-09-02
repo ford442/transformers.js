@@ -81,7 +81,7 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const light = new THREE.AmbientLight(0xffffff, 2.05777);
+const light = new THREE.AmbientLight(0xffffff, 1.605777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
@@ -108,7 +108,6 @@ const imageData = exportCanvas.toDataURL('image/jpeg',1.0);
 const bumpTexture = new THREE.TextureLoader().load(imageData);
 material.bumpMap=bumpTexture;
 material.bumpScale=.75;
-
 materialE=material;
 material.needsUpdate = true;
 }
@@ -122,7 +121,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w, h);
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
       // Create Spotlights
-const spotLight1 = new THREE.SpotLight(0x1fe5d8, 14.420)
+const spotLight1 = new THREE.SpotLight(0x1fe5d8, 24.420)
 spotLight1.position.set(0, 1.38, 0.181)
 spotLight1.castShadow = true;
 spotLight1.angle = .15;
@@ -147,10 +146,14 @@ spotLight2.penumbra = 0.52223;
 spotLight2.decay = .02;
 spotLight2.distance = 4.778778;     
 spotLight2.visible = true;
+spotLight2.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
+// Same position as LIGHT position.
+spotLight2.shadow.camera.position.copy(spotLight2.position);
+spotLight2.shadow.camera.lookAt(spotLight2.position);
+scene.add(spotLight2.shadow.camera);
 scene.add( spotLight2 );
 spotLight2.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight2.target );
-      
 const spotLight3 = new THREE.SpotLight(0xe7ff15, 9.420234)
 spotLight3.position.set(0, 1.38234, 0.81234)
 spotLight3.castShadow = true;
@@ -159,15 +162,16 @@ spotLight3.penumbra = 0.52223;
 spotLight3.decay = .02;
 spotLight3.distance = 4.778778;     
 spotLight3.visible = true;
+spotLight1.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
+// Same position as LIGHT position.
+spotLight3.shadow.camera.position.copy(spotLight3.position);
+spotLight3.shadow.camera.lookAt(spotLight3.position);
+scene.add(spotLight3.shadow.camera);
 scene.add( spotLight3 );
 spotLight3.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight3.target );
-      
-
-      
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 renderer.setAnimationLoop(() => {
