@@ -151,9 +151,19 @@ spotLight2.visible = true;
 scene.add( spotLight2 );
 spotLight2.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight2.target );
-// const lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
-// const lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
-// scene.add( lightHelper1, lightHelper2);
+      
+const spotLight3 = new THREE.SpotLight(0xe7ff15, 44.420234)
+spotLight3.position.set(0, 1.38234, 0.81234)
+spotLight3.castShadow = true;
+spotLight3.angle = .12423232;
+spotLight3.penumbra = 0.52223;
+spotLight3.decay = .02;
+spotLight3.distance = 4.778778;     
+spotLight3.visible = true;
+scene.add( spotLight3 );
+spotLight3.target.position.set( 0, 1, 0 ); // Aim at the origin
+scene.add( spotLight3.target );
+      
 
       
 renderer.shadowMap.enabled = true;
@@ -174,9 +184,10 @@ camera.lookAt(scene.position); // Make the camera look at the center
 
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
-spotLight2.position.y = Math.cos( time ) * .15;
 spotLight2.position.x = Math.cos( time ) * .15;
-spotLight2.position.z = Math.sin( time ) * .25;
+spotLight2.position.z *= Math.sin( time ) * .25;
+spotLight3.position.x = Math.cos( time ) * .015;
+spotLight3.position.z = Math.sin( time ) * .125;
 
 // lightHelper1.update();
 // lightHelper2.update();
