@@ -94,6 +94,8 @@ material.receiveShadow = true;
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
+material.roughness=.5;
+material.roughnessMap=image;
 materialE=material;
 material.needsUpdate = true;
 }
