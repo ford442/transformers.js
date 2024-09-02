@@ -90,7 +90,7 @@ map: image,
 side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
-// material.castShadow = true;
+material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
@@ -108,7 +108,7 @@ const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x1fe5d8, 75.0, 2.93, 0.35, 0.3, 0.18)
-spotLight1.position.set( 100, 1000, 100 );
+spotLight2.position.set(0, 1.38, 0.181)
 spotLight1.castShadow = true;
 spotLight1.angle = .15;
 spotLight1.penumbra = 0.52;
@@ -150,8 +150,8 @@ camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More v
 camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 camera.lookAt(scene.position); // Make the camera look at the center
 
-spotLight1.position.x = Math.cos( time ) * 2.5;
-spotLight1.position.z = Math.sin( time ) * 2.5;
+spotLight1.position.x *= Math.cos( time ) * 1.5;
+spotLight1.position.z = Math.sin( time ) * 12.5;
 
 lightHelper1.update();
 lightHelper2.update();
