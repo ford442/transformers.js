@@ -236,11 +236,11 @@ renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
   
         // Apply wobble to x and y positions
-	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
+//	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
       const wobbleAmount = 0.07;
-        const wobbleSpeed = 4+randomOffset;
+        const wobbleSpeed = 4;
 	//  wobble
-plane.position.x = wobbleAmount * Math.sin(time * 4);
+plane.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 plane.position.y = wobbleAmount * Math.cos(time * 3.13 * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
 plane.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
