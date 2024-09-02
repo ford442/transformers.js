@@ -34,7 +34,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE,materialE,material,imageDataUrlE;
+let depthE,materialE;
 let composer1, composer2, fxaaPass;
 
 let moveForward=false;
@@ -61,10 +61,10 @@ const ctx = canvas2.getContext('2d',{alpha:true});
 ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
-const { depth } = await depth_estimator(image);
-status.textContent = 'Analysing...';
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
+const { depth } = await depth_estimator(image);
+status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
 depthE=depth;
 status.textContent = '';
@@ -89,8 +89,10 @@ scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 camera.position.z = 2;
 scene.add(camera);
+
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
 // const rendererW = new THREE.WebGPU({ canvas, antialias: true,premultipliedAlpha:false });
+
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
@@ -98,13 +100,17 @@ const renderPass = new RenderPass();
 composer1 = new EffectComposer( renderer );
 composer1.addPass( renderPass );
 composer1.addPass( outputPass );
+
 const pixelRatio = renderer.getPixelRatio();
+
 fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( container.offsetWidth * pixelRatio );
 fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( container.offsetHeight * pixelRatio );
+
 composer2 = new EffectComposer( renderer );
 composer2.addPass( renderPass );
 composer2.addPass( outputPass );
-// FXAA is engineered to be applied towards the end of engine post processing after conversion to low dynamic range and conversion to the sRGB color space for display.
+
+			// FXAA is engineered to be applied towards the end of engine post processing after conversion to low dynamic range and conversion to the sRGB color space for display.
 composer2.addPass( fxaaPass );
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -112,7 +118,7 @@ const light = new THREE.AmbientLight(0xe6ffff,.9305777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-material = new THREE.MeshStandardMaterial({
+const material = new THREE.MeshStandardMaterial({
 map: image,
 side: THREE.DoubleSide,
 });
@@ -123,6 +129,7 @@ const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
 material.roughness=.5;
 material.roughnessMap=image;
+      
         //  bump map
 const displacementMap = material.displacementMap;
 const exportCanvas = document.createElement('canvas');
@@ -143,10 +150,9 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 // Put the inverted data back on the canvas
 ctx.putImageData(imageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
-imageDataUrlE = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 material.bumpMap=bumpTexture;
-material.bumpScale=.5;
+material.bumpScale=.25;
 materialE=material;
 material.needsUpdate = true;
 }
@@ -160,6 +166,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w*4, h*4);
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
+
 scene.add(plane);
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x1fe5d8, 34.420)
@@ -219,50 +226,26 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
 const controls = new OrbitControls( camera, renderer.domElement );
-controls.enable
 	
-const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
-const wobbleSpeed = 5;     // Faster wobble speed
-// Access the displacement map and its data
-
+controls.enableDamping = true;
+	
 renderer.setAnimationLoop(() => {
       // Object dance - Faster and more energetic
-const time = performance.now() * 0.001;
-const displacementMap = imageDataUrlE; // Assuming you have a reference to the material
-const displacementData = displacementMap.image.data; // Assuming the displacement map is an image texture
-    // Iterate through displacement map pixels and move vertices accordingly
-const width = displacementMap.image.width;
-const height = displacementMap.image.height;
-for (let x = 0; x < width; x++) {
-for (let y = 0; y < height; y++) {
-const index = (y * width + x) * 4; // Assuming 4 channels per pixel (RGBA)
-// Get displacement value (you might need to adjust this based on your map)
-const displacementValue = displacementData[index]; 
-// Calculate vertex index based on x, y
-const vertexIndex = (y * (width + 1) + x) * 3; // Assuming a PlaneGeometry
-// Apply movement to the vertex based on displacement and time
-geometry.attributes.position.array[vertexIndex] += 
-wobbleAmount * displacementValue/255 * Math.sin(time * wobbleSpeed + x/width * Math.PI * 2);
-geometry.attributes.position.array[vertexIndex + 1] += 
-wobbleAmount * displacementValue/255 * Math.cos(time * wobbleSpeed * 1.5 + y/height * Math.PI * 2);
-// You can add z-axis movement as well if neededDamping = true;
-}
-}		
-/*	// camera wobble
+const time = performance.now() * 0.001; 
+const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
+const wobbleSpeed = 5;     // Faster wobble speed
 camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
 camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 camera.lookAt(scene.position); // Make the camera look at the center
-*/
-	
+
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
 spotLight2.position.x = Math.cos( time ) * 1.15;
 spotLight2.position.z *= Math.sin( time ) * 1.25;
 spotLight3.position.x = Math.cos( time ) *  1.15;
 spotLight3.position.z = Math.sin( time ) *  .5;
-    geometry.attributes.position.needsUpdate = true; 
 
 // lightHelper1.update();
 // lightHelper2.update();
