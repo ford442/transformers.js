@@ -90,7 +90,7 @@ map: image,
 side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
-material.castShadow = true;
+// material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
@@ -119,7 +119,7 @@ scene.add( spotLight1 );
 spotLight1.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight1.target ); 
 
-const spotLight2 = new THREE.SpotLight(0xbb0707, 5.0, 2.93, 0.35, 0.3, 0.18)
+const spotLight2 = new THREE.SpotLight(0xbb0707, 115.0, 2.93, 0.35, 0.3, 0.18)
 spotLight2.position.set(0, 2.38, 0.81)
 spotLight2.castShadow = true;
 spotLight2.angle = .24;
