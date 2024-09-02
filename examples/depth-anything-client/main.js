@@ -231,11 +231,12 @@ const controls = new OrbitControls( camera, renderer.domElement );
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
+const positionAttribute = geometry.attributes.position;
+positionAttribute.needsUpdate = true; 
 
 renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
       // Object wobble
-const positionAttribute = geometry.attributes.position;
     // Iterate through vertices and apply movement
 for (let i = 0; i < positionAttribute.count; i++) {
         const x = positionAttribute.getX(i);
@@ -251,7 +252,6 @@ for (let i = 0; i < positionAttribute.count; i++) {
         // positionAttribute.setZ(i, z + wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777)); 
 }
     // Mark the position attribute as needing an update
-positionAttribute.needsUpdate = true; 
 	
 /*	// camera wobble
 camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
