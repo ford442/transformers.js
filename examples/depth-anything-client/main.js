@@ -18,7 +18,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-const DEFAULT_SCALE = 0.354;
+const DEFAULT_SCALE = 0.384;
 
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
@@ -34,7 +34,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE,materialE,dataE;
+let depthE,materialE;
 let composer1, composer2, fxaaPass;
 
 let moveForward=false;
@@ -56,7 +56,7 @@ img.onload = async () => {
 const canvas2 = document.createElement('canvas');
 canvas2.width = img.width;
 canvas2.height = img.height;
-const ctx = canvas2.getContext('2d',{alpha:true,antialias: true,premultipliedAlpha:false});
+const ctx = canvas2.getContext('2d',{alpha:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
@@ -139,13 +139,13 @@ const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
 // ctx.imageSmoothingEnabled =false;
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
-dataE = imageData.data;
+const data = imageData.data;
 // Invert the image data
-for (let i = 0; i < dataE.length; i += 4) {
-dataE[i] = 255 - dataE[i];     // Red
-dataE[i + 1] = 255 - dataE[i + 1]; // Green
-dataE[i + 2] = 255 - dataE[i + 2]; // Blue
-// dataE[i + 3] is the alpha channel, leave it unchanged
+for (let i = 0; i < data.length; i += 4) {
+data[i] = 255 - data[i];     // Red
+data[i + 1] = 255 - data[i + 1]; // Green
+data[i + 2] = 255 - data[i + 2]; // Blue
+// data[i + 3] is the alpha channel, leave it unchanged
 }
 // Put the inverted data back on the canvas
 ctx.putImageData(imageData, 0, 0);
@@ -226,52 +226,50 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
 const controls = new OrbitControls( camera, renderer.domElement );
+// controls.enable
 	
-controls.enableDamping = true;
-	
+const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
+const wobbleSpeed = 5;     // Faster wobble speed
+// Access the displacement map and its data
+
 renderer.setAnimationLoop(() => {
       // Object dance - Faster and more energetic
 const time = performance.now() * 0.001; 
-const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
-const wobbleSpeed = 5;
-    // Access the displacement map and its data
 const displacementMap = material.displacementMap; // Assuming you have a reference to the material
 const displacementData = displacementMap.image.data; // Assuming the displacement map is an image texture
     // Iterate through displacement map pixels and move vertices accordingly
 const width = displacementMap.image.width;
 const height = displacementMap.image.height;
 for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-            const index = (y * width + x) * 4; // Assuming 4 channels per pixel (RGBA)
-            // Get displacement value (you might need to adjust this based on your map)
-            const displacementValue = displacementData[index]; 
-            // Calculate vertex index based on x, y
-            const vertexIndex = (y * (width + 1) + x) * 3; // Assuming a PlaneGeometry
-            // Apply movement to the vertex based on displacement and time
-            const wobbleAmount = 0.07;
-            const wobbleSpeed = 5;
-            geometry.attributes.position.array[vertexIndex] += 
-                wobbleAmount * displacementValue/255 * Math.sin(time * wobbleSpeed + x/width * Math.PI * 2);
-            geometry.attributes.position.array[vertexIndex + 1] += 
-                wobbleAmount * displacementValue/255 * Math.cos(time * wobbleSpeed * 1.5 + y/height * Math.PI * 2);
-            // You can add z-axis movement as well if needed
-        }
+for (let y = 0; y < height; y++) {
+const index = (y * width + x) * 4; // Assuming 4 channels per pixel (RGBA)
+// Get displacement value (you might need to adjust this based on your map)
+const displacementValue = displacementData[index]; 
+// Calculate vertex index based on x, y
+const vertexIndex = (y * (width + 1) + x) * 3; // Assuming a PlaneGeometry
+// Apply movement to the vertex based on displacement and time
+geometry.attributes.position.array[vertexIndex] += 
+wobbleAmount * displacementValue/255 * Math.sin(time * wobbleSpeed + x/width * Math.PI * 2);
+geometry.attributes.position.array[vertexIndex + 1] += 
+wobbleAmount * displacementValue/255 * Math.cos(time * wobbleSpeed * 1.5 + y/height * Math.PI * 2);
+// You can add z-axis movement as well if neededDamping = true;
 }
-    // Update geometry to reflect the changes
-geometry.attributes.position.needsUpdate = true; 
-/*	// camera wobble 
+}		
+/*	// camera wobble
 camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
 camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 camera.lookAt(scene.position); // Make the camera look at the center
 */
+	
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
 spotLight2.position.x = Math.cos( time ) * 1.15;
 spotLight2.position.z *= Math.sin( time ) * 1.25;
 spotLight3.position.x = Math.cos( time ) *  1.15;
 spotLight3.position.z = Math.sin( time ) *  .5;
+geometry.attributes.position.needsUpdate = true; 
 // lightHelper1.update();
 // lightHelper2.update();
 renderer.render(scene, camera);
