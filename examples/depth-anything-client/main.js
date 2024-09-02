@@ -34,7 +34,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE,materialE,material;
+let depthE,materialE,material,imageDataUrlE;
 let composer1, composer2, fxaaPass;
 
 let moveForward=false;
@@ -143,6 +143,7 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 // Put the inverted data back on the canvas
 ctx.putImageData(imageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
+imageDataUrlE = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 material.bumpMap=bumpTexture;
 material.bumpScale=.5;
@@ -159,7 +160,6 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w*4, h*4);
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
-
 scene.add(plane);
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x1fe5d8, 34.420)
@@ -227,10 +227,8 @@ const wobbleSpeed = 5;     // Faster wobble speed
 
 renderer.setAnimationLoop(() => {
       // Object dance - Faster and more energetic
-const time = performance.now() * 0.001; 
-	
-const displacementMap = material.displacementMap; // Assuming you have a reference to the material
-	
+const time = performance.now() * 0.001;
+const displacementMap = imageDataUrlE; // Assuming you have a reference to the material
 const displacementData = displacementMap.image.data; // Assuming the displacement map is an image texture
     // Iterate through displacement map pixels and move vertices accordingly
 const width = displacementMap.image.width;
