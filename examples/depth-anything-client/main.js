@@ -114,7 +114,7 @@ composer2.addPass( outputPass );
 composer2.addPass( fxaaPass );
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const light = new THREE.AmbientLight(0xe6ffff,.9305777);
+const light = new THREE.AmbientLight(0xe6ffff,.69305777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
