@@ -92,6 +92,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
+const renderPass = new RenderPass();
 composer1 = new EffectComposer( renderer );
 composer1.addPass( renderPass );
 composer1.addPass( outputPass );
