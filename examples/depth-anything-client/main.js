@@ -89,10 +89,8 @@ scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 camera.position.z = 2;
 scene.add(camera);
-
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
 // const rendererW = new THREE.WebGPU({ canvas, antialias: true,premultipliedAlpha:false });
-
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
@@ -100,17 +98,13 @@ const renderPass = new RenderPass();
 composer1 = new EffectComposer( renderer );
 composer1.addPass( renderPass );
 composer1.addPass( outputPass );
-
 const pixelRatio = renderer.getPixelRatio();
-
 fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( container.offsetWidth * pixelRatio );
 fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( container.offsetHeight * pixelRatio );
-
 composer2 = new EffectComposer( renderer );
 composer2.addPass( renderPass );
 composer2.addPass( outputPass );
-
-			// FXAA is engineered to be applied towards the end of engine post processing after conversion to low dynamic range and conversion to the sRGB color space for display.
+// FXAA is engineered to be applied towards the end of engine post processing after conversion to low dynamic range and conversion to the sRGB color space for display.
 composer2.addPass( fxaaPass );
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -129,7 +123,6 @@ const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
 material.roughness=.5;
 material.roughnessMap=image;
-      
         //  bump map
 const displacementMap = material.displacementMap;
 const exportCanvas = document.createElement('canvas');
@@ -152,7 +145,7 @@ ctx.putImageData(imageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 material.bumpMap=bumpTexture;
-material.bumpScale=.25;
+material.bumpScale=.5;
 materialE=material;
 material.needsUpdate = true;
 }
@@ -235,7 +228,7 @@ const wobbleSpeed = 5;     // Faster wobble speed
 renderer.setAnimationLoop(() => {
       // Object dance - Faster and more energetic
 const time = performance.now() * 0.001; 
-	const displacementMap = material.displacementMap; // Assuming you have a reference to the material
+const displacementMap = materialE.displacementMap; // Assuming you have a reference to the material
 const displacementData = displacementMap.image.data; // Assuming the displacement map is an image texture
     // Iterate through displacement map pixels and move vertices accordingly
 const width = displacementMap.image.width;
