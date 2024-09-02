@@ -235,9 +235,9 @@ const wobbleSpeed = 5;     // Faster wobble speed
 renderer.setAnimationLoop(() => {
       // Object wobble
 const time = performance.now() * 0.001; 
-geometry.attributes.position.array[vertexIndex] += 
+geometry.attributes.position += 
 wobbleAmount *  Math.sin(time * wobbleSpeed + x/width * Math.PI * 2);
-geometry.attributes.position.array[vertexIndex + 1] += 
+geometry.attributes.position.+= 
 wobbleAmount *  Math.cos(time * wobbleSpeed * 1.5 + y/height * Math.PI * 2);
 // You can add z-axis movement as well if neededDamping = true;
 /*	// camera wobble
