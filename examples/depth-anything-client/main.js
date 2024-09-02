@@ -55,7 +55,7 @@ const canvas2 = document.createElement('canvas');
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
-ctx.imageSmoothingEnabled =false;
+// ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
@@ -134,7 +134,7 @@ exportCanvas.width = displacementMap.image.width;
 exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
-ctx.imageSmoothingEnabled =false;
+// ctx.imageSmoothingEnabled =false;
 
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
 const data = imageData.data;
