@@ -85,7 +85,7 @@ const light = new THREE.AmbientLight(0xffffff, 2.05777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-const material = new THREE.MeshToonMaterial({
+const material = new THREE.MeshStandardMaterial({
 map: image,
 side: THREE.DoubleSide,
 });
