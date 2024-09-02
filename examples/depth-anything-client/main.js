@@ -90,7 +90,7 @@ map: image,
 side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
-material.castShadow = true;
+// material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
