@@ -246,10 +246,12 @@ for (let i = 0; i < positionAttribute.count; i++) {
         const wobbleAmount = 0.07;
         const wobbleSpeed = 5;
         // Apply wobble to x and y positions
-        positionAttribute.setX(i, x + wobbleAmount * Math.sin(time * wobbleSpeed + x * Math.PI * 2));
-        positionAttribute.setY(i, y + wobbleAmount * Math.cos(time * wobbleSpeed * 1.5 + y * Math.PI * 2));
-        // Optional: Apply wobble to z position
-        // positionAttribute.setZ(i, z + wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777)); 
+	const randomOffset = Math.random() * 0.5; // Adjust 0.5 for randomness intensity
+
+
+positionAttribute.setX(i, x + wobbleAmount * Math.sin(time * wobbleSpeed + i * 0.5 + randomOffset));
+positionAttribute.setY(i, y + wobbleAmount * Math.cos(time * wobbleSpeed * 1.5 + i * 0.3 + randomOffset));
+// positionAttribute.setZ(i, z + wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777)); 
 }
     // Mark the position attribute as needing an update
 	
