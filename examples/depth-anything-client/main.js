@@ -95,7 +95,20 @@ material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
 material.roughness=.5;
+      
 material.roughnessMap=image;
+      
+        //  bump map
+const displacementMap = material.displacementMap;
+const exportCanvas = document.createElement('canvas');
+exportCanvas.width = displacementMap.image.width;
+exportCanvas.height = displacementMap.image.height;
+const ctx = exportCanvas.getContext('2d');
+ctx.drawImage(displacementMap.image, 0, 0);
+const imageData = exportCanvas.toDataURL('image/jpeg',1.0);
+material.bumpMap=imageData;
+material.bumpScale=.5;
+
 materialE=material;
 material.needsUpdate = true;
 }
@@ -141,6 +154,7 @@ scene.add( spotLight2.target );
 // const lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
 // scene.add( lightHelper1, lightHelper2);
 
+      
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -286,7 +300,7 @@ exportCanvas.width = displacementMap.image.width;
 exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
-const imageData = exportCanvas.toDataURL('image/jpeg',1.0); ;
+const imageData = exportCanvas.toDataURL('image/jpeg',1.0);
 // const blob2 = new Blob([imageData.data], { type: 'image/jpeg' });
 const link2 = document.createElement('a');
 link2.href = imageData;
