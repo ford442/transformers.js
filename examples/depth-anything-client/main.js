@@ -18,7 +18,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-const DEFAULT_SCALE = 0.384;
+const DEFAULT_SCALE = 0.354;
 
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
@@ -34,7 +34,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE,materialE;
+let depthE,materialE,dataE;
 let composer1, composer2, fxaaPass;
 
 let moveForward=false;
@@ -56,7 +56,7 @@ img.onload = async () => {
 const canvas2 = document.createElement('canvas');
 canvas2.width = img.width;
 canvas2.height = img.height;
-const ctx = canvas2.getContext('2d',{alpha:true});
+const ctx = canvas2.getContext('2d',{alpha:true,antialias: true,premultipliedAlpha:false});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
@@ -139,7 +139,7 @@ const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
 // ctx.imageSmoothingEnabled =false;
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
-const data = imageData.data;
+dataE = imageData.data;
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
 data[i] = 255 - data[i];     // Red
