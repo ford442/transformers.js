@@ -7,6 +7,13 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
+
+
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 const DEFAULT_SCALE = 0.384;
@@ -26,6 +33,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
+let composer1, composer2, fxaaPass;
 
 let moveForward=false;
 let moveBackward=false;
@@ -47,6 +55,7 @@ const canvas2 = document.createElement('canvas');
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true});
+ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 const imageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
@@ -80,6 +89,24 @@ camera.position.z = 2;
 scene.add(camera);
       
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.autoClear = false;
+fxaaPass = new ShaderPass( FXAAShader );
+const outputPass = new OutputPass();
+composer1 = new EffectComposer( renderer );
+composer1.addPass( renderPass );
+composer1.addPass( outputPass );
+
+const pixelRatio = renderer.getPixelRatio();
+
+fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( container.offsetWidth * pixelRatio );
+fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( container.offsetHeight * pixelRatio );
+
+composer2 = new EffectComposer( renderer );
+composer2.addPass( renderPass );
+composer2.addPass( outputPass );
+
+			// FXAA is engineered to be applied towards the end of engine post processing after conversion to low dynamic range and conversion to the sRGB color space for display.
+composer2.addPass( fxaaPass );
       
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -106,6 +133,8 @@ exportCanvas.width = displacementMap.image.width;
 exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d');
 ctx.drawImage(displacementMap.image, 0, 0);
+ctx.imageSmoothingEnabled =false;
+
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
 const data = imageData.data;
 // Invert the image data
