@@ -34,7 +34,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
-let depthE,materialE;
+let depthE,materialE,material;
 let composer1, composer2, fxaaPass;
 
 let moveForward=false;
@@ -112,7 +112,7 @@ const light = new THREE.AmbientLight(0xe6ffff,.9305777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
-const material = new THREE.MeshStandardMaterial({
+material = new THREE.MeshStandardMaterial({
 map: image,
 side: THREE.DoubleSide,
 });
@@ -228,7 +228,11 @@ const wobbleSpeed = 5;     // Faster wobble speed
 renderer.setAnimationLoop(() => {
       // Object dance - Faster and more energetic
 const time = performance.now() * 0.001; 
-const displacementMap = materialE.displacementMap; // Assuming you have a reference to the material
+
+	
+const displacementMap = material.displacementMap; // Assuming you have a reference to the material
+
+	
 const displacementData = displacementMap.image.data; // Assuming the displacement map is an image texture
     // Iterate through displacement map pixels and move vertices accordingly
 const width = displacementMap.image.width;
