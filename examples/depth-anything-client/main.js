@@ -233,13 +233,26 @@ const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
 
 renderer.setAnimationLoop(() => {
-      // Object wobble
 const time = performance.now() * 0.001; 
-geometry.attributes.position += 
-wobbleAmount *  Math.sin(time * wobbleSpeed + x/width * Math.PI * 2);
-geometry.attributes.position.+= 
-wobbleAmount *  Math.cos(time * wobbleSpeed * 1.5 + y/height * Math.PI * 2);
-// You can add z-axis movement as well if neededDamping = true;
+      // Object wobble
+const positionAttribute = geometry.attributes.position;
+    // Iterate through vertices and apply movement
+for (let i = 0; i < positionAttribute.count; i++) {
+        const x = positionAttribute.getX(i);
+        const y = positionAttribute.getY(i);
+        // const z = positionAttribute.getZ(i);   
+ // Uncomment if you need z-axis movement
+        const wobbleAmount = 0.07;
+        const wobbleSpeed = 5;
+        // Apply wobble to x and y positions
+        positionAttribute.setX(i, x + wobbleAmount * Math.sin(time * wobbleSpeed + x * Math.PI * 2));
+        positionAttribute.setY(i, y + wobbleAmount * Math.cos(time * wobbleSpeed * 1.5 + y * Math.PI * 2));
+        // Optional: Apply wobble to z position
+        // positionAttribute.setZ(i, z + wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777)); 
+}
+    // Mark the position attribute as needing an update
+positionAttribute.needsUpdate = true; 
+	
 /*	// camera wobble
 camera.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 camera.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
