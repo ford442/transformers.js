@@ -110,6 +110,7 @@ renderer.setPixelRatio(window.devicePixelRatio);
 const light = new THREE.AmbientLight(0xcc0000,.49305777);
 scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
+image.anisotropy=4;
 image.colorSpace = THREE.SRGBColorSpace;
 const material = new THREE.MeshStandardMaterial({
 map: image,
@@ -127,6 +128,7 @@ exportCanvas.height = image.height;
 	
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 const displace= new THREE.CanvasTexture(depthData);
+// displace.anisotropy=4;
 const imgData=displace.image;
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
