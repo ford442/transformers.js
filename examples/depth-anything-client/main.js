@@ -284,7 +284,7 @@ spotLight4.position.z = Math.sin( time ) *  .665;
 // lightHelper1.update();
 // lightHelper2.update();
 // controls.update( clock.getDelta() );
-controls.update();
+// controls.update();
 renderer.render(scene, camera);
 });
 window.addEventListener('resize', () => {
