@@ -247,8 +247,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
 const controls = new FlyControls( camera, renderer.domElement );
-controls.movementSpeed = 3; // Adjust as needed
-controls.lookSpeed  =15.2; 
+controls.movementSpeed = 2; // Adjust as needed
+controls.lookSpeed  =45.2; 
 	
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
