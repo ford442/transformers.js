@@ -132,7 +132,6 @@ const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height
 const data = imageData.data;
 	// get depthmap
 const mesh = new THREE.Mesh(geometry, material);
-// Add a displacement modifier
 
 	
 // Invert the image data
@@ -158,7 +157,18 @@ material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
-const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
+// const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
+
+// Add a displacement modifier
+const params = {
+    split:          true,       // optional, default: true
+    uvSmooth:       false,      // optional, default: false
+    preserveEdges:  false,      // optional, default: false
+    flatOnly:       false,      // optional, default: false
+    maxTriangles:   Infinity,   // optional, default: Infinity
+};
+const geometry = LoopSubdivision.modify(new THREE.PlaneGeometry(pw, ph, w*2, h*2), iterations, params);
+	
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
