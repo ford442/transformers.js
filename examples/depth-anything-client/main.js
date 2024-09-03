@@ -134,8 +134,12 @@ const imgDataD=displaceData.data;
 
 const data = origImageData.data;
 //  image displacement
-console.log(imgDataD[0],imgDataD[1],imgDataD[2],imgDataD[3]);
-console.log(data[0],data[1],data[2],data[3]);
+for(var i=0;i<42;i++){
+console.log(imgDataD[i]);
+}
+for(var i=0;i<42;i++){
+console.log(data[i]);
+}
 material.displacementMap =displace;
 material.roughness=.75;
 material.metalness=.15;
