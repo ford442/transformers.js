@@ -147,7 +147,7 @@ data16[i+1]=greyData16;
 data16[i+2]=greyData16;
 // var disData=32.0-(greyData/8.);
 const disData=2.0-(greyData/64.);
-const disData16 = Math.round(disData * (65535 / 255));
+const disData16 = disData * (65535 / 255);
 imgDataD[i]-=disData;
 imgDataD[i+1]-=disData;
 imgDataD[i+2]-=disData;
@@ -155,6 +155,7 @@ data16[i]-=disData16;
 data16[i+1]-=disData16;
 data16[i+2]-=disData16;
 }
+	console.log(data16[0],data16[1],data16[2],data16[3]);
 // const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.LuminanceFormat, THREE.UnsignedShortType);
 const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.RGBAFormat, THREE.UnsignedShortType);
 texture16.needsUpdate = true;
