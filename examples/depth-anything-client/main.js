@@ -87,7 +87,7 @@ const height = canvas.height = imageContainer.offsetHeight;
 scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(120, width / height, .01, 10000);
 // const camera = new THREE.PerspectiveCamera(120, width / height);
-// camera.position.z = 1;
+camera.position.z = 1;
 scene.add(camera);
 // const renderer = new THREE.WebGPURenderer();
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
