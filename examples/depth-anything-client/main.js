@@ -119,11 +119,7 @@ material.displacementScale = DEFAULT_SCALE;
 
 	
 const setDisplacementMap = (depthData) => {
-material.displacementMap = new THREE.CanvasTexture(depthData);
-material.roughness=.5;
-// material.roughnessMap=image;
-        //  bump map
-const displacementMap = material.displacementMap;
+
 const exportCanvas = document.createElement('canvas');
 exportCanvas.width = displacementMap.image.width;
 exportCanvas.height = displacementMap.image.height;
@@ -133,6 +129,14 @@ ctx.drawImage(image, 0, 0);
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
 const data = imageData.data;
 //  image displacement
+	console.log(data[0],data[1],data[2],data[3]);
+material.displacementMap = new THREE.CanvasTexture(depthData);
+material.roughness=.5;
+// material.roughnessMap=image;
+        //  bump map
+const displacementMap = material.displacementMap;
+	console.log(depthData[0],depthData[1],depthData[2],depthData[3]);
+
 
 	
 // Invert the image data
