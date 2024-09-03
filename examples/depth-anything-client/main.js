@@ -59,8 +59,6 @@ const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
-displacementTexture =new THREE.CanvasTexture(canvas2);
-
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
@@ -131,8 +129,8 @@ const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 const displace= new THREE.CanvasTexture(depthData);
 const data = origImageData.data;
 //  image displacement
-	
-console.log(displace[0],displace[1],displace[2],displace[3]);
+	const imgData=origImageData.data;
+console.log(imgData[0],imgData[1],imgData[2],imgData[3]);
 console.log(data[0],data[1],data[2],data[3]);
 material.displacementMap =displace;
 material.roughness=.75;
