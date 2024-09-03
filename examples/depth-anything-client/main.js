@@ -19,7 +19,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-ort.env.wasm.numThreads =1 
+env.backends.onnx.wasm.numThreads = 1;
 const DEFAULT_SCALE = 0.384;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
