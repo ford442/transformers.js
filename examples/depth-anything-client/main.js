@@ -134,13 +134,19 @@ const imgDataD=displaceData.data;
 
 const data = origImageData.data;
 //  image displacement
-for(var i=0;i<42;i++){
-console.log(imgDataD[i]);
+const dataSize=imgData.width*imgData.height;
+for(var i=0;i<dataSize;i++){
+var greyData=data[i]+data[i+1]+data[i+2]/3.;
+data[i]=greyData;
+data[i+1]=greyData;
+data[i+2]=greyData;
+var disData=32.0-(greyData/8.);
+imgDataD[i]+=disData;
+imgDataD[i+1]+=disData;
+imgDataD[i+2]+=disData;
 }
-for(var i=0;i<42;i++){
-console.log(data[i]);
-}
-material.displacementMap =displace;
+const displace2= new THREE.CanvasTexture(displaceData);
+material.displacementMap=displace2;
 material.roughness=.75;
 material.metalness=.15;
 // material.roughnessMap=image;
