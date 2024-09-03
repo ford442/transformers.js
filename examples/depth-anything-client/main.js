@@ -114,17 +114,11 @@ const material = new THREE.MeshStandardMaterial({
 map: image,
 side: THREE.DoubleSide,
 });
-const material2 = new THREE.MeshStandardMaterial({
-map: image,
-side: THREE.DoubleSide,
-});
 material.receiveShadow = true;
-material2.receiveShadow = true;
 material.displacementScale = DEFAULT_SCALE;
-material2.displacementScale = 5;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
-// material.roughness=.5;
+material.roughness=.5;
 // material.roughnessMap=image;
         //  bump map
 const displacementMap = material.displacementMap;
@@ -135,9 +129,11 @@ const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 ctx.drawImage(displacementMap.image, 0, 0);
 // ctx.imageSmoothingEnabled=false;
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
-const displacementTexture =new THREE.CanvasTexture(exportCanvas);
-material2.displacementMap=displacementTexture;
 const data = imageData.data;
+	// get depthmap
+const mesh = new THREE.Mesh(geometry, material);
+
+	
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
 data[i] = 255 - data[i];     // Red
@@ -151,10 +147,9 @@ const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.SRGBColorSpace; // LinearSRGBColorSpace
 material.bumpMap=bumpTexture;
-material.bumpScale=1.3;
+material.bumpScale=1.25;
 materialE=material;
 material.needsUpdate = true;
-material2.needsUpdate = true;
 }
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
@@ -173,10 +168,8 @@ const params = {
     maxTriangles:   Infinity,   // optional, default: Infinity
 };
 const geometry2 = LoopSubdivision.modify(geometry, 1, params);
-	
-const plane = new THREE.InstancedMesh(geometry2, [material, material2], 2);
 
-// const plane = new THREE.Mesh(geometry, material);
+const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
