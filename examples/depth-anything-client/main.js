@@ -15,6 +15,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
+import { LoopSubdivision } from 'three-subdivide';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
@@ -129,6 +130,11 @@ ctx.drawImage(displacementMap.image, 0, 0);
 // ctx.imageSmoothingEnabled=false;
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
 const data = imageData.data;
+	// get depthmap
+const mesh = new THREE.Mesh(geometry, material);
+// Add a displacement modifier
+
+	
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
 data[i] = 255 - data[i];     // Red
@@ -140,8 +146,9 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 ctx.putImageData(imageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
-// material.bumpMap=bumpTexture;
-material.bumpScale=.25;
+bumpTexture.colorSpace = THREE.SRGBColorSpace; // LinearSRGBColorSpace
+material.bumpMap=bumpTexture;
+material.bumpScale=1.25;
 materialE=material;
 material.needsUpdate = true;
 }
