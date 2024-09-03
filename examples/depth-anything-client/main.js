@@ -246,7 +246,7 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
-const controls = new FirstPersonControls( camera, renderer.domElement );
+const controls = new OrbitControls( camera, renderer.domElement );
 controls.movementSpeed = 30; // Adjust as needed
 controls.lookSpeed  =.2; 
 	
@@ -284,7 +284,8 @@ spotLight4.position.z = Math.sin( time ) *  .665;
 // lightHelper1.update();
 // lightHelper2.update();
 renderer.render(scene, camera);
-controls.update( clock.getDelta() );
+// controls.update( clock.getDelta() );
+controls.update();
 });
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
