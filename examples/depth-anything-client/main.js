@@ -159,6 +159,8 @@ const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
+	//  fog
+scene.fog = new THREE.Fog( 0xcccccc, 0.01, 105 );
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
 spotLight1.position.set(0, 1.38, 0.181)
