@@ -148,9 +148,9 @@ var disData16=(2.0-(greyData/64.))*(65535 / 255);
 imgDataD[i]-=disData;
 imgDataD[i+1]-=disData;
 imgDataD[i+2]-=disData;
-	data16[i]-=disData16;
-	data16[i+1]-=disData16;
-	data16[i+2]-=disData16;
+	data16[i]=disData16-greyData16;
+	data16[i+1]=disData16-greyData16;
+	data16[i+2]=disData16-greyData16;
 }
 const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.LuminanceFormat, THREE.UnsignedShortType);
 const displace2= new THREE.CanvasTexture(displaceData);
