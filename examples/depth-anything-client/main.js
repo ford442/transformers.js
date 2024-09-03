@@ -152,9 +152,9 @@ const disData16 =512.-((greyData16/64.)*(65535 / 255));
 imgDataD[i]-=disData;
 imgDataD[i+1]-=disData;
 imgDataD[i+2]-=disData;
-data16[i]-=disData16;
-data16[i+1]-=disData16;
-data16[i+2]-=disData16;
+data16[i]+=disData16;
+data16[i+1]+=disData16;
+data16[i+2]+=disData16;
 data16[i+3]=65535;
 }
 	console.log(imgDataD[0],imgDataD[1],imgDataD[2],imgDataD[3],imgDataD[4],imgDataD[5],imgDataD[6],imgDataD[7]);
