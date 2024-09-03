@@ -137,15 +137,17 @@ const data = origImageData.data;
 //  image displacement
 const dataSize=origImageData.data.length;
 for(var i=0;i<dataSize;i++){
-var greyData=data[i]+data[i+1]+data[i+2]/3.;
-var greyData16=(data[i]+data[i+1]+data[i+2]/3.)*(65535 / 255);
+const greyData=data[i]+data[i+1]+data[i+2]/3.;
+const greyData16=(data[i]+data[i+1]+data[i+2]/3.)*(65535 / 255);
 data[i]=greyData;
 data[i+1]=greyData;
 data[i+2]=greyData;
-	
+data16[i]=greyData16;
+data16[i+1]=greyData16;
+data16[i+2]=greyData16;
 // var disData=32.0-(greyData/8.);
-var disData=2.0-(greyData/64.);
-var disData16=(2.0-(greyData/64.))*(65535 / 255);
+const disData=2.0-(greyData/64.);
+const disData16 = Math.round(disData * (65535 / 255));
 imgDataD[i]-=disData;
 imgDataD[i+1]-=disData;
 imgDataD[i+2]-=disData;
