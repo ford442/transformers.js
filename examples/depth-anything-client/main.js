@@ -110,7 +110,7 @@ renderer.setPixelRatio(window.devicePixelRatio);
 const light = new THREE.AmbientLight(0xcc0000,.49305777);
 scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
-image.anisotropy=4;
+image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
 const material = new THREE.MeshStandardMaterial({
 map: image,
@@ -186,7 +186,7 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 ctx.putImageData(origImageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
-bumpTexture.colorSpace = THREE.SRGBColorSpace; // LinearSRGBColorSpace
+bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 material.bumpMap=bumpTexture;
 material.bumpScale=1.25;
 	
