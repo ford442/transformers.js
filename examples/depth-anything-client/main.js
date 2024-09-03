@@ -131,7 +131,7 @@ material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
 material.roughness=.5;
-material.roughnessMap=image;
+// material.roughnessMap=image;
       
         //  bump map
 const displacementMap = material.displacementMap;
@@ -154,7 +154,7 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 ctx.putImageData(imageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
-material.bumpMap=bumpTexture;
+// material.bumpMap=bumpTexture;
 material.bumpScale=.25;
 materialE=material;
 material.needsUpdate = true;
