@@ -149,7 +149,7 @@ data16[i+3]=65535;
 		console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
 // var disData=32.0-(greyData/8.);
 // const disData=(greyData/32.)-4.0;
-const disData=(greyData/64.)-8.0;
+const disData=(greyData/64.)-2.0;
 const disData16 =((greyData16/64.)*(65535 / 255))-512.;
 imgDataD[i]-=disData;
 imgDataD[i+1]-=disData;
@@ -166,7 +166,7 @@ const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, T
 texture16.internalFormat = 'RGBA16F';
 texture16.needsUpdate = true;
 const displace2= new THREE.CanvasTexture(displaceData);
-material.displacementMap=texture16;
+material.displacementMap=displace2;
 material.roughness=.75;
 material.metalness=.15;
 // material.roughnessMap=image;
