@@ -154,7 +154,7 @@ material.bumpMap=bumpTexture;
 material.bumpScale=1.3;
 materialE=material;
 material.needsUpdate = true;
-materia2.needsUpdate = true;
+material2.needsUpdate = true;
 }
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
