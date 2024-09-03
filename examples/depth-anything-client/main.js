@@ -118,8 +118,8 @@ material.receiveShadow = true;
 material.displacementScale = DEFAULT_SCALE;
 
 	
-const setDisplacementMap = (canvas) => {
-material.displacementMap = new THREE.CanvasTexture(canvas);
+const setDisplacementMap = (depthData) => {
+material.displacementMap = new THREE.CanvasTexture(depthData);
 material.roughness=.5;
 // material.roughnessMap=image;
         //  bump map
