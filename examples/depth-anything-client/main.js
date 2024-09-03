@@ -90,7 +90,7 @@ const height = canvas.height = imageContainer.offsetHeight;
 scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 camera.position.z = 2;
-camera.fov=90;
+// camera.fov=90;
 scene.add(camera);
 
 // const renderer = new THREE.WebGPURenderer({ canvas:canvas });
