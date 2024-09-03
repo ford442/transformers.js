@@ -138,7 +138,7 @@ const data = origImageData.data;
 const dataSize=origImageData.data.length;
 for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
-const greyData16=((data[i]+data[i+1]+data[i+2]/3.)/255.)*65535.;
+const greyData16=(data[i]+data[i+1]+data[i+2]/3.)*(65535./255.);
 data[i]=greyData;
 data[i+1]=greyData;
 data[i+2]=greyData;
@@ -148,7 +148,7 @@ data16[i+2]=greyData16;
 data16[i+3]=65535;
 // var disData=32.0-(greyData/8.);
 const disData=2.0-(greyData/64.);
-const disData16 = disData * (65535 / 255);
+const disData16 =512.-((greyData16/64.)*(65535 / 255));
 imgDataD[i]-=disData;
 imgDataD[i+1]-=disData;
 imgDataD[i+2]-=disData;
