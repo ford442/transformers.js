@@ -131,14 +131,14 @@ const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 
 const data = origImageData.data;
 //  image displacement
-	console.log(data[0],data[1],data[2],data[3]);
+console.log(data[0],data[1],data[2],data[3]);
 material.displacementMap = new THREE.CanvasTexture(depthData);
 material.roughness=.75;
 material.metalness=.15;
 // material.roughnessMap=image;
         //  bump map
 const displacementMap = material.displacementMap;
-	console.log(depthData[0],depthData[1],depthData[2],depthData[3]);
+	console.log(displacementMap[0],displacementMap[1],displacementMap[2],displacementMap[3]);
 	
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
