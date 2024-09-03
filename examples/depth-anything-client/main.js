@@ -116,6 +116,8 @@ side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
 material.displacementScale = DEFAULT_SCALE;
+
+	
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
 material.roughness=.5;
@@ -126,12 +128,11 @@ const exportCanvas = document.createElement('canvas');
 exportCanvas.width = displacementMap.image.width;
 exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
-ctx.drawImage(displacementMap.image, 0, 0);
+ctx.drawImage(image, 0, 0);
 // ctx.imageSmoothingEnabled=false;
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
 const data = imageData.data;
-	// get depthmap
-const mesh = new THREE.Mesh(geometry, material);
+//  image displacement
 
 	
 // Invert the image data
