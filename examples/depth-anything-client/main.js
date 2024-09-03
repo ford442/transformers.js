@@ -134,7 +134,7 @@ const imgDataD=displaceData.data;
 
 const data = origImageData.data;
 //  image displacement
-const dataSize=imgData.width*imgData.height;
+const dataSize=origImageData.data.length;
 for(var i=0;i<dataSize;i++){
 var greyData=data[i]+data[i+1]+data[i+2]/3.;
 data[i]=greyData;
