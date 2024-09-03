@@ -90,7 +90,7 @@ const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 camera.position.z = 2;
 scene.add(camera);
 
-const renderer = new THREE.WebGPURenderer({ canvas, antialias: true,premultipliedAlpha:false });
+const renderer = new THREE.WebGPURenderer({ canvas });
 // const rendererW = new THREE.WebGPU({ canvas, antialias: true,premultipliedAlpha:false });
 
 renderer.autoClear = false;
