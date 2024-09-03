@@ -23,8 +23,10 @@ const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
-status.textContent = 'Ready';
+// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
+const depth_estimator = await pipeline('depth-estimation', 'Intel/dpt-large',{backend: 'webgpu'});
+
+	status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
