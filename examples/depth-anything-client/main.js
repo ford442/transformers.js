@@ -114,7 +114,7 @@ composer2.addPass( outputPass );
 composer2.addPass( fxaaPass );
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const light = new THREE.AmbientLight(0xe6ffff,.69305777);
+const light = new THREE.AmbientLight(0xcc0000,.49305777);
 scene.add(light);
 const image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
@@ -225,16 +225,16 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
-const controls = new OrbitControls( camera, renderer.domElement );
-// controls.enable
+const controls = new FlyControls( camera, renderer.domElement );
+// controls.movementSpeed = 10; // Adjust as needed
+// controls.rollSpeed = Math.PI / 24; 
 	
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
-
+const clock= new THREE.Clock;
 renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
-  
         // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
       const wobbleAmount = 0.07;
@@ -243,13 +243,12 @@ const time = performance.now() * 0.001;
 plane.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 plane.position.y = wobbleAmount * Math.cos(time * 3.13 * 1.5); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
-plane.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
-camera.position.x = wobbleAmount * Math.sin(time * 2);
- camera.position.y = wobbleAmount * Math.cos(time * 3 * 1.5); // More variation in y-axis frequency
+plane.rotation.z = wobbleAmount * 0.315 * Math.cos(time * wobbleSpeed * 0.578); 
+camera.position.x = wobbleAmount * Math.sin(time * 1.77777);
+camera.position.y = wobbleAmount * Math.cos(time * 3 * 1.11115); // More variation in y-axis frequency
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
   // camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 // camera.lookAt(scene.position); // Make the camera look at the center
-
 	
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
@@ -260,7 +259,7 @@ spotLight3.position.z = Math.sin( time ) *  .5;
 // lightHelper1.update();
 // lightHelper2.update();
 renderer.render(scene, camera);
-controls.update();
+controls.update(clock.getDelta()); // clock is a THREE.Clock instance
 });
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
