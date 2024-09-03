@@ -141,10 +141,10 @@ data[i]=greyData;
 data[i+1]=greyData;
 data[i+2]=greyData;
 // var disData=32.0-(greyData/8.);
-var disData=(greyData/16.);
-imgDataD[i]+=disData;
-imgDataD[i+1]+=disData;
-imgDataD[i+2]+=disData;
+var disData=(greyData/32.);
+imgDataD[i]-=disData;
+imgDataD[i+1]-=disData;
+imgDataD[i+2]-=disData;
 }
 const displace2= new THREE.CanvasTexture(displaceData);
 material.displacementMap=displace2;
