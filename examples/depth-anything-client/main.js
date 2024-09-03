@@ -229,9 +229,9 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
-const controls = new PointerLockControls( camera, renderer.domElement );
-controls.movementSpeed = 1; // Adjust as needed
-controls.lookSpeed  =145.2; 
+const controls = new FirstPersonControls( camera, renderer.domElement );
+// controls.movementSpeed = 1; // Adjust as needed
+// controls.lookSpeed  =145.2; 
 
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
@@ -266,7 +266,7 @@ spotLight4.position.x = Math.cos( time ) *  1.015;
 spotLight4.position.z = Math.sin( time ) *  .665;
 // lightHelper1.update();
 // lightHelper2.update();
-// controls.update( clock.getDelta() );
+controls.update( clock.getDelta() );
 // controls.update();
 renderer.render(scene, camera);
 });
