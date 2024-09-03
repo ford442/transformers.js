@@ -44,6 +44,7 @@ const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 let yawObject, pitchObject; // Declare these variables at a higher scope
 const clock= new THREE.Clock;
+let displacementTexture, origImageData;
 
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
@@ -56,8 +57,10 @@ canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
-const imageData = ctx.getImageData(0, 0, img.width, img.height);
-const image = new RawImage(imageData.data, img.width, img.height,4);
+origImageData = ctx.getImageData(0, 0, img.width, img.height);
+const image = new RawImage(origImageData.data, img.width, img.height,4);
+displacementTexture =new THREE.CanvasTexture(canvas2);
+
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
@@ -123,11 +126,11 @@ const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
 exportCanvas.width = image.width;
 exportCanvas.height = image.height;
+	
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 ctx.drawImage(image, 0, 0);
 // ctx.imageSmoothingEnabled=false;
-const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
-const data = imageData.data;
+const data = origImageData.data;
 //  image displacement
 	console.log(data[0],data[1],data[2],data[3]);
 material.displacementMap = new THREE.CanvasTexture(depthData);
@@ -137,8 +140,6 @@ material.metalness=.15;
         //  bump map
 const displacementMap = material.displacementMap;
 	console.log(depthData[0],depthData[1],depthData[2],depthData[3]);
-
-
 	
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
