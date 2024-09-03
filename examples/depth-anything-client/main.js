@@ -246,7 +246,7 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
-const controls = new FlyControls( camera, renderer.domElement );
+const controls = new FirstPersonControls( camera, renderer.domElement );
 // controls.movementSpeed = 10; // Adjust as needed
 // controls.rollSpeed = Math.PI / 24; 
 	
