@@ -81,7 +81,7 @@ canvas.id='tvi';
 const width = canvas.width = imageContainer.offsetWidth;
 const height = canvas.height = imageContainer.offsetHeight;
 scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(30, width / height, 1, 10000);
+const camera = new THREE.PerspectiveCamera(90, width / height, 1, 10000);
 // const camera = new THREE.PerspectiveCamera(120, width / height);
 camera.position.z = 2;
 scene.add(camera);
