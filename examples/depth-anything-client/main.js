@@ -289,8 +289,6 @@ spotLight4.position.z = Math.sin( time ) *  .665;
 renderer.render(scene, camera);
 });
 
-};
-
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
 const height = imageContainer.offsetHeight;
