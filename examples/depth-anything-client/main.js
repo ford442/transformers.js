@@ -218,6 +218,24 @@ scene.add(spotLight3.shadow.camera);
 scene.add( spotLight3 );
 spotLight3.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight3.target );
+
+	const spotLight4 = new THREE.SpotLight(0xe7ff15, 39.420234)
+spotLight4.position.set(0, 1.38234, 0.81234)
+spotLight4.castShadow = true;
+spotLight4.angle = .12423232;
+spotLight4.penumbra = 0.52223;
+spotLight4.decay = .02;
+spotLight4.distance = 4.778778;     
+spotLight4.visible = true;
+spotLight1.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
+// Same position as LIGHT position.
+spotLight4.shadow.camera.position.copy(spotLight4.position);
+spotLight4.shadow.camera.lookAt(spotLight4.position);
+scene.add(spotLight4.shadow.camera);
+scene.add( spotLight4 );
+spotLight4.target.position.set( 0, 0, 0 ); // Aim at the origin
+scene.add( spotLight4.target );
+	
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.needsUpdate = true;
 renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
@@ -237,8 +255,8 @@ renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
         // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
-      const wobbleAmount = 0.07;
-        const wobbleSpeed = 4;
+const wobbleAmount = 0.07;
+const wobbleSpeed = 4;
 	//  wobble
 plane.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 plane.position.y = wobbleAmount * Math.cos(time * 3.13 * 1.5); // More variation in y-axis frequency
@@ -256,6 +274,8 @@ spotLight2.position.x = Math.cos( time ) * 1.15;
 spotLight2.position.z *= Math.sin( time ) * 1.25;
 spotLight3.position.x = Math.cos( time ) *  1.15;
 spotLight3.position.z = Math.sin( time ) *  .5;
+spotLight4.position.x = Math.cos( time ) *  1.015;
+spotLight4.position.z = Math.sin( time ) *  .665;
 // lightHelper1.update();
 // lightHelper2.update();
 renderer.render(scene, camera);
@@ -403,4 +423,8 @@ fileUpload.addEventListener('change', function (e) {
 
 document.querySelector('#savegltf').addEventListener('click',function(){
 saveSceneAsGLTF();
+});
+const lockBtn=document.querySelector('#lockButton');
+lockBtn.addEventListener('click', () => {
+document.querySelector('#evi').requestPointerLock(); 
 });
