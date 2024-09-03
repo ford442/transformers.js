@@ -33,7 +33,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
-let composer1, composer2, fxaaPass;
+let composer1, composer2, fxaaPass,image;
 let moveForward=false;
 let moveBackward=false;
 let moveLeft=false;
@@ -108,7 +108,7 @@ renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
 const light = new THREE.AmbientLight(0xcc0000,.49305777);
 scene.add(light);
-const image = new THREE.TextureLoader().load(imageDataURL);
+image = new THREE.TextureLoader().load(imageDataURL);
 image.colorSpace = THREE.SRGBColorSpace;
 const material = new THREE.MeshStandardMaterial({
 map: image,
