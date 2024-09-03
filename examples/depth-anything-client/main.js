@@ -282,7 +282,7 @@ spotLight4.position.z = Math.sin( time ) *  .665;
 // lightHelper1.update();
 // lightHelper2.update();
 renderer.render(scene, camera);
-controls.update(clock.getDelta()); // clock is a THREE.Clock instance
+controls.update(); // clock is a THREE.Clock instance
 });
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
