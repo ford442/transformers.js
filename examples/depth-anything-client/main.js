@@ -131,7 +131,8 @@ const data = imageData.data;
 //  image displacement
 	console.log(data[0],data[1],data[2],data[3]);
 material.displacementMap = new THREE.CanvasTexture(depthData);
-material.roughness=.5;
+material.roughness=.75;
+material.metalness=.15;
 // material.roughnessMap=image;
         //  bump map
 const displacementMap = material.displacementMap;
@@ -153,6 +154,7 @@ const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.SRGBColorSpace; // LinearSRGBColorSpace
 material.bumpMap=bumpTexture;
 material.bumpScale=1.25;
+	
 materialE=material;
 material.needsUpdate = true;
 }
