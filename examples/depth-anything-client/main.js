@@ -427,5 +427,5 @@ saveSceneAsGLTF();
 });
 const lockBtn=document.querySelector('#lockButton');
 lockBtn.addEventListener('click', () => {
-document.querySelector('#evi').requestPointerLock(); 
+document.querySelector('#tvi').requestPointerLock(); 
 });
