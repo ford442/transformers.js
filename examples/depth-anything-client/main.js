@@ -246,7 +246,7 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
-const controls = new PointerLockControls( camera, renderer.domElement );
+const controls = new FirstPersonControls( camera, renderer.domElement );
 controls.movementSpeed = 1; // Adjust as needed
 controls.lookSpeed  =145.2; 
 	
