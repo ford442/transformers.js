@@ -249,7 +249,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const controls = new PonterLockControls( camera, renderer.domElement );
 controls.movementSpeed = 1; // Adjust as needed
 controls.lookSpeed  =145.2; 
-	
+scene.add( controls );
+
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
@@ -287,6 +288,9 @@ spotLight4.position.z = Math.sin( time ) *  .665;
 // controls.update();
 renderer.render(scene, camera);
 });
+
+};
+
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
 const height = imageContainer.offsetHeight;
