@@ -222,7 +222,7 @@ scene.add( spotLight3 );
 spotLight3.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight3.target );
 
-	const spotLight4 = new THREE.SpotLight(0xe7ff15, 39.420234)
+const spotLight4 = new THREE.SpotLight(0xe7ff15, 39.420234)
 spotLight4.position.set(0, 1.38234, 0.81234)
 spotLight4.castShadow = true;
 spotLight4.angle = .12423232;
@@ -246,7 +246,7 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
-const controls = new FirstPersonControls( camera, renderer.domElement );
+const controls = new FlyControls( camera, renderer.domElement );
 // controls.movementSpeed = 10; // Adjust as needed
 // controls.rollSpeed = Math.PI / 24; 
 	
