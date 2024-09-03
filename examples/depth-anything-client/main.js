@@ -92,10 +92,8 @@ const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 camera.position.z = 2;
 // camera.fov=90;
 scene.add(camera);
-
-// const renderer = new THREE.WebGPURenderer({ canvas:canvas });
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
-
+const renderer = new THREE.WebGPURenderer();
+// const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
@@ -103,17 +101,12 @@ const renderPass = new RenderPass();
 composer1 = new EffectComposer( renderer );
 composer1.addPass( renderPass );
 composer1.addPass( outputPass );
-
 const pixelRatio = renderer.getPixelRatio();
-
 fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( container.offsetWidth * pixelRatio );
 fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( container.offsetHeight * pixelRatio );
-
 composer2 = new EffectComposer( renderer );
 composer2.addPass( renderPass );
 composer2.addPass( outputPass );
-
-			// FXAA is engineered to be applied towards the end of engine post processing after conversion to low dynamic range and conversion to the sRGB color space for display.
 composer2.addPass( fxaaPass );
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -132,7 +125,6 @@ const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
 material.roughness=.5;
 // material.roughnessMap=image;
-      
         //  bump map
 const displacementMap = material.displacementMap;
 const exportCanvas = document.createElement('canvas');
@@ -140,7 +132,7 @@ exportCanvas.width = displacementMap.image.width;
 exportCanvas.height = displacementMap.image.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 ctx.drawImage(displacementMap.image, 0, 0);
-// ctx.imageSmoothingEnabled =false;
+// ctx.imageSmoothingEnabled=false;
 const imageData = ctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
 const data = imageData.data;
 // Invert the image data
@@ -169,7 +161,6 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
-
 scene.add(plane);
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
@@ -213,7 +204,7 @@ spotLight3.penumbra = 0.52223;
 spotLight3.decay = .02;
 spotLight3.distance = 4.778778;     
 spotLight3.visible = true;
-spotLight1.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
+spotLight3.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
 // Same position as LIGHT position.
 spotLight3.shadow.camera.position.copy(spotLight3.position);
 spotLight3.shadow.camera.lookAt(spotLight3.position);
@@ -230,7 +221,7 @@ spotLight4.penumbra = 0.52223;
 spotLight4.decay = .02;
 spotLight4.distance = 4.778778;     
 spotLight4.visible = true;
-spotLight1.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
+spotLight4.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
 // Same position as LIGHT position.
 spotLight4.shadow.camera.position.copy(spotLight4.position);
 spotLight4.shadow.camera.lookAt(spotLight4.position);
