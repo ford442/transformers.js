@@ -157,7 +157,7 @@ material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
-// const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
+const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
 
 // Add a displacement modifier
 const params = {
@@ -167,15 +167,15 @@ const params = {
     flatOnly:       false,      // optional, default: false
     maxTriangles:   Infinity,   // optional, default: Infinity
 };
-const geometry = LoopSubdivision.modify(new THREE.PlaneGeometry(pw, ph, w*2, h*2), 1, params);
-	
+const geometry2 = LoopSubdivision.modify(geometry, 1, params);
+
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
 
 	//  fog
-scene.tfog = new THREE.Fog( 0xcccccc, 0.1, 10 );
+// scene.tfog = new THREE.Fog( 0xcccccc, 0.1, 10 );
 
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
