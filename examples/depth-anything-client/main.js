@@ -132,21 +132,27 @@ const imgData=displace.image;
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
 const imgDataD=displaceData.data;
-
+const data16=[];
 const data = origImageData.data;
 //  image displacement
 const dataSize=origImageData.data.length;
 for(var i=0;i<dataSize;i++){
 var greyData=data[i]+data[i+1]+data[i+2]/3.;
+var greyData16=(data[i]+data[i+1]+data[i+2]/3.)*(65535 / 255);
 data[i]=greyData;
 data[i+1]=greyData;
 data[i+2]=greyData;
 // var disData=32.0-(greyData/8.);
 var disData=2.0-(greyData/64.);
+var disData16=(2.0-(greyData/64.))*(65535 / 255);
 imgDataD[i]-=disData;
 imgDataD[i+1]-=disData;
 imgDataD[i+2]-=disData;
+	data16=[i]-=disData16;
+	data16=[i+1]-=disData16;
+	data16=[i+2]-=disData16;
 }
+const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.LuminanceFormat, THREE.UnsignedShortType);
 const displace2= new THREE.CanvasTexture(displaceData);
 material.displacementMap=displace2;
 material.roughness=.75;
