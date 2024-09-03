@@ -90,7 +90,7 @@ const height = canvas.height = imageContainer.offsetHeight;
 scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 camera.position.z = 2;
-camera.fov=90;
+// camera.fov=90;
 scene.add(camera);
 
 // const renderer = new THREE.WebGPURenderer({ canvas:canvas });
@@ -246,7 +246,7 @@ renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
-const controls = new FlyControls( camera, renderer.domElement );
+const controls = new FirstPersonControls( camera, renderer.domElement );
 // controls.movementSpeed = 10; // Adjust as needed
 // controls.rollSpeed = Math.PI / 24; 
 	
