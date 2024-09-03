@@ -129,7 +129,7 @@ const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 const displace= new THREE.CanvasTexture(depthData);
 const data = origImageData.data;
 //  image displacement
-	const imgData=displace.source;
+	const imgData=displace;
 console.log(imgData[0],imgData[1],imgData[2],imgData[3]);
 console.log(data[0],data[1],data[2],data[3]);
 material.displacementMap =displace;
