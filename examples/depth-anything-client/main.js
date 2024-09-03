@@ -146,6 +146,7 @@ data16[i]=greyData16;
 data16[i+1]=greyData16;
 data16[i+2]=greyData16;
 data16[i+3]=65535;
+		console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
 // var disData=32.0-(greyData/8.);
 // const disData=(greyData/32.)-4.0;
 const disData=(greyData/64.)-8.0;
