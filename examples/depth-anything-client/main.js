@@ -136,7 +136,7 @@ const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
 //  image displacement
 const dataSize=origImageData.data.length;
-for(var i=0;i<dataSize;i=i+4;){
+for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
 const greyData16=(data[i]+data[i+1]+data[i+2]/3.)*(65535 / 255);
 data[i]=greyData;
