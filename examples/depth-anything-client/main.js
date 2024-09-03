@@ -166,7 +166,7 @@ imgDataD[i+2]-=disData;
 // texture16.internalFormat = 'RGBA16F';
 // texture16.needsUpdate = true;
 const texture8 = new THREE.DataTexture(displaceData, imgData.width, imgData.height, THREE.RGBAFormat, THREE.UnsignedByteType );
-texture8.internalFormat = 'RGBA8_SNORM';
+// texture8.internalFormat = 'RGBA8_SNORM';
 
 const displace2= new THREE.CanvasTexture(displaceData);
 material.displacementMap=texture8;
