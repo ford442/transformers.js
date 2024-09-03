@@ -15,8 +15,6 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
-// import WebGPUBackend from './WebGPUBackend.js';
-import { LaserBeam } from 'threex.laser';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
@@ -28,8 +26,7 @@ const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{device:'webgpu'});
-
-	status.textContent = 'Ready';
+status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
@@ -117,7 +114,6 @@ map: image,
 side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
-// material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (canvas) => {
 material.displacementMap = new THREE.CanvasTexture(canvas);
