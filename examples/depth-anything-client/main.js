@@ -261,12 +261,14 @@ const time = performance.now() * 0.001;
 const wobbleAmount = 0.07;
 const wobbleSpeed = 4;
 	//  wobble
-plane.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
-plane.position.y = wobbleAmount * Math.cos(time * 3.13 * 1.5); // More variation in y-axis frequency
-// camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
-plane.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
-camera.position.x = wobbleAmount * Math.sin(time * 2);
- camera.position.y = wobbleAmount * Math.cos(time * 3 * 1.5); // More variation in y-axis frequency
+const maxWobbleX = 0.5; // Adjust as needed
+const maxWobbleY = 0.3;
+
+  plane.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
+  plane.position.y = Math.min(Math.max(wobbleAmount * Math.cos(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
+
+camera.position.x = Math.min(Math.max(wobbleAmount * Math.cos(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
+ camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
   // camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 // camera.lookAt(scene.position); // Make the camera look at the center
