@@ -40,6 +40,7 @@ let prevTime = performance.now();
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 let yawObject, pitchObject; // Declare these variables at a higher scope
+const clock= new THREE.Clock;
 
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
@@ -236,7 +237,6 @@ const controls = new FirstPersonControls( camera, renderer.domElement );
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
-const clock= new THREE.Clock;
 renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
         // Apply wobble to x and y positions
