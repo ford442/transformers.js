@@ -16,6 +16,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 // import WebGPUBackend from './WebGPUBackend.js';
+import { LaserBeam } from 'threex.laser';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
@@ -159,8 +160,13 @@ const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
+	//  laser
+const laserBeam = new LaserBeam();
+scene.add(laserBeam);
 	//  fog
-scene.fog = new THREE.Fog( 0xcccccc, 0.01, 105 );
+const tfog = new THREE.Fog( 0xcccccc, 0.01, 105 );
+scene.add(tfog);
+
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
 spotLight1.position.set(0, 1.38, 0.181)
