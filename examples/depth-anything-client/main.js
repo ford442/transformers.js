@@ -130,7 +130,7 @@ const displace= new THREE.CanvasTexture(depthData);
 const imgData=displace.image;
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
-const imgDataD=displace.image;
+const imgDataD=displaceData.data;
 
 const data = origImageData.data;
 //  image displacement
