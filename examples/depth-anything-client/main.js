@@ -24,7 +24,7 @@ const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{backend: 'webgpu'});
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype: 'fp32',backend: 'webgpu'});
 
 	status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
