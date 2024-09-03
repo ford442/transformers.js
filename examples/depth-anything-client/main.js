@@ -128,8 +128,7 @@ exportCanvas.width = image.width;
 exportCanvas.height = image.height;
 	
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
-ctx.drawImage(image, 0, 0);
-// ctx.imageSmoothingEnabled=false;
+
 const data = origImageData.data;
 //  image displacement
 	console.log(data[0],data[1],data[2],data[3]);
