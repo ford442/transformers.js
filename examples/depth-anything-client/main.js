@@ -174,7 +174,7 @@ const params = {
 };
 const geometry2 = LoopSubdivision.modify(geometry, 1, params);
 	
-const plane = new THREE.InstancedMesh(geometry2, [material1, material2], 2);
+const plane = new THREE.InstancedMesh(geometry2, [material, material2], 2);
 
 // const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
