@@ -121,8 +121,8 @@ material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (depthData) => {
 
 const exportCanvas = document.createElement('canvas');
-exportCanvas.width = displacementMap.image.width;
-exportCanvas.height = displacementMap.image.height;
+exportCanvas.width = image.width;
+exportCanvas.height = image.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 ctx.drawImage(image, 0, 0);
 // ctx.imageSmoothingEnabled=false;
