@@ -247,8 +247,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
 
 const controls = new FirstPersonControls( camera, renderer.domElement );
-// controls.movementSpeed = 10; // Adjust as needed
-// controls.rollSpeed = Math.PI / 24; 
+controls.movementSpeed = 30; // Adjust as needed
+controls.lookSpeed  =.2; 
 	
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
@@ -282,7 +282,7 @@ spotLight4.position.z = Math.sin( time ) *  .665;
 // lightHelper1.update();
 // lightHelper2.update();
 renderer.render(scene, camera);
-controls.update(); // clock is a THREE.Clock instance
+controls.update( clock.getDelta() );
 });
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
