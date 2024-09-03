@@ -128,18 +128,18 @@ exportCanvas.width = image.width;
 exportCanvas.height = image.height;
 	
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
-
+const displace= new THREE.CanvasTexture(depthData);
 const data = origImageData.data;
 //  image displacement
+	
+console.log(displace[0],displace[1],displace[2],displace[3]);
 console.log(data[0],data[1],data[2],data[3]);
-material.displacementMap = new THREE.CanvasTexture(depthData);
+material.displacementMap =displace;
 material.roughness=.75;
 material.metalness=.15;
 // material.roughnessMap=image;
         //  bump map
-const displacementMap = material.displacementMap;
-	console.log(displacementMap[0],displacementMap[1],displacementMap[2],displacementMap[3]);
-	
+
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
 data[i] = 255 - data[i];     // Red
