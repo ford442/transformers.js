@@ -20,7 +20,7 @@ import { LoopSubdivision } from 'three-subdivide';
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 1;
-const DEFAULT_SCALE = 0.384;
+const DEFAULT_SCALE = 0.34444;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
@@ -154,7 +154,7 @@ imgDataD[i+2]-=disData;
 }
 const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.LuminanceFormat, THREE.UnsignedShortType);
 const displace2= new THREE.CanvasTexture(displaceData);
-material.displacementMap=displace2;
+material.displacementMap=texture16;
 material.roughness=.75;
 material.metalness=.15;
 // material.roughnessMap=image;
