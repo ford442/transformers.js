@@ -156,9 +156,7 @@ const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
-	//  laser
-const laserBeam = new LaserBeam();
-scene.add(laserBeam);
+
 	//  fog
 const tfog = new THREE.Fog( 0xcccccc, 0.01, 105 );
 scene.add(tfog);
