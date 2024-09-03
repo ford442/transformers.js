@@ -167,7 +167,7 @@ const params = {
     flatOnly:       false,      // optional, default: false
     maxTriangles:   Infinity,   // optional, default: Infinity
 };
-const geometry = LoopSubdivision.modify(new THREE.PlaneGeometry(pw, ph, w*2, h*2), iterations, params);
+const geometry = LoopSubdivision.modify(new THREE.PlaneGeometry(pw, ph, w*2, h*2), 1, params);
 	
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
