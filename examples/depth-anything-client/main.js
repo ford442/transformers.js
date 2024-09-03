@@ -91,7 +91,7 @@ camera.position.z = 2;
 scene.add(camera);
 
 // const renderer = new THREE.WebGPURenderer({ canvas:canvas,antialias:true });
-const rendererW = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
 
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
