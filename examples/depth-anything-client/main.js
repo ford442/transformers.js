@@ -45,7 +45,7 @@ const direction = new THREE.Vector3();
 let yawObject, pitchObject; // Declare these variables at a higher scope
 const clock= new THREE.Clock;
 let displacementTexture, origImageData;
-
+let dnce=document.querySelector('#dance').checked;
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
 const img = new Image();
@@ -118,7 +118,6 @@ side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
 material.displacementScale = DEFAULT_SCALE;
-
 	
 const setDisplacementMap = (depthData) => {
 
@@ -290,16 +289,16 @@ const wobbleSpeed = 4;
 	//  wobble
 const maxWobbleX = 0.5; // Adjust as needed
 const maxWobbleY = 0.3;
-
-  plane.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
-  plane.position.y = Math.min(Math.max(wobbleAmount * Math.cos(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
+if(dnce==true){
+plane.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
+plane.position.y = Math.min(Math.max(wobbleAmount * Math.cos(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 
 camera.position.x = Math.min(Math.max(wobbleAmount * Math.cos(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
- camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
+camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
   // camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 // camera.lookAt(scene.position); // Make the camera look at the center
-
+}
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
 spotLight2.position.x = Math.cos( time ) * 1.15;
