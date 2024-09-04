@@ -19,7 +19,7 @@ import { LoopSubdivision } from 'three-subdivide';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-// env.backends.onnx.wasm.numThreads = 1;
+env.backends.onnx.wasm.numThreads = 4;
 const DEFAULT_SCALE = 0.223;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
