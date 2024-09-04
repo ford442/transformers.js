@@ -188,7 +188,7 @@ const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 material.bumpMap=bumpTexture;
-material.bumpScale=1.25;
+material.bumpScale=1.333;
 	
 materialE=material;
 material.needsUpdate = true;
