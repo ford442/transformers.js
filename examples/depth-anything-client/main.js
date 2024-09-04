@@ -440,6 +440,7 @@ loadGLTFScene(glbLocation);
 channel.onmessage = async (event) => {
 const { imageDataURL} = event.data;
 predict(imageDataURL );
+channel.onmessage = null; 
 };
 
 async function saveSceneAsGLTF() {
