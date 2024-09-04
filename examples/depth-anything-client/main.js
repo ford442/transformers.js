@@ -311,12 +311,12 @@ const wobbleSpeed = 4;
 const maxWobbleX = 0.5; // Adjust as needed
 const maxWobbleY = 0.3;
 if(document.querySelector('#dance').checked==false){
-light.color='0x62dedd';
-light.intensity=.98888;
+// light.color='0x62dedd';
+// light.intensity=.98888;
 }
 if(document.querySelector('#dance').checked==true){
-light.color='0xcc0000';
-light.intensity=.49999;
+// light.color='0xcc0000';
+// light.intensity=.49999;
 	
 plane.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 plane.position.y = Math.min(Math.max(wobbleAmount * Math.cos(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
