@@ -47,6 +47,7 @@ const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 async function predict(imageDataURL) {
+channel.close();
 imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
@@ -118,13 +119,10 @@ side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
 material.displacementScale = DEFAULT_SCALE;
-	
 const setDisplacementMap = (depthData) => {
-
 const exportCanvas = document.createElement('canvas');
 exportCanvas.width = image.width;
 exportCanvas.height = image.height;
-	
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 const displace= new THREE.CanvasTexture(depthData);
 // displace.anisotropy=4;
@@ -167,14 +165,12 @@ imgDataD[i+2]+=disData;
 // texture16.needsUpdate = true;
 // const texture8 = new THREE.DataTexture(displaceData, imgData.width, imgData.height, THREE.RGBAFormat);
 // texture8.internalFormat = 'RGBA8_SNORM';
-
 const displace2= new THREE.CanvasTexture(displaceData);
 material.displacementMap=displace2;
 material.roughness=.85;
 material.metalness=.05;
 // material.roughnessMap=image;
         //  bump map
-
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
 data[i] = 255 - data[i];     // Red
@@ -189,7 +185,6 @@ const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
-	
 materialE=material;
 material.needsUpdate = true;
 }
@@ -200,7 +195,6 @@ material.needsUpdate = true;
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
 const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
-
 // Add a displacement modifier
 const params = {
     split:          true,       // optional, default: true
@@ -210,15 +204,12 @@ const params = {
     maxTriangles:   Infinity,   // optional, default: Infinity
 };
 const geometry2 = LoopSubdivision.modify(geometry, 1, params);
-
 const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
-
 	//  fog
-// scene.tfog = new THREE.Fog( 0xcccccc, 0.1, 10 );
-
+scene.tfog = new THREE.Fog( 0xcccccc, 0.1, 10 );
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
 spotLight1.position.set(0, 1.38, 0.181)
@@ -269,7 +260,6 @@ scene.add(spotLight3.shadow.camera);
 scene.add( spotLight3 );
 spotLight3.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight3.target );
-
 const spotLight4 = new THREE.SpotLight(0x09a80f, 29.420234)
 spotLight4.position.set(1, 1.138234, 1.81234)
 spotLight4.castShadow = true;
@@ -286,18 +276,14 @@ scene.add(spotLight4.shadow.camera);
 scene.add( spotLight4 );
 spotLight4.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight4.target );
-	
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.needsUpdate = true;
 renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
-      
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.shadowMap.type = THREE.VSMShadowMap;
-
 const controls = new OrbitControls( camera, renderer.domElement );
 // controls.movementSpeed = 1; // Adjust as needed
 // controls.lookSpeed  =145.2; 
-
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
@@ -317,10 +303,8 @@ if(document.querySelector('#dance').checked==false){
 if(document.querySelector('#dance').checked==true){
 // light.color='0xcc0000';
 // light.intensity=.49999;
-	
 plane.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 plane.position.y = Math.min(Math.max(wobbleAmount * Math.cos(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
-
 camera.position.x = Math.min(Math.max(wobbleAmount * Math.cos(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
@@ -440,7 +424,6 @@ loadGLTFScene(glbLocation);
 channel.onmessage = async (event) => {
 const { imageDataURL} = event.data;
 predict(imageDataURL );
-channel.onmessage = null; 
 };
 
 async function saveSceneAsGLTF() {
