@@ -12,6 +12,6 @@
     "vite": "^5.0.13"
   },
   "dependencies": {
-    "@xenova/transformers": "^2.15.0"
+    "@xenova/transformers": "/content/RAMDRIVE2/transformers/",
   }
 }
