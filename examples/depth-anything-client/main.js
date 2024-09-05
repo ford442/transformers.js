@@ -36,7 +36,6 @@ canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
-origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(imageData.data, img.width, img.height,4);
 
 const { depth } = await depth_estimator(image);
@@ -59,10 +58,8 @@ const { depth } = await depth_estimator(image);
     renderer.addActor(actor);
     renderer.resetCamera();
     renderWindow.render();
-	
+
 status.textContent = 'Analysing...';
-setDisplacementMap(depth.toCanvas());
-depthE=depth;
 status.textContent = '';
 const slider = document.createElement('input');
 slider.type = 'range';
@@ -86,7 +83,6 @@ channel.onmessage = async (event) => {
 const { imageDataURL} = event.data;
 predict(imageDataURL );
 };
-
 
 fileUpload.addEventListener('change', function (e) {
     const file = e.target.files[0];
