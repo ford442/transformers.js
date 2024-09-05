@@ -12,7 +12,7 @@
   "dependencies": {
     "@xenova/transformers": "/content/RAMDRIVE2/transformers/",
     "@huggingface/transformers": "3.0.0-alpha.14",
-    "onnxruntime-web": "1.20.0-dev.20240818-417aa00406",
+    "onnxruntime-web": "1.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
