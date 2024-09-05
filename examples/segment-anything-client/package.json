@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@xenova/transformers": "/content/RAMDRIVE2/transformers/",
+    "@xenova/transformers": "/content/RAMDRIVE2/transformers/"
   },
   "devDependencies": {
     "vite": "^5.2.9"
