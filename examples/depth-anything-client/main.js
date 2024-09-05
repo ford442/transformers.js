@@ -16,6 +16,9 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
+import vtkFullScreenRenderWindow from '@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow';
+import vtkActor from '@kitware/vtk.js/Rendering/Core/Actor';
+import vtkMapper from '@kitware/vtk.js/Rendering/Core/Mapper';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
