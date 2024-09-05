@@ -12,6 +12,6 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
-    "@xenova/transformers": "github:xenova/transformers.js#v3"
+    "@xenova/transformers": "/content/RAMDRIVE2/transformers/",
   }
 }
