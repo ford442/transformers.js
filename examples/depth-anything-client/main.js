@@ -58,9 +58,20 @@ let dnce=document.querySelector('#dance').checked;
 
 async function sr(imageDataURL) {
 	console.log('run sr');
-
-const output = await upscaler(imageDataURL);
-
+// imageContainer.innerHTML = '';
+const img = new Image();
+img.src = imageDataURL;
+img.onload = async () => {
+const canvas2 = document.createElement('canvas');
+canvas2.width = img.width;
+canvas2.height = img.height;
+const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
+// ctx.imageSmoothingEnabled =false;
+ctx.drawImage(img, 0, 0);
+// origImageData = ctx.getImageData(0, 0, img.width, img.height);
+const image = new RawImage(origImageData.data, img.width, img.height,4);
+	
+const output = await upscaler(image);
 
 const srimage= new THREE.CanvasTexture(output);
 // srimage.anisotropy=4;
