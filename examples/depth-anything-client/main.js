@@ -494,6 +494,7 @@ fileUpload.addEventListener('change', function (e) {
     if (!file) {
         return;
     }
+	console.log('get image');
     const reader = new FileReader();
     reader.onload = e2 => sr(e2.target.result);
     reader.readAsDataURL(file);
