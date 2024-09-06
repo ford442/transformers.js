@@ -57,8 +57,26 @@ let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
 async function sr(imageDataURL) {
+	console.log('run sr');
+
 const output = await upscaler(imageDataURL);
-output.save('upscaled.png');
+
+
+const srimage= new THREE.CanvasTexture(output);
+// srimage.anisotropy=4;
+const exportCanvas = document.createElement('canvas');
+exportCanvas.width = image.width;
+exportCanvas.height = image.height;
+const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
+ctx.drawImage(output.image, 0, 0);
+const imageData = exportCanvas.toDataURL('image/jpeg',1.0);
+// const blob2 = new Blob([imageData.data], { type: 'image/jpeg' });
+const link2 = document.createElement('a');
+link2.href = imageData;
+link2.download = document.querySelector('#saveName').innerHTML+'.jpg';
+link2.click();
+console.log('save file');
+// output.save('upscaled.png');
 }
 
 async function predict(imageDataURL) {
