@@ -36,9 +36,11 @@ canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
+	const imageDatac = canvas2.toDataURL('image/jpeg',1.0);
+
 const origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,3);
-const output = await upscaler(image);
+const output = await upscaler(imageDatac);
 const srimage= new THREE.CanvasTexture(output);
 // srimage.anisotropy=4;
 const exportCanvas = document.createElement('canvas');
