@@ -30,8 +30,9 @@ const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'f32',device:'webgpu'});
+// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'f32',device:'webgpu'});
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small',{device:'webgpu'});
+const upscaler = await pipeline('image-to-image', 'Xenova/swin2SR-classical-sr-x2-64', {
 
 
 status.textContent = 'Ready';
@@ -53,6 +54,12 @@ let yawObject, pitchObject; // Declare these variables at a higher scope
 const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
+
+async function sr(imageDataURL) {
+const output = await upscaler(imageDataURL);
+output.save('upscaled.png');
+}
+
 async function predict(imageDataURL) {
 channel.close();
 imageContainer.innerHTML = '';
@@ -469,7 +476,7 @@ fileUpload.addEventListener('change', function (e) {
         return;
     }
     const reader = new FileReader();
-    reader.onload = e2 => predict(e2.target.result);
+    reader.onload = e2 => sr(e2.target.result);
     reader.readAsDataURL(file);
 });
 
