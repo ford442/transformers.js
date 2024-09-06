@@ -13,6 +13,6 @@
   },
   "dependencies": {
     "@xenova/transformers": "/content/RAMDRIVE2/transformers/",
-    "three": "^0.160.1"
+    "three": "0.168.0"
   }
 }
