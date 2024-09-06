@@ -20,7 +20,7 @@ import { LoopSubdivision } from 'three-subdivide';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-env.backends.onnx.wasm.numThreads = 32;
+env.backends.onnx.wasm.numThreads = 6;
 // env.backends.onnx.wasm.wasmPaths = 'https://noahcohn.com/transformers/dist/';
 
 const DEFAULT_SCALE = 0.223;
