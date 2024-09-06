@@ -28,7 +28,7 @@ const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:f32,device:'webgpu'});
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'f32',device:'webgpu'});
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small',{device:'webgpu'});
 
 
