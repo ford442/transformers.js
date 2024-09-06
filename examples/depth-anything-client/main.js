@@ -37,7 +37,7 @@ const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 const origImageData = ctx.getImageData(0, 0, img.width, img.height);
-const image = new RawImage(origImageData.data, img.width, img.height,4);
+const image = new RawImage(origImageData.data, img.width, img.height,3);
 const output = await upscaler(image);
 const srimage= new THREE.CanvasTexture(output);
 // srimage.anisotropy=4;
