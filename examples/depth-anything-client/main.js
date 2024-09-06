@@ -17,7 +17,7 @@ status.textContent = 'Loading model...';
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'f32',device:'webgpu'});
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small',{device:'webgpu'});
 const upscaler = await pipeline('image-to-image', 'Xenova/swin2SR-classical-sr-x2-64', {
-    // quantized: false, // Uncomment this line to use the quantized version
+quantized: false, // Uncomment this line to use the quantized version
 });
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
