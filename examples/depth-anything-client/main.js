@@ -40,7 +40,8 @@ ctx.drawImage(img, 0, 0);
 
 const origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,3);
-const output = await upscaler(imageDatac);
+	const imageURL='./test.jpg';
+const output = await upscaler(imageURL);
 const srimage= new THREE.CanvasTexture(output);
 // srimage.anisotropy=4;
 const exportCanvas = document.createElement('canvas');
