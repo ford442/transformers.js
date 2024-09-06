@@ -1,22 +1,7 @@
 "use client"
 import './style.css';
 
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
-// import { pipeline, env, RawImage } from '@huggingface/transformers';
-// import { pipeline, env, RawImage } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.14';
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-import { FlyControls } from 'three/addons/controls/FlyControls.js';
-import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
-import { LoopSubdivision } from 'three-subdivide';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
@@ -29,17 +14,14 @@ const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
-
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'f32',device:'webgpu'});
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small',{device:'webgpu'});
 const upscaler = await pipeline('image-to-image', 'Xenova/swin2SR-classical-sr-x2-64', {
     // quantized: false, // Uncomment this line to use the quantized version
 });
-
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
-
 let dnce=document.querySelector('#dance').checked;
 
 async function sr(imageDataURL) {
@@ -54,7 +36,7 @@ canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
-// origImageData = ctx.getImageData(0, 0, img.width, img.height);
+origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
 const output = await upscaler(image);
 const srimage= new THREE.CanvasTexture(output);
