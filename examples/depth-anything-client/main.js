@@ -21,6 +21,8 @@ import { LoopSubdivision } from 'three-subdivide';
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 6;
+env.backends.onnx.wasm.simd = true;
+
 // env.backends.onnx.wasm.wasmPaths = 'https://noahcohn.com/transformers/dist/';
 
 const DEFAULT_SCALE = 0.223;
@@ -33,7 +35,6 @@ status.textContent = 'Loading model...';
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'f32',device:'webgpu'});
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small',{device:'webgpu'});
 const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small');
-
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
