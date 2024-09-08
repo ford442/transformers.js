@@ -36,8 +36,12 @@ try {
     model = await AutoModel.from_pretrained(model_id, {
 //       device: 'webgpu',
         // Use fp16 if available, otherwise use fp32
-  //      dtype: (await hasFp16()) ? 'fp16' : 'fp32',
-    });
+    dtype: {
+		          text_encoder: 'q8',
+		          decoder_model_merged: 'q8',
+		          encodec_decode: 'fp32',
+		        },
+		        device: 'wasm',    });
 } catch (err) {
     status.textContent = err.message;
     alert(err.message)
