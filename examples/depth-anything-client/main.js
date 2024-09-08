@@ -24,7 +24,7 @@ env.backends.onnx.wasm.simd = true;
 
 // env.backends.onnx.wasm.wasmPaths = 'https://noahcohn.com/transformers/dist/';
 
-const DEFAULT_SCALE = 0.223;
+const DEFAULT_SCALE = 0.323;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
