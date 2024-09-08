@@ -34,7 +34,7 @@ status.textContent = 'Loading model...';
 
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'f32',device:'webgpu'});
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small',{device:'webgpu'});
-const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small');
+const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-base');
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
