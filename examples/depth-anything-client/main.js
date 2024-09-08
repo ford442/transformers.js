@@ -20,13 +20,15 @@ import { LoopSubdivision } from 'three-subdivide';
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 4;
+env.backends.onnx.wasm.simd = true;
+ 
 const DEFAULT_SCALE = 0.223;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf',{dtype:'q8',device:'webgpu'});
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf',{dtype:'fp32',device:'webgpu'});
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf',{device:'webgpu'});
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
