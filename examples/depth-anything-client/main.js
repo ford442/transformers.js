@@ -21,7 +21,7 @@ import { LoopSubdivision } from 'three-subdivide';
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 1;
-env.backends.onnx.wasm.simd = true;
+// env.backends.onnx.wasm.simd = true;
 
 // env.backends.onnx.wasm.wasmPaths = 'https://noahcohn.com/transformers/dist/';
 
