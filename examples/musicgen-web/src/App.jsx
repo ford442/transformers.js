@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { AutoTokenizer, MusicgenForConditionalGeneration, BaseStreamer } from '@xenova/transformers';
 import { encodeWAV, share } from './utils.js';
-
+import * as ort from 'onnxruntime-web'; // Assuming you're using the ONNX Runtime Web library
+ort.env.wasm.numThreads = navigator.hardwareConcurrency; 
+ort.env.wasm.simd = true;
+ort.env.wasm.proxy = true;
 import './App.css';
 
 const MODEL_ID = 'Xenova/musicgen-small';
