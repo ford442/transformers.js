@@ -17,11 +17,10 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
-
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-env.backends.onnx.wasm.numThreads = 1;
-// env.backends.onnx.wasm.simd = true;
+env.backends.onnx.wasm.numThreads = 4;
+env.backends.onnx.wasm.simd = true;
 
 // env.backends.onnx.wasm.wasmPaths = 'https://noahcohn.com/transformers/dist/';
 
