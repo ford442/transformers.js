@@ -34,9 +34,9 @@ const model_id = 'onnx-community/depth-anything-v2-small';
 let model;
 try {
     model = await AutoModel.from_pretrained(model_id, {
-        device: 'webgpu',
+//       device: 'webgpu',
         // Use fp16 if available, otherwise use fp32
-        dtype: (await hasFp16()) ? 'fp16' : 'fp32',
+  //      dtype: (await hasFp16()) ? 'fp16' : 'fp32',
     });
 } catch (err) {
     status.textContent = err.message;
