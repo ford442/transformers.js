@@ -5,6 +5,12 @@ import * as ort from 'onnxruntime-web'; // Assuming you're using the ONNX Runtim
 ort.env.wasm.numThreads = navigator.hardwareConcurrency; 
 ort.env.wasm.simd = true;
 ort.env.wasm.proxy = true;
+ort.env.wasm.wasmPaths = {
+    'ort-wasm.wasm': 'https://noahcohn.com/transformers/wasm/ort-wasm.wasm', 
+    'ort-wasm-simd.wasm': 'https://noahcohn.com/transformers/wasm/ort-wasm-simd.wasm',
+    'ort-wasm-threaded.wasm': 'https://noahcohn.com/transformers/wasm/ort-wasm-threaded.wasm',
+    'ort-wasm-simd-threaded.wasm': 'https://noahcohn.com/transformers/wasm/ort-wasm-simd-threaded.wasm'
+}; 
 import './App.css';
 
 const MODEL_ID = 'Xenova/musicgen-small';
