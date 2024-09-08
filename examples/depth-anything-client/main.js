@@ -32,10 +32,7 @@ const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{});
-// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
-// const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small',{device:'webgpu'});
-// const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small');
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{device:'webgpu'});
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
