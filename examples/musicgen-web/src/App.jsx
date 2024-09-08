@@ -65,7 +65,7 @@ const App = () => {
         decoder_model_merged: 'q8',
         encodec_decode: 'fp32',
       },
-      device: 'wasm',
+      device: 'webgpu',
     });
 
     tokenizerPromise.current ??= AutoTokenizer.from_pretrained(MODEL_ID);
