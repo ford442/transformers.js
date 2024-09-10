@@ -299,7 +299,7 @@ const wobbleSpeed = 5;     // Faster wobble speed
 
 let frameCount = 0; // Initialize frame count
 let CframeCount = 0; // Initialize frame count
-const gl=document.querySelector('#tvi').getContext('webgl2');
+const gl=renderer.domElement.getContext('webgl2');
 const array = new Uint8Array(width * height * 4); // 4 for RGBA
 const channels = 3;
 const Cwidth = document.querySelector('#tvi').height;
