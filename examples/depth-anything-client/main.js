@@ -1,6 +1,9 @@
 "use client"
 import './style.css';
 
+import wasm_webp from '@saschazar/wasm-webp';
+import defaultOptions from '@saschazar/wasm-webp/options';
+
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
