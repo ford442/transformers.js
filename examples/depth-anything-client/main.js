@@ -306,6 +306,9 @@ const Cwidth = renderer.domElement.height;
 const Cheight = renderer.domElement.height;
 const options = defaultOptions;
 let result;
+let encodedFrames = []; // Store encoded frames here
+
+const webp = wasm_webp();
 
  renderer.setAnimationLoop(() => {
 frameCount++;
@@ -313,10 +316,8 @@ if (frameCount%30==0){
 CframeCount++;
 if (CframeCount==1){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
-const webpModule = wasm_webp({
-onRuntimeInitialized() {
-result = webpModule.encode(array, Cwidth, Cheight, channels, options);
-},});
+const encodedData = webp.encode(array, Cwidth, Cheight, channels, options);
+encodedFrames.push({ data: encodedData, duration: 33 }); // Assuming ~30 FPS
 }
 }
 	    
