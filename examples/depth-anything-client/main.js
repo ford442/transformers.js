@@ -316,8 +316,12 @@ if (frameCount%30==0){
 CframeCount++;
 if (CframeCount==1){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
-const encodedData = webp.encode(array, Cwidth, Cheight, channels, options);
-encodedFrames.push({ data: encodedData, duration: 33 }); // Assuming ~30 FPS
+    webp.then(module => {
+      const encodedData = module.encode(array, Cwidth, Cheight, channels, options);
+      encodedFrames.push({ data: encodedData, duration: 33 }); // Assuming ~30 FPS
+    });
+}else{
+assembleAndSaveAnimatedWebP(encodedFrames);
 }
 }
 	    
