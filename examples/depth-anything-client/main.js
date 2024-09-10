@@ -301,18 +301,18 @@ const wobbleSpeed = 5;     // Faster wobble speed
 const gl=document.querySelector('#mvi').getContext('webgl2');
 const array = new Uint8Array(width * height * 4); // 4 for RGBA
 const channels = 3;
-const width = document.querySelector('#mvi').height;
-const height = document.querySelector('#mvi').height;
+const Cwidth = document.querySelector('#mvi').height;
+const Cheight = document.querySelector('#mvi').height;
 const options = defaultOptions;
 let result;
 
  renderer.setAnimationLoop(() => {
 frameCount++;
 if (frameCount%30==0){
-gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, array);
+gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
 const webpModule = wasm_webp({
 onRuntimeInitialized() {
-result = webpModule.encode(array, width, height, channels, options);
+result = webpModule.encode(array, Cwidth, Cheight, channels, options);
 },});
 }
 	    
