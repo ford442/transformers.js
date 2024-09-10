@@ -58,7 +58,7 @@
   "dependencies": {
     "@huggingface/jinja": "^0.3.0",
     "onnxruntime-node": "1.19.0",
-    "onnxruntime-web": "1.15.0",
+    "onnxruntime-web": "1.14.0",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
