@@ -363,6 +363,17 @@ spotLight4.position.z = Math.sin( time ) *  .665;
 renderer.render(scene, camera);
 });
 
+async function assembleAndSaveAnimatedWebP(frames) {
+  // If your webp.wasm supports WebPMux, use it here
+  // Otherwise, you'll need to manually assemble the WebP data structure
+  // Example using a hypothetical WebPMux function
+  const animatedWebPData = await webp.then(module => {
+    return module.assembleAnimatedWebP(frames); 
+  });
+  // Save the animated WebP (implementation depends on your environment)
+  saveBlob(animatedWebPData, 'animation.webp');
+}
+
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
 const height = imageContainer.offsetHeight;
