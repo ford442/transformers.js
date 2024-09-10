@@ -302,8 +302,8 @@ let CframeCount = 0; // Initialize frame count
 const gl=renderer.domElement.getContext('webgl2');
 const array = new Uint8Array(width * height * 4); // 4 for RGBA
 const channels = 3;
-const Cwidth = document.querySelector('#tvi').height;
-const Cheight = document.querySelector('#tvi').height;
+const Cwidth = renderer.domElement.height;
+const Cheight = renderer.domElement.height;
 const options = defaultOptions;
 let result;
 
