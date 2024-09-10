@@ -297,18 +297,20 @@ const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
 
-	let frameCount = 0; // Initialize frame count
-const gl=document.querySelector('#mvi').getContext('webgl2');
+let frameCount = 0; // Initialize frame count
+let CframeCount = 0; // Initialize frame count
+const gl=document.querySelector('#tvi').getContext('webgl2');
 const array = new Uint8Array(width * height * 4); // 4 for RGBA
 const channels = 3;
-const Cwidth = document.querySelector('#mvi').height;
-const Cheight = document.querySelector('#mvi').height;
+const Cwidth = document.querySelector('#tvi').height;
+const Cheight = document.querySelector('#tvi').height;
 const options = defaultOptions;
 let result;
 
  renderer.setAnimationLoop(() => {
 frameCount++;
 if (frameCount%30==0){
+CframeCount++;
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
 const webpModule = wasm_webp({
 onRuntimeInitialized() {
