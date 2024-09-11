@@ -1,7 +1,7 @@
 "use client"
 import './style.css';
 
-import UPNG from '@pdf-lib/upng';
+import { apngDecoder, apngAssembler } from 'apng-handler';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -306,18 +306,19 @@ const Cheight = renderer.domElement.height;
 let result;
 let encodedFrames = []; // Store encoded frames here
 let dels=[33];
+	
 renderer.setAnimationLoop(() => {
+	/*
 frameCount++;
 if (frameCount%30==0){
 CframeCount++;
 if (CframeCount<22){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
-const  png=UPNG.encode(array, Cwidth, Cheight, 0, dels);
-encodedFrames.push(png);
-}else{  
-assembleAndSaveAnimatedPNG(encodedFrames, dels);
+	}else{  
+	
 }
 }
+	*/
 const time = performance.now() * 0.001; 
         // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
@@ -367,13 +368,6 @@ return {
 canvas: renderer.domElement,
 setDisplacementMap,
 };
-}
-
-function assembleAndSaveAnimatedPNG(frames, delays) {
-  // Encode the animated PNG using UPNG
-const animatedPNG = UPNG.encode(frames, Cwidth, Cheight, 0, delays);
-  // Save the animated PNG (implementation depends on your environment)
-  saveBlob(animatedPNG, 'animation.png'); 
 }
 
 function loadGLTFScene(gltfFilePath) {
