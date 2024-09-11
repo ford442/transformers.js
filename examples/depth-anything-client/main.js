@@ -1,8 +1,7 @@
 "use client"
 import './style.css';
 
-import wasm_webp from '@saschazar/wasm-webp';
-import defaultOptions from '@saschazar/wasm-webp/options';
+import UPNG from '@pdf-lib/upng';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -307,7 +306,7 @@ const Cheight = renderer.domElement.height;
 const options = defaultOptions;
 let result;
 let encodedFrames = []; // Store encoded frames here
-
+let dels=[0];
 const webp = wasm_webp();
 
  renderer.setAnimationLoop(() => {
@@ -316,12 +315,7 @@ if (frameCount%30==0){
 CframeCount++;
 if (CframeCount==1){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
-    webp.then(module => {
-      const encodedData = module.encode(array, Cwidth, Cheight, channels, options);
-      encodedFrames.push({ data: encodedData, duration: 33 }); // Assuming ~30 FPS
-    });
-}else{
-assembleAndSaveAnimatedWebP(encodedFrames);
+var png =UPNG.encode(array, Cwidth, Cheight, 0, dels)
 }
 }
 	    
@@ -362,17 +356,6 @@ spotLight4.position.z = Math.sin( time ) *  .665;
 // controls.update();
 renderer.render(scene, camera);
 });
-
-async function assembleAndSaveAnimatedWebP(frames) {
-  // If your webp.wasm supports WebPMux, use it here
-  // Otherwise, you'll need to manually assemble the WebP data structure
-  // Example using a hypothetical WebPMux function
-	    webp.then(module => {
-    return module.assembleAnimatedWebP(frames); 
-  });
-  // Save the animated WebP (implementation depends on your environment)
-  saveBlob(animatedWebPData, 'animation.webp');
-}
 
 window.addEventListener('resize', () => {
 const width = imageContainer.offsetWidth;
