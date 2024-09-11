@@ -303,22 +303,18 @@ const array = new Uint8Array(width * height * 4); // 4 for RGBA
 const channels = 3;
 const Cwidth = renderer.domElement.height;
 const Cheight = renderer.domElement.height;
-const options = defaultOptions;
 let result;
 let encodedFrames = []; // Store encoded frames here
 let dels=[0];
-const webp = wasm_webp();
-
- renderer.setAnimationLoop(() => {
+renderer.setAnimationLoop(() => {
 frameCount++;
 if (frameCount%30==0){
 CframeCount++;
 if (CframeCount==1){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
-var png =UPNG.encode(array, Cwidth, Cheight, 0, dels)
+var png=UPNG.encode(array, Cwidth, Cheight, 0, dels)
 }
 }
-	    
 const time = performance.now() * 0.001; 
         // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
