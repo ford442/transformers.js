@@ -322,7 +322,7 @@ const blob = apngAssembler({
   width: 302,
   height: 192,
 });
-
+/*
 blob.arrayBuffer().then((buf) => {
   appendImg(buf);
   apngDecoder(buf).then((blobs) => {
@@ -333,7 +333,7 @@ blob.arrayBuffer().then((buf) => {
     });
   });
 });
-
+*/
 	
 	
 renderer.setAnimationLoop(() => {
