@@ -307,15 +307,14 @@ let result;
 let encodedFrames = []; // Store encoded frames here
 let dels=[33];
 
-	
 const appendImg = (buf: ArrayBuffer) => {
-  const img = document.createElement('img');
-  img.width = 100;
-  const url = URL.createObjectURL(
-    new Blob([new Uint8Array(buf)], { type: 'image/apng' });
-  );
-  img.src = url;
-  document.body.appendChild(img);
+const img = document.createElement('img');
+img.width = 100;
+const url = URL.createObjectURL(
+new Blob([new Uint8Array(buf)], { type: 'image/apng' });
+);
+img.src = url;
+document.body.appendChild(img);
 };
 
 const blob = apngAssembler({
@@ -345,7 +344,7 @@ CframeCount++;
 if (CframeCount<22){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
 appendImg(array);
-}
+}}
 
 const time = performance.now() * 0.001; 
         // Apply wobble to x and y positions
