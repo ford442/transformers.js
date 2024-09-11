@@ -346,8 +346,8 @@ gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
 blob.buffers.push(new Uint8Array(array)); 
 } else {
 // Assemble and display APNG
-blob.arrayBuffer().then((buf) => {
-appendImg(buf); 
+// blob.arrayBuffer().then((buf) => {
+// appendImg(buf); 
         // Optionally decode and display individual frames
         // apngDecoder(buf).then((blobs) => { ... }); 
 });
