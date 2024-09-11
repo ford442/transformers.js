@@ -307,7 +307,7 @@ let result;
 let encodedFrames = []; // Store encoded frames here
 let dels=[33];
 
-const appendImg = (buf: ArrayBuffer) => {
+const appendImg = (buf) => {
 const img = document.createElement('img');
 img.width = 100;
 const url = URL.createObjectURL(
@@ -343,7 +343,14 @@ if (frameCount%30==0){
 CframeCount++;
 if (CframeCount<22){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
-appendImg(array);
+blob.buffers.push(new Uint8Array(array)); 
+} else {
+// Assemble and display APNG
+blob.arrayBuffer().then((buf) => {
+appendImg(buf); 
+        // Optionally decode and display individual frames
+        // apngDecoder(buf).then((blobs) => { ... }); 
+});
 }}
 
 const time = performance.now() * 0.001; 
