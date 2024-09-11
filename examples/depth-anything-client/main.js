@@ -350,7 +350,7 @@ blob.buffers.push(new Uint8Array(array));
 // appendImg(buf); 
         // Optionally decode and display individual frames
         // apngDecoder(buf).then((blobs) => { ... }); 
-});
+// });
 }}
 
 const time = performance.now() * 0.001; 
