@@ -305,14 +305,17 @@ const Cwidth = renderer.domElement.height;
 const Cheight = renderer.domElement.height;
 let result;
 let encodedFrames = []; // Store encoded frames here
-let dels=[0];
+let dels=[33];
 renderer.setAnimationLoop(() => {
 frameCount++;
 if (frameCount%30==0){
 CframeCount++;
-if (CframeCount<2){
+if (CframeCount<22){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
-var png=UPNG.encode(array, Cwidth, Cheight, 0, dels)
+const  png=UPNG.encode(array, Cwidth, Cheight, 0, dels);
+encodedFrames.push(png);
+}else{  
+assembleAndSaveAnimatedPNG(encodedFrames, dels);
 }
 }
 const time = performance.now() * 0.001; 
@@ -364,6 +367,13 @@ return {
 canvas: renderer.domElement,
 setDisplacementMap,
 };
+}
+
+function assembleAndSaveAnimatedPNG(frames, delays) {
+  // Encode the animated PNG using UPNG
+const animatedPNG = UPNG.encode(frames, Cwidth, Cheight, 0, delays);
+  // Save the animated PNG (implementation depends on your environment)
+  saveBlob(animatedPNG, 'animation.png'); 
 }
 
 function loadGLTFScene(gltfFilePath) {
