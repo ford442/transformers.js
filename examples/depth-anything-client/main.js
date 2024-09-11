@@ -311,7 +311,7 @@ const appendImg = (buf) => {
 const img = document.createElement('img');
 img.width = 100;
 const url = URL.createObjectURL(
-new Blob([new Uint8Array(buf)], { type: 'image/apng' });
+new Blob([new Uint8Array(buf)], { type: 'image/apng' })
 );
 img.src = url;
 document.body.appendChild(img);
