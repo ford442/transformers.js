@@ -310,7 +310,7 @@ renderer.setAnimationLoop(() => {
 frameCount++;
 if (frameCount%30==0){
 CframeCount++;
-if (CframeCount==1){
+if (CframeCount<2){
 gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
 var png=UPNG.encode(array, Cwidth, Cheight, 0, dels)
 }
