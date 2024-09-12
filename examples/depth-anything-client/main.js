@@ -310,8 +310,14 @@ if(document.querySelector('#dance').checked==false){
 if(document.querySelector('#dance').checked==true){
 // light.color='0xcc0000';
 // light.intensity=.49999;
+	
 plane.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 plane.position.y = Math.min(Math.max(wobbleAmount * Math.cos(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
+const maxRotation = 0.2; // Maximum rotation angle in radians
+const rotationSpeed = 2; 
+plane.rotation.y = maxRotation * Math.sin(time * rotationSpeed); 
+plane.rotation.x = maxRotation * Math.cos(time * rotationSpeed*.5); 
+
 camera.position.x = Math.min(Math.max(wobbleAmount * Math.cos(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
