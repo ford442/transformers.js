@@ -1,8 +1,6 @@
 "use client"
 import './style.css';
 
-import { apngDecoder, apngAssembler } from 'apng-handler';
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
@@ -296,63 +294,7 @@ const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5;     // Faster wobble speed
 // Access the displacement map and its data
 
-let frameCount = 0; // Initialize frame count
-let CframeCount = 0; // Initialize frame count
-const gl=renderer.domElement.getContext('webgl2');
-const array = new Uint8Array(width * height * 4); // 4 for RGBA
-const channels = 3;
-const Cwidth = renderer.domElement.height;
-const Cheight = renderer.domElement.height;
-let result;
-let encodedFrames = []; // Store encoded frames here
-let dels=[33];
-
-const appendImg = (buf) => {
-const img = document.createElement('img');
-img.width = 100;
-const url = URL.createObjectURL(
-new Blob([new Uint8Array(buf)], { type: 'image/apng' })
-);
-img.src = url;
-document.body.appendChild(img);
-};
-
-const blob = apngAssembler({
-  buffers: [],// image buffers
-  width: 302,
-  height: 192,
-});
-/*
-blob.arrayBuffer().then((buf) => {
-  appendImg(buf);
-  apngDecoder(buf).then((blobs) => {
-    blobs.forEach((b) => {
-      b.arrayBuffer().then((_b) => {
-        appendImg(_b);
-      });
-    });
-  });
-});
-*/
-	
-	
 renderer.setAnimationLoop(() => {
-
-frameCount++;
-if (frameCount%30==0){
-CframeCount++;
-if (CframeCount<22){
-gl.readPixels(0, 0, Cwidth, Cheight, gl.RGBA, gl.UNSIGNED_BYTE, array);
-blob.buffers.push(new Uint8Array(array)); 
-} else {
-// Assemble and display APNG
-// blob.arrayBuffer().then((buf) => {
-// appendImg(buf); 
-        // Optionally decode and display individual frames
-        // apngDecoder(buf).then((blobs) => { ... }); 
-// });
-}}
-
 const time = performance.now() * 0.001; 
         // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
