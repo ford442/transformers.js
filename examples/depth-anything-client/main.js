@@ -216,7 +216,7 @@ plane.castShadow = true;
 scene.add(plane);
 
 	//  fog
-// scene.tfog = new THREE.Fog( 0xcccccc, 0.1, 10 );
+scene.tfog = new THREE.Fog( rgb(122,12,44), 0.1, 10 );
 
       // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
