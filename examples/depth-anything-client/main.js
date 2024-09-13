@@ -285,7 +285,7 @@ spotLight4.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight4.target );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.needsUpdate = true;
-const params = {
+const toneParams = {
 exposure: 0.9980,
 toneMapping: 'Neutral',
 blurriness: 0.03,
@@ -301,8 +301,8 @@ AgX: THREE.AgXToneMapping,
 Neutral: THREE.NeutralToneMapping,
 Custom: THREE.CustomToneMapping
 };
-renderer.toneMapping = toneMappingOptions[ params.toneMapping ];
-renderer.toneMappingExposure = params.exposure;
+renderer.toneMapping = toneMappingOptions[ toneParams.toneMapping ];
+renderer.toneMappingExposure = toneParams.exposure;
 	// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.type = THREE.VSMShadowMap;
 const controls = new OrbitControls( camera, renderer.domElement );
