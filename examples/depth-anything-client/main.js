@@ -122,6 +122,7 @@ map: image,
 side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
+material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
@@ -136,7 +137,7 @@ const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
-//  image displacement
+//image displacement
 const dataSize=origImageData.data.length;
 for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
@@ -174,10 +175,10 @@ material.displacementMap=displace2;
 material.roughness=.85;
 material.metalness=.05;
 // material.roughnessMap=image;
-        //  bump map
+//bump map
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
-data[i] = 255 - data[i];     // Red
+data[i] = 255 - data[i]; // Red
 data[i + 1] = 255 - data[i + 1]; // Green
 data[i + 2] = 255 - data[i + 2]; // Blue
 // data[i + 3] is the alpha channel, leave it unchanged
@@ -201,11 +202,11 @@ const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
 const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
 // Add a displacement modifier
 const params = {
-    split:          true,       // optional, default: true
-    uvSmooth:       false,      // optional, default: false
-    preserveEdges:  false,      // optional, default: false
-    flatOnly:       false,      // optional, default: false
-    maxTriangles:   Infinity,   // optional, default: Infinity
+split:true, // optional, default: true
+uvSmooth: false,// optional, default: false
+preserveEdges:false,// optional, default: false
+flatOnly: false,// optional, default: false
+maxTriangles: Infinity, // optional, default: Infinity
 };
 const geometry2 = LoopSubdivision.modify(geometry, 1, params);
 const plane = new THREE.Mesh(geometry, material);
@@ -213,10 +214,10 @@ plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
 
-	//  fog
-scene.tfog = new THREE.Fog( 0x6f00a0, 0.1, 10 );
+	//fog
+// scene.tfog = new THREE.Fog( 0x6f00a0, 0.1, 10 );
 
-      // Create Spotlights
+// Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
 spotLight1.position.set(0, 1.38, 0.181)
 spotLight1.castShadow = true;
@@ -240,7 +241,7 @@ spotLight2.castShadow = true;
 spotLight2.angle = .2423232;
 spotLight2.penumbra = 0.52223;
 spotLight2.decay = .02;
-spotLight2.distance = 4.778778;     
+spotLight2.distance = 4.778778; 
 spotLight2.visible = true;
 spotLight2.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
 // Same position as LIGHT position.
@@ -256,7 +257,7 @@ spotLight3.castShadow = true;
 spotLight3.angle = .12423232;
 spotLight3.penumbra = 0.52223;
 spotLight3.decay = .02;
-spotLight3.distance = 4.778778;     
+spotLight3.distance = 4.778778; 
 spotLight3.visible = true;
 spotLight3.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
 // Same position as LIGHT position.
@@ -272,7 +273,7 @@ spotLight4.castShadow = true;
 spotLight4.angle = .12423232;
 spotLight4.penumbra = 0.52223;
 spotLight4.decay = .02;
-spotLight4.distance = 4.778778;     
+spotLight4.distance = 4.778778; 
 spotLight4.visible = true;
 spotLight4.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
 // Same position as LIGHT position.
@@ -284,23 +285,40 @@ spotLight4.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight4.target );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.needsUpdate = true;
-renderer.shadowMap.toneMapping =THREE.CineonToneMapping;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-// renderer.shadowMap.type = THREE.VSMShadowMap;
+const params = {
+exposure: 0.9980,
+toneMapping: 'Neutral',
+blurriness: 0.03,
+intensity: 0.9990,
+};
+const toneMappingOptions = {
+None: THREE.NoToneMapping,
+Linear: THREE.LinearToneMapping,
+Reinhard: THREE.ReinhardToneMapping,
+Cineon: THREE.CineonToneMapping,
+ACESFilmic: THREE.ACESFilmicToneMapping,
+AgX: THREE.AgXToneMapping,
+Neutral: THREE.NeutralToneMapping,
+Custom: THREE.CustomToneMapping
+};
+renderer.toneMapping = toneMappingOptions[ params.toneMapping ];
+renderer.toneMappingExposure = params.exposure;
+	// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.VSMShadowMap;
 const controls = new OrbitControls( camera, renderer.domElement );
 // controls.movementSpeed = 1; // Adjust as needed
-// controls.lookSpeed  =145.2; 
+// controls.lookSpeed=145.2; 
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
-const wobbleSpeed = 5;     // Faster wobble speed
+const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
 
 renderer.setAnimationLoop(() => {
 const time = performance.now() * 0.001; 
-        // Apply wobble to x and y positions
+// Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
 const wobbleAmount = 0.07;
 const wobbleSpeed = 4;
-	//  wobble
+	//wobble
 const maxWobbleX = 0.5; // Adjust as needed
 const maxWobbleY = 0.3;
 if(document.querySelector('#dance').checked==false){
@@ -321,17 +339,17 @@ plane.rotation.x = maxRotation * Math.cos(time * rotationSpeed*.5);
 camera.position.x = Math.min(Math.max(wobbleAmount * Math.cos(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
-  // camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
+// camera.rotation.z = wobbleAmount * 0.515 * Math.cos(time * wobbleSpeed * 0.778); 
 // camera.lookAt(scene.position); // Make the camera look at the center
 }
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
 spotLight2.position.x = Math.cos( time ) * 1.15;
 spotLight2.position.z *= Math.sin( time ) * 1.25;
-spotLight3.position.x = Math.cos( time ) *  1.15;
-spotLight3.position.z = Math.sin( time ) *  .5;
-spotLight4.position.x = Math.cos( time ) *  1.015;
-spotLight4.position.z = Math.sin( time ) *  .665;
+spotLight3.position.x = Math.cos( time ) *1.15;
+spotLight3.position.z = Math.sin( time ) *.5;
+spotLight4.position.x = Math.cos( time ) *1.015;
+spotLight4.position.z = Math.sin( time ) *.665;
 // lightHelper1.update();
 // lightHelper2.update();
 // controls.update( clock.getDelta() );
@@ -406,16 +424,16 @@ console.error(error);
 
 function animate() {
 requestAnimationFrame( animate );
-   // Object dance - Faster and more energetic
+ // Object dance - Faster and more energetic
 const time = performance.now() * 0.001; 
 const wobbleAmount = 0.03; // Increased amplitude for more pronounced movements
-const wobbleSpeed = 2;     // Faster wobble speed
+const wobbleSpeed = 2; // Faster wobble speed
 cameraL.position.x = wobbleAmount * Math.sin(time * wobbleSpeed);
 cameraL.position.y = wobbleAmount * Math.cos(time * wobbleSpeed * 1.5); // More variation in y-axis frequency
 cameraL.position.z = wobbleAmount * 0.3 * Math.sin(time * wobbleSpeed * 0.7); // Add some z-axis movement
 cameraL.rotation.z = wobbleAmount * 0.5 * Math.sin(time * wobbleSpeed * 0.8); 
 
-   /*  // Object wobble
+ /*// Object wobble
 const time = performance.now() * 0.001; // Get time in seconds
 const wobbleAmount = 0.05; // Adjust the intensity of the wobble
 const wobbleSpeed = 2; // Adjust the speed of the wobble
@@ -470,13 +488,13 @@ console.error('Error exporting glTF:', error);
 }
 
 fileUpload.addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (!file) {
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = e2 => predict(e2.target.result);
-    reader.readAsDataURL(file);
+const file = e.target.files[0];
+if (!file) {
+return;
+}
+const reader = new FileReader();
+reader.onload = e2 => predict(e2.target.result);
+reader.readAsDataURL(file);
 });
 
 document.querySelector('#savegltf').addEventListener('click',function(){
