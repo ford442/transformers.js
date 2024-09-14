@@ -56,6 +56,8 @@ const vertexShader = `
   uniform sampler2D uBumpMap;
   uniform sampler2D uDisplacementMap;
   uniform float uDisplacementScale; // Control the displacement strength
+  uniform vec3 uSpotLight1Position;
+uniform vec3 uSpotLight1Color;
   varying vec2 vUv;
   varying vec3 vNormal; // Varying for interpolated normals
   varying vec3 vColor; // Varying for interpolated normals
