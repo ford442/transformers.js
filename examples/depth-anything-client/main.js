@@ -333,7 +333,7 @@ const controls = new OrbitControls( camera, renderer.domElement );
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
-renderer.compile();
+// renderer.compile();
 renderer.setAnimationLoop(() => {
 renderer.shadowMap.needsUpdate = true;
 material.needsUpdate = true;
