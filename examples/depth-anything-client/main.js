@@ -112,7 +112,7 @@ composer2.addPass( outputPass );
 composer2.addPass( fxaaPass );
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
-const lightA = new THREE.AmbientLight(0xcc0000,.149305777);
+const lightA = new THREE.AmbientLight(0xcc0000,.0149305777);
 const light =new THREE.DirectionalLight( 0xcc0000,.4930577 );
 scene.add(lightA);
 scene.add(light);
