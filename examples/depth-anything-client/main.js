@@ -119,11 +119,11 @@ fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( container.offsetHeigh
 composer2 = new EffectComposer( renderer );
 composer2.addPass( renderPass );
 composer2.addPass( outputPass );
-composer2.addPass( fxaaPass );
+// composer2.addPass( fxaaPass );
 taaRenderPass = new TAARenderPass( scene, camera );
 taaRenderPass.unbiased = false;
 taaRenderPass.sampleLevel = 16;
-// composer2.addPass( taaRenderPass );
+composer2.addPass( taaRenderPass );
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = bloomParams.threshold;
 bloomPass.strength = bloomParams.strength;
@@ -225,7 +225,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
 // Add a displacement modifier
 const params = {
 split:true, // optional, default: true
-uvSmooth: true,// optional, default: false
+uvSmooth: false,// optional, default: false
 preserveEdges:false,// optional, default: false
 flatOnly: false,// optional, default: false
 maxTriangles: Infinity, // optional, default: Infinity
