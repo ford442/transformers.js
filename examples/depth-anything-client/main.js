@@ -105,7 +105,6 @@ status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
 
 uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
-material.needsUpdate = true; // Force re-render
 status.textContent = '';
 const slider = document.createElement('input');
 slider.type = 'range';
@@ -159,6 +158,7 @@ uniforms: uniforms,
 vertexShader: vertexShader,
 fragmentShader: fragmentShader,
 });
+material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
