@@ -50,40 +50,6 @@ const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
-const vertexShader = `
-  uniform float uTime;
-  uniform sampler2D uTexture;
-  uniform sampler2D uDisplacementMap;
-  uniform float uDisplacementScale; // Control the displacement strength
-  varying vec2 vUv;
-  void main() {
-    vUv = uv; 
-    // Sample the displacement map
-    float displacement = texture2D(uDisplacementMap, vUv).r; 
-    vec3 pos = position;
-    pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
-    // Apply displacement
-    pos.z += displacement * uDisplacementScale; 
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-  }
-`;
-
-const fragmentShader = `
-uniform sampler2D uTexture;
-varying vec2 vUv;
-
-void main(){
-vec4 textureColor = texture2D(uTexture, vUv);
-gl_FragColor = textureColor;
-}
-`;
-
-const uniforms = {
-uTime: { value: 0.0 },
-uTexture: { },
-uDisplacementMap: { },
-uDisplacementScale: { value: 0.3 } // Adjust as needed
-};
 
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
@@ -103,8 +69,7 @@ imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
-
-uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
+depthE=depth;
 status.textContent = '';
 const slider = document.createElement('input');
 slider.type = 'range';
@@ -152,14 +117,10 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-	uniforms.uTexture.value = image; 
-
-const material = new THREE.ShaderMaterial({
-uniforms: uniforms,
-vertexShader: vertexShader,
-fragmentShader: fragmentShader,
+const material = new THREE.MeshStandardMaterial({
+map: image,
+side: THREE.DoubleSide,
 });
-material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
@@ -210,8 +171,10 @@ console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6
 // const texture8 = new THREE.DataTexture(displaceData, imgData.width, imgData.height, THREE.RGBAFormat);
 // texture8.internalFormat = 'RGBA8_SNORM';
 const displace2= new THREE.CanvasTexture(displaceData);
-uniforms.uDisplacementMap.value = displace2; 
-
+material.displacementMap=displace2;
+material.roughness=.85;
+material.metalness=.05;
+// material.roughnessMap=image;
 //bump map
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
@@ -232,6 +195,7 @@ material.needsUpdate = true;
 }
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
+material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
@@ -349,9 +313,6 @@ const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
 
 renderer.setAnimationLoop(() => {
-material.needsUpdate = true;
-uniforms.uTime.value += 0.01; // Update time
-	
 const time = performance.now() * 0.001; 
 // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
