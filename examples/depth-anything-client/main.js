@@ -80,7 +80,7 @@ gl_FragColor = textureColor;
 
 const uniforms = {
 uTime: { value: 0.0 },
-uTexture: { value: image },
+uTexture: { },
 uDisplacementMap: { },
 uDisplacementScale: { value: 0.3 } // Adjust as needed
 };
@@ -152,7 +152,8 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-	
+	uniforms.uTexture.value = image; 
+
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader,
