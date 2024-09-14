@@ -61,13 +61,13 @@ uniform vec3 uSpotLight1Color;
 // ... (uniforms for other spotlights)
 
 uniform sampler2D uBumpMap; // Make sure this is included in your uniforms
-layout(location = 0) in vec3 aPosition; 
-layout(location = 1) in vec3 aNormal;
-layout(location = 2) in vec2 aUv;
+layout(location = 0) in highp vec3 aPosition; 
+layout(location = 1) in highp vec3 aNormal;
+layout(location = 2) in highp vec2 aUv;
 
-out vec2 vUv;
-out vec3 vNormal;
-out vec3 vColor;
+out highp vec2 vUv;
+out highp vec3 vNormal;
+out highp vec3 vColor;
 
 void main() {
   vUv = uv;
@@ -101,9 +101,9 @@ void main() {
 const fragmentShader = `
 // #version 300 es
 uniform sampler2D uTexture;
-in vec2 vUv;
-in vec3 vNormal;
-in vec3 vColor;
+in vec2 highp vUv;
+in vec3 highp vNormal;
+in vec3 highp vColor;
 out vec4 FragColor; // Use 'out' instead of 'gl_FragColor'
 void main() {
   vec4 textureColor = texture(uTexture, vUv);
