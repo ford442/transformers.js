@@ -14,6 +14,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+			import { TAARenderPass } from 'three/addons/postprocessing/TAARenderPass.js';
+
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 
@@ -36,7 +38,8 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
-let composer1, composer2, fxaaPass,image;
+let composer1, composer2, fxaaPass,image,TAARenderPass;
+
 let moveForward=false;
 let moveBackward=false;
 let moveLeft=false;
@@ -110,6 +113,10 @@ composer2 = new EffectComposer( renderer );
 composer2.addPass( renderPass );
 composer2.addPass( outputPass );
 composer2.addPass( fxaaPass );
+taaRenderPass = new TAARenderPass( scene, camera );
+taaRenderPass.unbiased = false;
+taaRenderPass.sampleLevel = 16;
+composer2.addPass( taaRenderPass );
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
 const lightA = new THREE.AmbientLight(0xcc0000,.0149305777);
