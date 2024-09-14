@@ -109,7 +109,7 @@ const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
 
-uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
+// uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
 const slider = document.createElement('input');
 slider.type = 'range';
@@ -193,7 +193,7 @@ data[i+2]=greyData;
 // data16[i+1]=greyData16;
 // data16[i+2]=greyData16;
 // data16[i+3]=65535;
-		console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
+	//	console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
 // var disData=32.0-(greyData/8.);
 // const disData=(greyData/32.)-4.0;
 const disData=(greyData/64.)-2.0;
@@ -206,8 +206,8 @@ imgDataD[i+2]+=disData;
 // data16[i+2]-=disData16;
 // data16[i+3]=65535;
 }
-console.log(imgDataD[0],imgDataD[1],imgDataD[2],imgDataD[3],imgDataD[4],imgDataD[5],imgDataD[6],imgDataD[7]);
-console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
+// console.log(imgDataD[0],imgDataD[1],imgDataD[2],imgDataD[3],imgDataD[4],imgDataD[5],imgDataD[6],imgDataD[7]);
+// console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
 // const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.LuminanceFormat, THREE.UnsignedShortType);
 // const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.RGBAFormat, THREE.HalfFloatType);
 // texture16.internalFormat = 'RGBA16F';
@@ -246,7 +246,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
 // Add a displacement modifier
 const params = {
 split:true, // optional, default: true
-uvSmooth: false,// optional, default: false
+uvSmooth: true,// optional, default: false
 preserveEdges:false,// optional, default: false
 flatOnly: false,// optional, default: false
 maxTriangles: Infinity, // optional, default: Infinity
