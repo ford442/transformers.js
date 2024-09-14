@@ -123,12 +123,12 @@ composer2.addPass( fxaaPass );
 taaRenderPass = new TAARenderPass( scene, camera );
 taaRenderPass.unbiased = false;
 taaRenderPass.sampleLevel = 16;
-composer2.addPass( taaRenderPass );
+// composer2.addPass( taaRenderPass );
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = bloomParams.threshold;
 bloomPass.strength = bloomParams.strength;
 bloomPass.radius = bloomParams.radius;
-composer2.addPass( bloomPass );
+// composer2.addPass( bloomPass );
 
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
