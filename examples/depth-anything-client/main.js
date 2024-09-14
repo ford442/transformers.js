@@ -51,7 +51,7 @@ let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
 const vertexShader = `
-#version 300 es // Explicitly declare GLSL 3.0
+// #version 300 es
 uniform float uTime;
 uniform sampler2D uTexture;
 uniform sampler2D uDisplacementMap;
@@ -87,7 +87,7 @@ void main() {
 `;
 
 const fragmentShader = `
-#version 300 es
+// #version 300 es
 uniform sampler2D uTexture;
 in vec2 vUv;
 in vec3 vNormal;
