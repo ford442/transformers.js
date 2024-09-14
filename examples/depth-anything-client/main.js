@@ -56,14 +56,24 @@ const vertexShader = `
   uniform sampler2D uDisplacementMap;
   uniform float uDisplacementScale; // Control the displacement strength
   varying vec2 vUv;
+  varying vec3 vNormal; // Varying for interpolated normals
+
   void main() {
     vUv = uv; 
     // Sample the displacement map
-    float displacement = texture2D(uDisplacementMap, vUv).r; 
+    float displacement = texture2D(uDisplacementMap, vUv).r;
     vec3 pos = position;
-    pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+    pos.z += sin(pos.x * 2.0 + uTime) * 0.2;
     // Apply displacement
-    pos.z += displacement * uDisplacementScale; 
+    pos.z += displacement * uDisplacementScale;
+        // Sample bump map to perturb normals (simplified example)
+    vec3 bumpNormal = texture2D(uBumpMap, vUv).rgb * 2.0 - 1.0;
+    vNormal = normalize(normal + bumpNormal);
+    // Calculate lighting from spotlights (simplified example)
+    vec3 lightDir1 = normalize(uSpotLight1Position - position);
+    float diffuse1 = max(dot(vNormal, lightDir1), 0.0);
+    vec3 color = diffuse1 * uSpotLight1Color;
+    // ... (repeat for other spotlights)
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   }
 `;
@@ -71,16 +81,19 @@ const vertexShader = `
 const fragmentShader = `
 uniform sampler2D uTexture;
 varying vec2 vUv;
+  varying vec3 vNormal;
 
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
-gl_FragColor = textureColor;
+    vec3 finalColor = textureColor.rgb * color; // 'color' from vertex shader
+    gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
 
 const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
+uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 uDisplacementMap: { },
 uDisplacementScale: { value: 0.3 } // Adjust as needed
 };
@@ -225,6 +238,8 @@ ctx.putImageData(origImageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
+	uniforms.uBumpMap.value = bumpTexture; 
+
 material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
