@@ -51,48 +51,30 @@ let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
 const vertexShader = `
-uniform float uTime;
-uniform sampler2D uBumpMap;
-uniform sampler2D uTexture;
-uniform sampler2D uDisplacementMap;
-uniform vec3 uSpotLight1Position;
-uniform vec3 uSpotLight1Color;
-uniform float uDisplacementScale; // Control the displacement strength
-varying vec2 vUv;
-varying vec3 vNormal; // Varying for interpolated normals
-varying vec3 vColor; // Varying for interpolated normals
-
-void main() {
-vUv = uv; 
-// Sample bump map to perturb normals (simplified example)
-vec3 bumpNormal = texture2D(uBumpMap, vUv).rgb * 2.0 - 1.0; 
-vNormal = normalize(normal + bumpNormal); 
-
-// Calculate lighting from spotlights (simplified example)
-vec3 lightDir1 = normalize(uSpotLight1Position - position);
-float diffuse1 = max(dot(vNormal, lightDir1), 0.0);
-vec3 color = diffuse1 * uSpotLight1Color; 
-vColor=color;
-
-// Sample the displacement map
-float displacement = texture2D(uDisplacementMap, vUv).r; 
-vec3 pos = position;
-pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
-// Apply displacement
-pos.z += displacement * uDisplacementScale; 
-gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-}
+  uniform float uTime;
+  uniform sampler2D uTexture;
+  uniform sampler2D uDisplacementMap;
+  uniform float uDisplacementScale; // Control the displacement strength
+  varying vec2 vUv;
+  void main() {
+    vUv = uv; 
+    // Sample the displacement map
+    float displacement = texture2D(uDisplacementMap, vUv).r; 
+    vec3 pos = position;
+    pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+    // Apply displacement
+    pos.z += displacement * uDisplacementScale; 
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  }
 `;
 
 const fragmentShader = `
 uniform sampler2D uTexture;
 varying vec2 vUv;
-varying vec3 vNormal;
-varying vec3 vColor;
+
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
-vec3 finalColor = textureColor.rgb * vColor; // 'color' from vertex shader
-gl_FragColor = vec4(finalColor, 1.0);
+gl_FragColor = textureColor;
 }
 `;
 
@@ -100,10 +82,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementScale: { value: 0.3 }, // Adjust as needed
-uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
-uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
-uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
+uDisplacementScale: { value: 0.3 } // Adjust as needed
 };
 
 async function predict(imageDataURL) {
@@ -180,6 +159,7 @@ uniforms: uniforms,
 vertexShader: vertexShader,
 fragmentShader: fragmentShader,
 });
+material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
@@ -208,7 +188,7 @@ data[i+2]=greyData;
 // data16[i+1]=greyData16;
 // data16[i+2]=greyData16;
 // data16[i+3]=65535;
-	//	console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
+		console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
 // var disData=32.0-(greyData/8.);
 // const disData=(greyData/32.)-4.0;
 const disData=(greyData/64.)-2.0;
@@ -221,8 +201,8 @@ imgDataD[i+2]+=disData;
 // data16[i+2]-=disData16;
 // data16[i+3]=65535;
 }
-   // console.log(imgDataD[0],imgDataD[1],imgDataD[2],imgDataD[3],imgDataD[4],imgDataD[5],imgDataD[6],imgDataD[7]);
-   // console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
+console.log(imgDataD[0],imgDataD[1],imgDataD[2],imgDataD[3],imgDataD[4],imgDataD[5],imgDataD[6],imgDataD[7]);
+console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6],data16[7]);
 // const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.LuminanceFormat, THREE.UnsignedShortType);
 // const texture16 = new THREE.DataTexture(data16, imgData.width, imgData.height, THREE.RGBAFormat, THREE.HalfFloatType);
 // texture16.internalFormat = 'RGBA16F';
@@ -245,9 +225,7 @@ ctx.putImageData(origImageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
-uniforms.uBumpMap.value = bumpTexture; 
-
-// material.bumpMap=bumpTexture;
+material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
 material.needsUpdate = true;
@@ -359,8 +337,8 @@ AgX: THREE.AgXToneMapping,
 Neutral: THREE.NeutralToneMapping,
 Custom: THREE.CustomToneMapping
 };
-// renderer.toneMapping = toneMappingOptions[ toneParams.toneMapping ];
-// renderer.toneMappingExposure = toneParams.exposure;
+renderer.toneMapping = toneMappingOptions[ toneParams.toneMapping ];
+renderer.toneMappingExposure = toneParams.exposure;
 	// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.type = THREE.VSMShadowMap;
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -405,9 +383,6 @@ camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5)
 }
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
-  uniforms.uSpotLight1Color.value.copy(spotLight1.color);
-  uniforms.uSpotLight1Position.value.copy(spotLight1.position);
-	
 spotLight2.position.x = Math.cos( time ) * 1.15;
 spotLight2.position.z *= Math.sin( time ) * 1.25;
 spotLight3.position.x = Math.cos( time ) *1.15;
