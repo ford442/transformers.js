@@ -52,8 +52,11 @@ let dnce=document.querySelector('#dance').checked;
 
 const vertexShader = `
 uniform float uTime;
+uniform sampler2D uBumpMap;
 uniform sampler2D uTexture;
 uniform sampler2D uDisplacementMap;
+uniform vec3 uSpotLight1Position;
+uniform vec3 uSpotLight1Color;
 uniform float uDisplacementScale; // Control the displacement strength
 varying vec2 vUv;
 varying vec3 vNormal; // Varying for interpolated normals
