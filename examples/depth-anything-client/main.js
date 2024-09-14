@@ -82,10 +82,11 @@ const fragmentShader = `
 uniform sampler2D uTexture;
 varying vec2 vUv;
   varying vec3 vNormal;
+  varying vec3 vColor;
 
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
-    vec3 finalColor = textureColor.rgb * color; // 'color' from vertex shader
+    vec3 finalColor = textureColor.rgb * vColor; // 'color' from vertex shader
     gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
