@@ -53,12 +53,15 @@ let dnce=document.querySelector('#dance').checked;
 const vertexShader = `
   uniform float uTime;
   uniform sampler2D uTexture;
+  uniform sampler2D uBumpMap;
   uniform sampler2D uDisplacementMap;
   uniform float uDisplacementScale; // Control the displacement strength
   varying vec2 vUv;
   varying vec3 vNormal; // Varying for interpolated normals
+  varying vec3 vColor; // Varying for interpolated normals
 
   void main() {
+  
     vUv = uv; 
     // Sample the displacement map
     float displacement = texture2D(uDisplacementMap, vUv).r;
@@ -73,7 +76,9 @@ const vertexShader = `
     vec3 lightDir1 = normalize(uSpotLight1Position - position);
     float diffuse1 = max(dot(vNormal, lightDir1), 0.0);
     vec3 color = diffuse1 * uSpotLight1Color;
+    
     // ... (repeat for other spotlights)
+    vColor=color;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   }
 `;
