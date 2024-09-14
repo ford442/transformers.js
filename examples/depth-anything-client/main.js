@@ -155,7 +155,7 @@ const fragmentShader = `
 const uniforms = {
   uTime: { value: 0.0 },
   uTexture: { value: texture },
-  uDisplacementMap: { value: displacementMap },
+  uDisplacementMap: { value: depth },
   uDisplacementScale: { value: 0.3 } // Adjust as needed
 };
 	
@@ -163,8 +163,6 @@ const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader,
 fragmentShader: fragmentShader,
-map: image,
-side: THREE.DoubleSide,
 });
 material.receiveShadow = true;
 material.castShadow = true;
