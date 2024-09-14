@@ -57,6 +57,7 @@ uniform sampler2D uDisplacementMap;
 uniform float uDisplacementScale; // Control the displacement strength
 varying vec2 vUv;
 varying vec3 vNormal; // Varying for interpolated normals
+varying vec3 vColor; // Varying for interpolated normals
 
 void main() {
 vUv = uv; 
@@ -68,6 +69,7 @@ vNormal = normalize(normal + bumpNormal);
 vec3 lightDir1 = normalize(uSpotLight1Position - position);
 float diffuse1 = max(dot(vNormal, lightDir1), 0.0);
 vec3 color = diffuse1 * uSpotLight1Color; 
+vColor=color;
 
 // Sample the displacement map
 float displacement = texture2D(uDisplacementMap, vUv).r; 
@@ -83,9 +85,10 @@ const fragmentShader = `
 uniform sampler2D uTexture;
 varying vec2 vUv;
 varying vec3 vNormal;
+varying vec3 vColor;
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
-vec3 finalColor = textureColor.rgb * color; // 'color' from vertex shader
+vec3 finalColor = textureColor.rgb * vColor; // 'color' from vertex shader
 gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
