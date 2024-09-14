@@ -61,6 +61,9 @@ uniform vec3 uSpotLight1Color;
 // ... (uniforms for other spotlights)
 
 uniform sampler2D uBumpMap; // Make sure this is included in your uniforms
+layout(location = 0) in vec3 aPosition; 
+layout(location = 1) in vec3 aNormal;
+layout(location = 2) in vec2 aUv;
 
 out vec2 vUv;
 out vec3 vNormal;
@@ -73,14 +76,14 @@ void main() {
   float displacement = texture(uDisplacementMap, vUv).r;
 
   // Apply displacement and animation
-  vec3 animatedPosition = position;
-  animatedPosition.z += sin(position.x * 2.0 + uTime) * 0.2;
+  vec3 animatedPosition = aPosition;
+  animatedPosition.z += sin(aPosition.x * 2.0 + uTime) * 0.2;
   animatedPosition.z += displacement * uDisplacementScale;
 
   // Sample bump map and calculate perturbed normal
   vec4 bumpColor = texture(uBumpMap, vUv); // Sample as vec4
   vec3 bumpNormal = (bumpColor.rgb * 2.0 - 1.0); // Convert to vec3
-  vNormal = normalize(normal + bumpNormal);
+  vNormal = normalize(aNormal + bumpNormal);
 
   // Calculate lighting from spotlights
   vec3 lightDir1 = normalize(uSpotLight1Position - animatedPosition);
@@ -89,7 +92,7 @@ void main() {
 
   // ... (repeat for other spotlights)
 
-  vColor = color;
+  vColor = vColor;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(animatedPosition, 1.0);
 }
