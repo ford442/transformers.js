@@ -14,8 +14,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-			import { TAARenderPass } from 'three/addons/postprocessing/TAARenderPass.js';
-
+import { TAARenderPass } from 'three/addons/postprocessing/TAARenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 
@@ -38,7 +38,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
-let composer1, composer2, fxaaPass,image,TAARenderPass;
+let composer1, composer2, fxaaPass,image;
 
 let moveForward=false;
 let moveBackward=false;
