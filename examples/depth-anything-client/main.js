@@ -63,7 +63,7 @@ vUv = uv;
 // Sample the displacement map
 float displacement = texture2D(uDisplacementMap, vUv).r; 
 vec3 pos = position;
-pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+pos.z += cos(pos.x * 2.0 + uTime) * 0.2; 
 // Apply displacement
 pos.z += displacement * uDisplacementScale; 
 gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -84,7 +84,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementScale: { value: 0.3 }, // Adjust as needed
+uDisplacementScale: { value: 0.233 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
