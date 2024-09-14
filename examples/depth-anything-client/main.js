@@ -412,7 +412,8 @@ camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5)
 }
 spotLight1.position.x *= Math.cos( time ) * .15;
 spotLight1.position.z = Math.sin( time ) * 1.5;
-	uniforms.uSpotLight1Position.value = spotLight1.position.xyz; 
+  uniforms.uSpotLight1Color.value.copy(spotLight1.color);
+  uniforms.uSpotLight1Position.value.copy(spotLight1.position);
 
 spotLight2.position.x = Math.cos( time ) * 1.15;
 spotLight2.position.z *= Math.sin( time ) * 1.25;
