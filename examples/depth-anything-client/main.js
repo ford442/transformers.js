@@ -50,7 +50,6 @@ const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
-
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
 const img = new Image();
@@ -121,12 +120,11 @@ image.colorSpace = THREE.SRGBColorSpace;
 const vertexShader = `
   uniform float uTime;
 
-  varying vec3 vPosition;
+  varying vec2 vUv; // Pass UV coordinates to the fragment shader
 
   void main() {
-    vPosition = position;
+    vUv = uv; 
 
-    // Simple wave-like displacement
     vec3 pos = position;
     pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
 
@@ -135,16 +133,20 @@ const vertexShader = `
 `;
 
 const fragmentShader = `
-  varying vec3 vPosition;
+  uniform sampler2D uTexture; // The texture uniform
+  varying vec2 vUv;
 
   void main() {
-    gl_FragColor = vec4(vPosition, 1.0); // Simple color based on position
+    vec4 textureColor = texture2D(uTexture, vUv); // Sample the texture
+    gl_FragColor = textureColor; 
   }
 `;
 
 const uniforms = {
-  uTime: { value: 0.0 }
+  uTime: { value: 0.0 },
+  uTexture: { value: image } // Pass the texture to the shader
 };
+
 	
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
