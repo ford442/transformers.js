@@ -38,7 +38,7 @@ const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
 let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
-let composer1, composer2, fxaaPass,image;
+let composer1, composer2, fxaaPass,image,taaRenderPass ;
 
 const bloomParams = {
 threshold: 0.355,
