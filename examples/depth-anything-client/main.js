@@ -51,47 +51,53 @@ let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
 const vertexShader = `
+#version 300 es // Explicitly declare GLSL 3.0
 uniform float uTime;
 uniform sampler2D uTexture;
 uniform sampler2D uDisplacementMap;
-uniform float uDisplacementScale; // Control the displacement strength
-varying vec2 vUv;
-varying vec3 vNormal; // Varying for interpolated normals
-  varying vec3 vColor; // New varying to pass color to fragment shader
-
+uniform float uDisplacementScale;
+uniform vec3 uSpotLight1Position;
+uniform vec3 uSpotLight1Color;
+// ... (uniforms for other spotlights)
+in vec3 position; // Use 'in' instead of 'attribute'
+in vec3 normal;
+in vec2 uv;
+out vec2 vUv;
+out vec3 vNormal;
+out vec3 vColor;
 void main() {
-vUv = uv; 
-    vColor = color; // Assign the calculated color to the varying
-
-// Sample bump map to perturb normals (simplified example)
-vec3 bumpNormal = texture2D(uBumpMap, vUv).rgb * 2.0 - 1.0; 
-vNormal = normalize(normal + bumpNormal); 
-
-// Calculate lighting from spotlights (simplified example)
-vec3 lightDir1 = normalize(uSpotLight1Position - position);
-float diffuse1 = max(dot(vNormal, lightDir1), 0.0);
-vec3 color = diffuse1 * uSpotLight1Color; 
-
-// Sample the displacement map
-float displacement = texture2D(uDisplacementMap, vUv).r; 
-vec3 pos = position;
-pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
-// Apply displacement
-pos.z += displacement * uDisplacementScale; 
-gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  vUv = uv; 
+  // Sample displacement map
+  float displacement = texture(uDisplacementMap, vUv).r;
+  // Apply displacement and animation
+  vec3 animatedPosition = position;
+  animatedPosition.z += sin(position.x * 2.0 + uTime) * 0.2; 
+  animatedPosition.z += displacement * uDisplacementScale;
+  // Sample bump map and calculate perturbed normal
+  vec3 bumpNormal = texture(uBumpMap, vUv).rgb * 2.0 - 1.0;
+  vNormal = normalize(normal + bumpNormal);
+  // Calculate lighting from spotlights
+  vec3 lightDir1 = normalize(uSpotLight1Position - animatedPosition);
+  float diffuse1 = max(dot(vNormal, lightDir1), 0.0);
+  vec3 color = diffuse1 * uSpotLight1Color;
+  // ... (repeat for other spotlights)
+  vColor = color;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(animatedPosition, 1.0);
 }
 `;
 
 const fragmentShader = `
+#version 300 es
 uniform sampler2D uTexture;
-varying vec2 vUv;
-varying vec3 vNormal;
-varying vec3 vColor; // Receive the color from the vertex shader
-
-void main(){
-vec4 textureColor = texture2D(uTexture, vUv);
-vec3 finalColor = textureColor.rgb * vColor; // 'color' from vertex shader
-gl_FragColor = vec4(finalColor, 1.0);
+in vec2 vUv;
+in vec3 vNormal;
+in vec3 vColor;
+out vec4 FragColor; // Use 'out' instead of 'gl_FragColor'
+void main() {
+  vec4 textureColor = texture(uTexture, vUv);
+  // Apply lighting to texture color
+  vec3 finalColor = textureColor.rgb * vColor;
+  FragColor = vec4(finalColor, 1.0);
 }
 `;
 
@@ -178,6 +184,7 @@ const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader,
 fragmentShader: fragmentShader,
+glslVersion: THREE.GLSL3
 });
 material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
