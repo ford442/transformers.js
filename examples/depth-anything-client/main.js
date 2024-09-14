@@ -117,7 +117,39 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-const material = new THREE.MeshStandardMaterial({
+	
+const vertexShader = `
+  uniform float uTime;
+
+  varying vec3 vPosition;
+
+  void main() {
+    vPosition = position;
+
+    // Simple wave-like displacement
+    vec3 pos = position;
+    pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  }
+`;
+
+const fragmentShader = `
+  varying vec3 vPosition;
+
+  void main() {
+    gl_FragColor = vec4(vPosition, 1.0); // Simple color based on position
+  }
+`;
+
+const uniforms = {
+  uTime: { value: 0.0 }
+};
+	
+const material = new THREE.ShaderMaterial({
+uniforms: uniforms,
+vertexShader: vertexShader,
+fragmentShader: fragmentShader,
 map: image,
 side: THREE.DoubleSide,
 });
@@ -313,6 +345,10 @@ const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
 
 renderer.setAnimationLoop(() => {
+
+uniforms.uTime.value += 0.01; // Update time
+material.needsUpdate = true; 
+	
 const time = performance.now() * 0.001; 
 // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
