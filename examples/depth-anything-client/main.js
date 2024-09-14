@@ -119,34 +119,45 @@ image.colorSpace = THREE.SRGBColorSpace;
 	
 const vertexShader = `
   uniform float uTime;
+  uniform sampler2D uTexture;
+  uniform sampler2D uDisplacementMap;
+  uniform float uDisplacementScale; // Control the displacement strength
 
-  varying vec2 vUv; // Pass UV coordinates to the fragment shader
+  varying vec2 vUv;
 
   void main() {
     vUv = uv; 
 
+    // Sample the displacement map
+    float displacement = texture2D(uDisplacementMap, vUv).r; 
+
     vec3 pos = position;
     pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+    // Apply displacement
+    pos.z += displacement * uDisplacementScale; 
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   }
 `;
 
 const fragmentShader = `
-  uniform sampler2D uTexture; // The texture uniform
+  uniform sampler2D uTexture;
   varying vec2 vUv;
 
-  void main() {
-    vec4 textureColor = texture2D(uTexture, vUv); // Sample the texture
-    gl_FragColor = textureColor; 
+  void main()   
+ {
+    vec4 textureColor = texture2D(uTexture, vUv);
+    gl_FragColor = textureColor;   
+ 
   }
 `;
 
 const uniforms = {
   uTime: { value: 0.0 },
-  uTexture: { value: image } // Pass the texture to the shader
+  uTexture: { value: texture },
+  uDisplacementMap: { value: displacementMap },
+  uDisplacementScale: { value: 0.3 } // Adjust as needed
 };
-
 	
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
