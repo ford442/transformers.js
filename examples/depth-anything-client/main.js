@@ -40,6 +40,13 @@ let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
 let composer1, composer2, fxaaPass,image;
 
+const bloomParams = {
+threshold: 0.355,
+strength: 2.111,
+radius: 0.333,
+exposure: 1.333
+};
+
 let moveForward=false;
 let moveBackward=false;
 let moveLeft=false;
@@ -117,6 +124,12 @@ taaRenderPass = new TAARenderPass( scene, camera );
 taaRenderPass.unbiased = false;
 taaRenderPass.sampleLevel = 16;
 composer2.addPass( taaRenderPass );
+const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+bloomPass.threshold = bloomParams.threshold;
+bloomPass.strength = bloomParams.strength;
+bloomPass.radius = bloomParams.radius;
+composer2.addPass( bloomPass );
+
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
 const lightA = new THREE.AmbientLight(0xcc0000,.0149305777);
