@@ -123,7 +123,7 @@ composer2.addPass( outputPass );
 taaRenderPass = new TAARenderPass( scene, camera );
 taaRenderPass.unbiased = false;
 taaRenderPass.sampleLevel = 16;
-composer2.addPass( taaRenderPass );
+// composer2.addPass( taaRenderPass );
 const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 bloomPass.threshold = bloomParams.threshold;
 bloomPass.strength = bloomParams.strength;
