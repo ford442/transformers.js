@@ -50,6 +50,40 @@ const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
+const vertexShader = `
+  uniform float uTime;
+  uniform sampler2D uTexture;
+  uniform sampler2D uDisplacementMap;
+  uniform float uDisplacementScale; // Control the displacement strength
+  varying vec2 vUv;
+  void main() {
+    vUv = uv; 
+    // Sample the displacement map
+    float displacement = texture2D(uDisplacementMap, vUv).r; 
+    vec3 pos = position;
+    pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+    // Apply displacement
+    pos.z += displacement * uDisplacementScale; 
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  }
+`;
+
+const fragmentShader = `
+uniform sampler2D uTexture;
+varying vec2 vUv;
+
+void main(){
+vec4 textureColor = texture2D(uTexture, vUv);
+gl_FragColor = textureColor;
+}
+`;
+
+const uniforms = {
+uTime: { value: 0.0 },
+uTexture: { },
+uDisplacementMap: { },
+uDisplacementScale: { value: 0.3 } // Adjust as needed
+};
 
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
@@ -69,7 +103,8 @@ imageContainer.append(canvas);
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
-depthE=depth;
+
+uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
 const slider = document.createElement('input');
 slider.type = 'range';
@@ -117,10 +152,14 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-const material = new THREE.MeshStandardMaterial({
-map: image,
-side: THREE.DoubleSide,
+	uniforms.uTexture.value = image; 
+
+const material = new THREE.ShaderMaterial({
+uniforms: uniforms,
+vertexShader: vertexShader,
+fragmentShader: fragmentShader,
 });
+material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
@@ -313,6 +352,9 @@ const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
 
 renderer.setAnimationLoop(() => {
+
+uniforms.uTime.value += 0.01; // Update time
+	
 const time = performance.now() * 0.001; 
 // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
