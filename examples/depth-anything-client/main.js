@@ -101,9 +101,9 @@ void main() {
 const fragmentShader = `
 // #version 300 es
 uniform sampler2D uTexture;
-in vec2 highp vUv;
-in vec3 highp vNormal;
-in vec3 highp vColor;
+in highp vec2 vUv;
+in highp vec3 vNormal;
+in highp vec3 vColor;
 out vec4 FragColor; // Use 'out' instead of 'gl_FragColor'
 void main() {
   vec4 textureColor = texture(uTexture, vUv);
