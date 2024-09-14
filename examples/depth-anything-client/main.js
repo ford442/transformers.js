@@ -155,7 +155,7 @@ const fragmentShader = `
 const uniforms = {
   uTime: { value: 0.0 },
   uTexture: { value: image },
-  uDisplacementMap: { value: depth },
+  uDisplacementMap: { value: depthE },
   uDisplacementScale: { value: 0.3 } // Adjust as needed
 };
 	
