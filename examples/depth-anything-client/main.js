@@ -57,9 +57,12 @@ uniform sampler2D uDisplacementMap;
 uniform float uDisplacementScale; // Control the displacement strength
 varying vec2 vUv;
 varying vec3 vNormal; // Varying for interpolated normals
+  varying vec3 vColor; // New varying to pass color to fragment shader
 
 void main() {
 vUv = uv; 
+    vColor = color; // Assign the calculated color to the varying
+
 // Sample bump map to perturb normals (simplified example)
 vec3 bumpNormal = texture2D(uBumpMap, vUv).rgb * 2.0 - 1.0; 
 vNormal = normalize(normal + bumpNormal); 
@@ -83,9 +86,11 @@ const fragmentShader = `
 uniform sampler2D uTexture;
 varying vec2 vUv;
 varying vec3 vNormal;
+varying vec3 vColor; // Receive the color from the vertex shader
+
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
-vec3 finalColor = textureColor.rgb * color; // 'color' from vertex shader
+vec3 finalColor = textureColor.rgb * vColor; // 'color' from vertex shader
 gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
