@@ -378,8 +378,8 @@ AgX: THREE.AgXToneMapping,
 Neutral: THREE.NeutralToneMapping,
 Custom: THREE.CustomToneMapping
 };
-renderer.toneMapping = toneMappingOptions[ toneParams.toneMapping ];
-renderer.toneMappingExposure = toneParams.exposure;
+// renderer.toneMapping = toneMappingOptions[ toneParams.toneMapping ];
+// renderer.toneMappingExposure = toneParams.exposure;
 	// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.type = THREE.VSMShadowMap;
 const controls = new OrbitControls( camera, renderer.domElement );
