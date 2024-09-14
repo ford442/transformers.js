@@ -141,15 +141,13 @@ const vertexShader = `
 `;
 
 const fragmentShader = `
-  uniform sampler2D uTexture;
-  varying vec2 vUv;
+uniform sampler2D uTexture;
+varying vec2 vUv;
 
-  void main()   
- {
-    vec4 textureColor = texture2D(uTexture, vUv);
-    gl_FragColor = textureColor;   
- 
-  }
+void main(){
+vec4 textureColor = texture2D(uTexture, vUv);
+gl_FragColor = textureColor;   
+}
 `;
 
 const uniforms = {
