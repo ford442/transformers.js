@@ -135,7 +135,7 @@ const camera = new THREE.PerspectiveCamera(120, width / height, .01, 10000);
 camera.position.z = 1;
 scene.add(camera);
 // const renderer = new THREE.WebGPURenderer();
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false,powerPreference:'high-performace',depth:false });
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
@@ -354,7 +354,7 @@ const controls = new OrbitControls( camera, renderer.domElement );
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
-
+renderer.compile();
 renderer.setAnimationLoop(() => {
 material.needsUpdate = true;
 uniforms.uTime.value += 0.01; // Update time
