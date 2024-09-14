@@ -191,11 +191,11 @@ bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
-material.needsUpdate = true;
+// material.needsUpdate = true;
 }
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
-material.needsUpdate = true;
+// material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
@@ -313,6 +313,9 @@ const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
 
 renderer.setAnimationLoop(() => {
+renderer.shadowMap.needsUpdate = true;
+material.needsUpdate = true;
+
 const time = performance.now() * 0.001; 
 // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
@@ -389,12 +392,12 @@ sceneL.add(gltf.scene);
 const planeL = gltf.scene.children.find(child => child.isMesh);
 if (planeL) {
 const material = planeL.material;
-material.needsUpdate = true;
+// material.needsUpdate = true;
 material.displacementScale = 0.35;
 material.displacementBias=-0.15;
 textureLoader.load(document.querySelector('#saveName').innerHTML+'.jpg', function(texture) {
 material.displacementMap = texture;
-material.needsUpdate = true;
+// material.needsUpdate = true;
 });
 } else {
 console.warn("No mesh found in the glTF scene.");
