@@ -210,10 +210,8 @@ console.log(data16[0],data16[1],data16[2],data16[3],data16[4],data16[5],data16[6
 // const texture8 = new THREE.DataTexture(displaceData, imgData.width, imgData.height, THREE.RGBAFormat);
 // texture8.internalFormat = 'RGBA8_SNORM';
 const displace2= new THREE.CanvasTexture(displaceData);
-material.displacementMap=displace2;
-material.roughness=.85;
-material.metalness=.05;
-// material.roughnessMap=image;
+uniforms.uDisplacementMap.value = displace2; 
+
 //bump map
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
@@ -234,7 +232,6 @@ material.needsUpdate = true;
 }
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
-material.needsUpdate = true;
 }
 onSliderChange = setDisplacementScale;
 const [pw, ph] = w > h ? [1, h / w] : [w / h, 1];
@@ -352,7 +349,7 @@ const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
 
 renderer.setAnimationLoop(() => {
-
+material.needsUpdate = true;
 uniforms.uTime.value += 0.01; // Update time
 	
 const time = performance.now() * 0.001; 
