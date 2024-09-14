@@ -180,7 +180,6 @@ uniforms: uniforms,
 vertexShader: vertexShader,
 fragmentShader: fragmentShader,
 });
-material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
@@ -248,7 +247,7 @@ const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 uniforms.uBumpMap.value = bumpTexture; 
 
-material.bumpMap=bumpTexture;
+// material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
 material.needsUpdate = true;
