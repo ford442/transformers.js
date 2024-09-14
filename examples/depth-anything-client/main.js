@@ -157,14 +157,14 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-	uniforms.uTexture.value = image; 
+uniforms.uTexture.value = image; 
 
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader,
 fragmentShader: fragmentShader,
 });
-material.needsUpdate = true; // Force re-render
+// material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
@@ -235,7 +235,7 @@ bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
-material.needsUpdate = true;
+// material.needsUpdate = true;
 }
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
@@ -327,7 +327,7 @@ scene.add( spotLight4 );
 spotLight4.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight4.target );
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.needsUpdate = true;
+// renderer.shadowMap.needsUpdate = true;
 const toneParams = {
 exposure: 0.9980,
 toneMapping: 'Neutral',
@@ -358,7 +358,8 @@ const wobbleSpeed = 5; // Faster wobble speed
 renderer.setAnimationLoop(() => {
 material.needsUpdate = true;
 uniforms.uTime.value += 0.01; // Update time
-	
+renderer.shadowMap.needsUpdate = true;
+
 const time = performance.now() * 0.001; 
 // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
