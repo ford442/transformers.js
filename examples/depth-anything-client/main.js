@@ -203,7 +203,7 @@ const geometry = new THREE.PlaneGeometry(pw, ph, w*2, h*2);
 // Add a displacement modifier
 const params = {
 split:true, // optional, default: true
-uvSmooth: false,// optional, default: false
+uvSmooth: true,// optional, default: false
 preserveEdges:false,// optional, default: false
 flatOnly: false,// optional, default: false
 maxTriangles: Infinity, // optional, default: Infinity
