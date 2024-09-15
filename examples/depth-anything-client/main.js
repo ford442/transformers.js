@@ -415,6 +415,7 @@ const width = imageContainer.offsetWidth;
 const height = imageContainer.offsetHeight;
 camera.aspect = width / height;
 camera.updateProjectionMatrix();
+	controls.handleResize();
 renderer.setSize(width, height);
 }, false);
 return {
