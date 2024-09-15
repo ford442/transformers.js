@@ -352,7 +352,7 @@ renderer.shadowMap.type = THREE.VSMShadowMap;
 	
 const controls = new FirstPersonControls( camera, renderer.domElement );
 controls.movementSpeed = 1; // Adjust as needed
-controls.lookSpeed=.02; 
+controls.lookSpeed=2.2; 
 	
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5; // Faster wobble speed
