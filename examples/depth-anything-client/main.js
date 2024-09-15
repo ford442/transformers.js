@@ -348,7 +348,7 @@ Custom: THREE.CustomToneMapping
 // renderer.toneMappingExposure = toneParams.exposure;
 	// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.type = THREE.VSMShadowMap;
-const controls = new OrbitControls( camera, renderer.domElement );
+// const controls = new OrbitControls( camera, renderer.domElement );
 	
 const controls = new FirstPersonControls( camera, renderer.domElement );
 controls.movementSpeed = 1; // Adjust as needed
