@@ -85,8 +85,6 @@ if (newWidth > maxSize) {
 newWidth = newHeight = maxSize;
 canvas2.width = newWidth;
 canvas2.height = newHeight;
-document.getElementById('vsiz').innerHTML=newHeight;
-document.getElementById('vsiz').innerHTML=newHeight;
 ctx.drawImage(img, cropX, cropY, newWidth, newHeight, 0, 0, newWidth, newHeight);
 const newImageDataURL = canvas2.toDataURL(); // Get the new data URL
 imageDataURL = newImageDataURL;
