@@ -67,9 +67,34 @@ const img = new Image();
 img.src = imageDataURL;
 img.onload = async () => {
 const canvas2 = document.createElement('canvas');
+const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
+
+const maxSize = 1024; // Set your desired maximum size for the square
+let newWidth, newHeight, cropX, cropY;
+
+if (img.width > img.height) {
+newWidth = newHeight = img.height;
+cropX = (img.width - img.height) / 2;
+cropY = 0;
+} else if (img.height > img.width) {
+newHeight = newWidth = img.width;
+cropX = 0;
+cropY = (img.width - img.height) / 2;
+}
+if (newWidth > maxSize) {
+newWidth = newHeight = maxSize;
+canvas2.width = newWidth;
+canvas2.height = newHeight;
+document.getElementById('vsiz').innerHTML=newHeight;
+document.getElementById('vsiz').innerHTML=newHeight;
+ctx.drawImage(img, cropX, cropY, newWidth, newHeight, 0, 0, newWidth, newHeight);
+const newImageDataURL = canvas2.toDataURL(); // Get the new data URL
+imageDataURL = newImageDataURL;
+img.src = imageDataURL;
+}
+
 canvas2.width = img.width;
 canvas2.height = img.height;
-const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
