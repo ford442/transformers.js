@@ -59,7 +59,7 @@ let dnce=document.querySelector('#dance').checked;
 let depth_estimatorr;
 
 // async function loadModel() {
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
+const depth_estimator = pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
 // }
 
 async function predict(imageDataURL) {
