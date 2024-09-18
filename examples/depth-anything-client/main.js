@@ -29,10 +29,7 @@ const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
-status.textContent = 'Loading model...';
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
-// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf',{device:'webgpu'});
-status.textContent = 'Ready';
+
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
@@ -62,6 +59,10 @@ let dnce=document.querySelector('#dance').checked;
 
 
 async function predict(imageDataURL) {
+status.textContent = 'Loading model...';
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
+// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf',{device:'webgpu'});
+status.textContent = 'Ready';
 imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
