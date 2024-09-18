@@ -165,7 +165,7 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-const material = new THREE.MeshToonMaterial({
+const material = new THREE.MeshStandardMaterial({
 map: image,
 side: THREE.DoubleSide,
 });
