@@ -56,11 +56,11 @@ let yawObject, pitchObject; // Declare these variables at a higher scope
 const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
-let depth_estimator;
+let depth_estimatorr;
 
-async function loadModel() {
-depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
-}
+// async function loadModel() {
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
+// }
 
 async function predict(imageDataURL) {
 status.textContent = 'Loading model...';
@@ -556,4 +556,4 @@ lockBtn.addEventListener('click', () => {
 document.querySelector('#tvi').requestPointerLock(); 
 });
 
-loadModel();
+// loadModel();
