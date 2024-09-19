@@ -6,7 +6,6 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
-// import { pipeline, env, RawImage } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.14';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
 import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
@@ -18,8 +17,7 @@ import { TAARenderPass } from 'three/addons/postprocessing/TAARenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
-// import * as TSL from 'three/examples/jsm/libs/tsl.js'; // Or adjust the path if needed
-import { range, texture, mix, uv, color, rotateUV, positionLocal, timerLocal } from 'three/examples/jsm/libs/tsl.js';
+import { range, texture, mix, uv, color, rotateUV, positionLocal, timerLocal } from 'three/tsl';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
