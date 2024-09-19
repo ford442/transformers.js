@@ -266,9 +266,8 @@ scene.add(plane);
 // scene.tfog = new THREE.Fog( 0x6f00a0, 0.1, 10 );
 
 //  smoke
-
 	
-const map = textureLoader.load( './smoke1.png' );
+const smap =  new THREE.TextureLoader().load( './smoke1.png' );
 
 // create nodes
 const lifeRange = range( .1, 1 );
@@ -279,7 +278,7 @@ const scaleRange = range( .3, 2 );
 const rotateRange = range( .1, 4 );
 const life = lifeTime.div( lifeRange );
 const fakeLightEffect = positionLocal.y.oneMinus().max( 0.2 );
-const textureNode = texture( map, rotateUV( uv(), timer.mul( rotateRange ) ) );
+const textureNode = texture( smap, rotateUV( uv(), timer.mul( rotateRange ) ) );
 const opacityNode = textureNode.a.mul( life.oneMinus() );
 const smokeColor = mix( color( 0x2c1501 ), color( 0x222222 ), positionLocal.y.mul( 3 ).clamp() );
 
