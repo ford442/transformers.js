@@ -17,7 +17,7 @@ import { TAARenderPass } from 'three/addons/postprocessing/TAARenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
-import { range, texture, mix, uv, color, rotateUV, positionLocal, timerLocal } from 'three/tsl';
+// import { range, texture, mix, uv, color, rotateUV, positionLocal, timerLocal } from 'three/tsl';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
