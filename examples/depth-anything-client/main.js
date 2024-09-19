@@ -1,6 +1,14 @@
 "use client"
 import './style.css';
 
+const importMap = {
+imports: {
+"three: "./js/three.webgpu.js", // Adjust the path as needed
+"three/tsl": "./js/three.webgpu.js",
+"three/addons/": "./js/jsm/"
+}
+};
+
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
