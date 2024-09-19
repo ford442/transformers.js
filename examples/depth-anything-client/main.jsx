@@ -18,6 +18,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 // import { range, texture, mix, uv, color, rotateUV, positionLocal, timerLocal } from 'three/tsl';
+import { WebGPURenderer } from 'three/examples/jsm/renderers/webgpu/WebGPURenderer.js';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
