@@ -3,7 +3,7 @@ import './style.css';
 
 const importMap = {
 imports: {
-"three: "./js/three.webgpu.js", // Adjust the path as needed
+"three: "./js/three.webgpu.js",
 "three/tsl": "./js/three.webgpu.js",
 "three/addons/": "./js/jsm/"
 }
