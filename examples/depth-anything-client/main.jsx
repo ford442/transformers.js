@@ -274,7 +274,7 @@ const particleMaterial = new THREE.PointsMaterial({
 });
 particleMaterial.receiveShadow=1;
 const particles = new THREE.Points(particleGeometry, particleMaterial);
-	const colors = new Float32Array(particleCount * 3);
+const colors = new Float32Array(particleCount * 3);
 
 scene.add(particles);
 const particleCount = 10000;
@@ -292,7 +292,7 @@ positions[i * 3 + 2] = z;
   colors[i * 3] = color.r;
   colors[i * 3 + 1] = color.g;
   colors[i * 3 + 2] = color.b;
-}
+
 }
 particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
