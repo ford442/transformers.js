@@ -6,6 +6,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
+// import { pipeline, env, RawImage } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.14';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
 import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
@@ -17,8 +18,6 @@ import { TAARenderPass } from 'three/addons/postprocessing/TAARenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
-// import { range, texture, mix, uv, color, rotateUV, positionLocal, timerLocal } from 'three/tsl';
-import { WebGPURenderer } from 'three/examples/jsm/renderers/webgpu/WebGPURenderer.js';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
@@ -30,7 +29,10 @@ const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
-
+status.textContent = 'Loading model...';
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
+// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf',{device:'webgpu'});
+status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
 const loaderChannel = new BroadcastChannel('loaderChannel');
 let onSliderChange;
@@ -57,15 +59,9 @@ let yawObject, pitchObject; // Declare these variables at a higher scope
 const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
-let depth_estimatorr;
 
-// async function loadModel() {
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
-// }
 
 async function predict(imageDataURL) {
-status.textContent = 'Loading model...';
-status.textContent = 'Ready';
 imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
@@ -265,8 +261,6 @@ scene.add(plane);
 
 	//fog
 // scene.tfog = new THREE.Fog( 0x6f00a0, 0.1, 10 );
-
- //  smoke
 
 // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
@@ -558,5 +552,3 @@ const lockBtn=document.querySelector('#lockButton');
 lockBtn.addEventListener('click', () => {
 document.querySelector('#tvi').requestPointerLock(); 
 });
-
-// loadModel();
