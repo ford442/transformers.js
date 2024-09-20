@@ -124,7 +124,7 @@ canvas.id='tvi';
 const width = canvas.width = imageContainer.offsetWidth;
 const height = canvas.height = imageContainer.offsetHeight;
 scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(90, width / height, .01, 10000);
+const camera = new THREE.PerspectiveCamera(75, width / height, .01, 10000);
 // const camera = new THREE.PerspectiveCamera(120, width / height);
 camera.position.z = 1;
 scene.add(camera);
@@ -153,7 +153,6 @@ bloomPass.threshold = bloomParams.threshold;
 bloomPass.strength = bloomParams.strength;
 bloomPass.radius = bloomParams.radius;
 composer2.addPass( bloomPass );
-
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
 const lightA = new THREE.AmbientLight(0xcc0000,.0149305777);
@@ -263,6 +262,35 @@ scene.add(plane);
 	//fog
 // scene.tfog = new THREE.Fog( 0x6f00a0, 0.1, 10 );
 
+	//  smoke
+const particleGeometry = new THREE.BufferGeometry();
+const particleMaterial = new THREE.PointsMaterial({
+color: 0xaaaaaa,
+size: 0.05,
+map: new THREE.TextureLoader().load('./smoke1.png'), // Load a smoke texture
+blending: THREE.AdditiveBlending,
+depthWrite: false,
+transparent: true,
+});
+
+const particles = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particles);
+const particleCount = 10000;
+const positions = new Float32Array(particleCount * 3);
+
+for (let i = 0; i < particleCount; i++) {
+  const x = (Math.random() - 0.5) * 2;
+  const y = (Math.random() - 0.5) * 2;
+  const z = (Math.random() - 0.5) * 2;
+
+  positions[i * 3] = x;
+  positions[i * 3 + 1] = y;
+  positions[i * 3 + 2] = z;
+}
+
+particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+	
 // Create Spotlights
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
 spotLight1.position.set(0, 1.38, 0.181)
@@ -361,6 +389,8 @@ const wobbleSpeed = 5; // Faster wobble speed
 renderer.setAnimationLoop(() => {
 renderer.shadowMap.needsUpdate = true;
 material.needsUpdate = true;
+	
+particles.rotation.y += 0.005;
 
 const time = performance.now() * 0.001; 
 // Apply wobble to x and y positions
