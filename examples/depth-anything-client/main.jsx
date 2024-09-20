@@ -273,11 +273,11 @@ const particleMaterial = new THREE.PointsMaterial({
   vertexColors: true, // Enable vertex colors
 });
 particleMaterial.receiveShadow=1;
+const particleCount = 10000;
 const particles = new THREE.Points(particleGeometry, particleMaterial);
 const colors = new Float32Array(particleCount * 3);
 
 scene.add(particles);
-const particleCount = 10000;
 const positions = new Float32Array(particleCount * 3);
 for (let i = 0; i < particleCount; i++) {
 const x = (Math.random() - 0.5) * 2;
