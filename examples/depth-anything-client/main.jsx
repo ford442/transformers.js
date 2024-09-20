@@ -397,7 +397,7 @@ renderer.setAnimationLoop(() => {
 renderer.shadowMap.needsUpdate = true;
 material.needsUpdate = true;
 	
-particles.rotation.y += 0.005;
+particles.rotation.y += 0.002;
   // Update particle colors
   for (let i = 0; i < particleCount; i++) {
     const color = new THREE.Color(Math.random(), Math.random(), Math.random());
@@ -430,6 +430,7 @@ const rotationSpeed = 2;
 plane.rotation.y = maxRotation * Math.sin(time * rotationSpeed); 
 plane.rotation.x = maxRotation * Math.cos(time * rotationSpeed*.5); 
 
+particles.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed * .5), -maxWobbleX), maxWobbleX);
 camera.position.x = Math.min(Math.max(wobbleAmount * Math.cos(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 camera.position.y = Math.min(Math.max(wobbleAmount * Math.sin(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 // camera.position.z = wobbleAmount * 0.13 * Math.sin(time * wobbleSpeed * 0.777); // Add some z-axis movement
