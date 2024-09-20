@@ -121,6 +121,7 @@ imageContainer.append(slider);
 function setupScene(imageDataURL, w, h) {
 const canvas = document.createElement('canvas');
 canvas.id='tvi';
+canvas.style.zindex=3100;
 const width = canvas.width = imageContainer.offsetWidth;
 const height = canvas.height = imageContainer.offsetHeight;
 scene = new THREE.Scene();
