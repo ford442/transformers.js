@@ -121,7 +121,7 @@ imageContainer.append(slider);
 function setupScene(imageDataURL, w, h) {
 const canvas = document.createElement('canvas');
 canvas.id='tvi';
-canvas.style.zindex=3100;
+canvas.style.zIndex=3100;
 const width = canvas.width = imageContainer.offsetWidth;
 const height = canvas.height = imageContainer.offsetHeight;
 scene = new THREE.Scene();
@@ -474,7 +474,7 @@ const textureLoader = new THREE.TextureLoader();
 loadCanvas = document.createElement('canvas');
 loadCanvas.id='evi';
 loadCanvas.style.position='absolute';
-loadCanvas.style.zindex=2100;
+loadCanvas.style.zIndex=2100;
 loadCanvas.style.top=0;
 const width = loadCanvas.width = window.innerHeight;
 const height = loadCanvas.height = window.innerHeight;
