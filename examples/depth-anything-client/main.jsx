@@ -265,15 +265,17 @@ scene.add(plane);
 	//  smoke
 const particleGeometry = new THREE.BufferGeometry();
 const particleMaterial = new THREE.PointsMaterial({
-color: 0xaaaaaa,
-size: 0.005,
-map: new THREE.TextureLoader().load('./smoke1.png'), // Load a smoke texture
-blending: THREE.AdditiveBlending,
-depthWrite: false,
-transparent: true,
+  size: 0.0025,
+  map: new THREE.TextureLoader().load('path/to/smoke-texture.png'),
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+  transparent: true,
+  vertexColors: true, // Enable vertex colors
 });
 particleMaterial.receiveShadow=1;
 const particles = new THREE.Points(particleGeometry, particleMaterial);
+	const colors = new Float32Array(particleCount * 3);
+
 scene.add(particles);
 const particleCount = 10000;
 const positions = new Float32Array(particleCount * 3);
@@ -284,8 +286,16 @@ const z = (Math.random() - 0.5) * 2;
 positions[i * 3] = x;
 positions[i * 3 + 1] = y;
 positions[i * 3 + 2] = z;
+	
+  // Generate a random color for each particle
+  const color = new THREE.Color(Math.random(), Math.random(), Math.random());
+  colors[i * 3] = color.r;
+  colors[i * 3 + 1] = color.g;
+  colors[i * 3 + 2] = color.b;
+}
 }
 particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
 	
 // Create Spotlights
@@ -388,7 +398,15 @@ renderer.shadowMap.needsUpdate = true;
 material.needsUpdate = true;
 	
 particles.rotation.y += 0.005;
+  // Update particle colors
+  for (let i = 0; i < particleCount; i++) {
+    const color = new THREE.Color(Math.random(), Math.random(), Math.random());
+    colors[i * 3] = color.r;
+    colors[i * 3 + 1] = color.g;
+    colors[i * 3 + 2] = color.b;
+  }
 
+  particleGeometry.attributes.color.needsUpdate = true;
 const time = performance.now() * 0.001; 
 // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
