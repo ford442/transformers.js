@@ -266,7 +266,7 @@ scene.add(plane);
 const particleGeometry = new THREE.BufferGeometry();
 const particleMaterial = new THREE.PointsMaterial({
   size: 0.0025,
-  map: new THREE.TextureLoader().load('path/to/smoke-texture.png'),
+  map: new THREE.TextureLoader().load('./smoke1.png'),
   blending: THREE.AdditiveBlending,
   depthWrite: false,
   transparent: true,
