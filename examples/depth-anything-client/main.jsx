@@ -42,6 +42,8 @@ let scene,sceneL,rendererL,cameraL,loadCanvas,controlsL;
 let depthE,materialE;
 let composer1, composer2, fxaaPass,image,taaRenderPass ;
 
+CameraControls.install( { THREE: THREE } );
+
 const bloomParams = {
 threshold: 0.355,
 strength: 2.111,
@@ -389,6 +391,8 @@ renderer.toneMappingExposure = toneParams.exposure;
 	// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.type = THREE.VSMShadowMap;
 const controls = new OrbitControls( camera, renderer.domElement );
+	const cameraControls = new CameraControls( camera, renderer.domElement );
+
 // controls.movementSpeed = 1; // Adjust as needed
 // controls.lookSpeed=145.2; 
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
@@ -398,6 +402,9 @@ const wobbleSpeed = 5; // Faster wobble speed
 renderer.setAnimationLoop(() => {
 renderer.shadowMap.needsUpdate = true;
 material.needsUpdate = true;
+	
+	  const delta = clock.getDelta();
+    const hasControlsUpdated = cameraControls.update( delta );
 	
 particles.rotation.y += 0.002;
   // Update particle colors
