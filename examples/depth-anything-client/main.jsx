@@ -19,6 +19,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 // import { WebGPURenderer } from 'three/addons/renderers/WebGPURenderer.js';
+import CameraControls from 'camera-controls';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
