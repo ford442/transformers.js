@@ -64,7 +64,6 @@ const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
-
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
 const img = new Image();
@@ -72,10 +71,8 @@ img.src = imageDataURL;
 img.onload = async () => {
 const canvas2 = document.createElement('canvas');
 const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
-
 const maxSize = 1024; // Set your desired maximum size for the square
 let newWidth, newHeight, cropX, cropY;
-
 if (img.width > img.height) {
 newWidth = newHeight = img.height;
 cropX = (img.width - img.height) / 2;
@@ -94,7 +91,6 @@ const newImageDataURL = canvas2.toDataURL(); // Get the new data URL
 imageDataURL = newImageDataURL;
 img.src = imageDataURL;
 }
-
 canvas2.width = img.width;
 canvas2.height = img.height;
 // ctx.imageSmoothingEnabled =false;
@@ -306,10 +302,10 @@ particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
 spotLight1.position.set(0, 1.38, 0.181)
 spotLight1.castShadow = true;
-spotLight1.angle = .15;
+spotLight1.angle = .10;
 spotLight1.penumbra = 0.52;
 spotLight1.decay = .02;
-spotLight1.distance = 4.966776;
+spotLight1.distance = 3.966776;
 spotLight1.visible = true;
 const frstSize = 80;
 spotLight1.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
@@ -339,7 +335,7 @@ scene.add( spotLight2.target );
 const spotLight3 = new THREE.SpotLight(0xe7ff15, 39.420234)
 spotLight3.position.set(0, 1.38234, 0.81234)
 spotLight3.castShadow = true;
-spotLight3.angle = .12423232;
+spotLight3.angle = .10423232;
 spotLight3.penumbra = 0.52223;
 spotLight3.decay = .02;
 spotLight3.distance = 4.778778; 
@@ -358,7 +354,7 @@ spotLight4.castShadow = true;
 spotLight4.angle = .12423232;
 spotLight4.penumbra = 0.52223;
 spotLight4.decay = .02;
-spotLight4.distance = 4.778778; 
+spotLight4.distance = 2.778778; 
 spotLight4.visible = true;
 spotLight4.shadow.camera = new THREE.OrthographicCamera(-frstSize / 2,frstSize / 2,frstSize / 2,-frstSize / 2,1,80);
 // Same position as LIGHT position.
