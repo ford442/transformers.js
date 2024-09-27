@@ -63,9 +63,9 @@ vUv = uv;
 // Sample the displacement map
 float displacement = texture2D(uDisplacementMap, vUv).r; 
 vec3 pos = position;
-// pos.z += cos(pos.x * 2.0 + uTime) * 0.2; 
+pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
 // Apply displacement
-// pos.z += displacement * uDisplacementScale; 
+pos.z += displacement * uDisplacementScale; 
 gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
 `;
@@ -84,7 +84,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementScale: { value: 0.233 }, // Adjust as needed
+uDisplacementScale: { value: 0.3 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
@@ -135,7 +135,7 @@ const camera = new THREE.PerspectiveCamera(120, width / height, .01, 10000);
 camera.position.z = 1;
 scene.add(camera);
 // const renderer = new THREE.WebGPURenderer();
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false,powerPreference:'high-performance',depth:true,stencil:true });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
@@ -157,14 +157,14 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-uniforms.uTexture.value = image; 
+	uniforms.uTexture.value = image; 
 
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader,
 fragmentShader: fragmentShader,
 });
-// material.needsUpdate = true; // Force re-render
+material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
@@ -235,7 +235,7 @@ bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
-// material.needsUpdate = true;
+material.needsUpdate = true;
 }
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
@@ -327,7 +327,7 @@ scene.add( spotLight4 );
 spotLight4.target.position.set( 0, 0, 0 ); // Aim at the origin
 scene.add( spotLight4.target );
 renderer.shadowMap.enabled = true;
-// renderer.shadowMap.needsUpdate = true;
+renderer.shadowMap.needsUpdate = true;
 const toneParams = {
 exposure: 0.9980,
 toneMapping: 'Neutral',
@@ -348,21 +348,17 @@ Custom: THREE.CustomToneMapping
 // renderer.toneMappingExposure = toneParams.exposure;
 	// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.type = THREE.VSMShadowMap;
-// const controls = new OrbitControls( camera, renderer.domElement );
-	
-const controls = new FirstPersonControls( camera, renderer.domElement );
-controls.movementSpeed = 1; // Adjust as needed
-controls.lookSpeed=.005; 
-	
+const controls = new OrbitControls( camera, renderer.domElement );
+// controls.movementSpeed = 1; // Adjust as needed
+// controls.lookSpeed=145.2; 
 const wobbleAmount = 0.07; // Increased amplitude for more pronounced movements
 const wobbleSpeed = 5; // Faster wobble speed
 // Access the displacement map and its data
-// renderer.compile();
+
 renderer.setAnimationLoop(() => {
 material.needsUpdate = true;
 uniforms.uTime.value += 0.01; // Update time
-renderer.shadowMap.needsUpdate = true;
-
+	
 const time = performance.now() * 0.001; 
 // Apply wobble to x and y positions
 //	const randomOffset = 0.5-(Math.random() * 1.0); // Adjust 0.5 for randomness intensity
@@ -405,7 +401,7 @@ spotLight4.position.x = Math.cos( time ) *1.015;
 spotLight4.position.z = Math.sin( time ) *.665;
 // lightHelper1.update();
 // lightHelper2.update();
-controls.update( clock.getDelta() );
+// controls.update( clock.getDelta() );
 // controls.update();
 renderer.render(scene, camera);
 });
@@ -415,7 +411,6 @@ const width = imageContainer.offsetWidth;
 const height = imageContainer.offsetHeight;
 camera.aspect = width / height;
 camera.updateProjectionMatrix();
-	controls.handleResize();
 renderer.setSize(width, height);
 }, false);
 return {
