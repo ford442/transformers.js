@@ -169,7 +169,7 @@ side: THREE.DoubleSide,
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
-material.shininess= 15; # For meshPhong only?
+material.shininess= 15; // For meshPhong only?
 material.specular =0x111111;
 const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
