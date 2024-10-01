@@ -392,21 +392,9 @@ const controls = new OrbitControls( camera, renderer.domElement );
 // controls.movementSpeed = 1; // Adjust as needed
 // controls.lookSpeed=145.2; 
 const wobbleAmount = 0.0711; // Increased amplitude for more pronounced movements
-const wobbleSpeed = 4.77777; // Faster wobble speed
+const wobbleSpeed = 4.77777;
 // Access the displacement map and its data
 // renderer.compile();
-
-document.querySelector('#dance').onchange = function() {
-if(document.querySelector('#dance').checked==false){
-light.color='0x62dedd';
-light.intensity=.48888;
-}
-if(document.querySelector('#dance').checked==true){
-light.color='0xcc0000';
-light.intensity=.29999;
-}
-};
-
 renderer.setAnimationLoop(() => {
 renderer.shadowMap.needsUpdate = true;
 material.needsUpdate = true;
@@ -432,9 +420,14 @@ const wobbleSpeed = 4;
 	//wobble
 const maxWobbleX = 0.5; // Adjust as needed
 const maxWobbleY = 0.3;
-	
+if(document.querySelector('#dance').checked==false){
+// light.color='0x62dedd';
+// light.intensity=.98888;
+}
 if(document.querySelector('#dance').checked==true){
-
+// light.color='0xcc0000';
+// light.intensity=.49999;
+	
 plane.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 plane.position.y = Math.min(Math.max(wobbleAmount * Math.cos(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 const maxRotation = 0.2; // Maximum rotation angle in radians
