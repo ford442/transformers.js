@@ -221,7 +221,7 @@ const displace2= new THREE.CanvasTexture(displaceData);
 material.displacementMap=displace2;
 material.roughness=.85;
 material.metalness=.05;
-material.specularMap=displace2;
+// material.specularMap=displace2;
 
 // material.roughnessMap=image;
 //bump map
