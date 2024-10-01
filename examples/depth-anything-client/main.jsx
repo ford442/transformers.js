@@ -162,7 +162,7 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-const material = new THREE.MeshStandardMaterial({
+const material = new THREE.MeshPhongMaterial({
 map: image,
 side: THREE.DoubleSide,
 });
@@ -303,7 +303,7 @@ const spotLight1 = new THREE.SpotLight(0x2217de, 34.420)
 spotLight1.position.set(0, 1.38, 0.181)
 spotLight1.castShadow = true;
 spotLight1.angle = .10;
-spotLight1.penumbra = 0.52;
+spotLight1.penumbra = 0.32;
 spotLight1.decay = .02;
 spotLight1.distance = 3.966776;
 spotLight1.visible = true;
@@ -320,7 +320,7 @@ const spotLight2 = new THREE.SpotLight(0xbd1300, 44.420234)
 spotLight2.position.set(0, 2.38234, 0.81234)
 spotLight2.castShadow = true;
 spotLight2.angle = .2423232;
-spotLight2.penumbra = 0.52223;
+spotLight2.penumbra = 0.62223;
 spotLight2.decay = .02;
 spotLight2.distance = 4.778778; 
 spotLight2.visible = true;
@@ -352,7 +352,7 @@ const spotLight4 = new THREE.SpotLight(0x09a80f, 29.420234)
 spotLight4.position.set(1, 1.138234, 1.81234)
 spotLight4.castShadow = true;
 spotLight4.angle = .12423232;
-spotLight4.penumbra = 0.52223;
+spotLight4.penumbra = 0.42223;
 spotLight4.decay = .02;
 spotLight4.distance = 2.778778; 
 spotLight4.visible = true;
