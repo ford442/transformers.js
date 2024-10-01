@@ -169,6 +169,8 @@ side: THREE.DoubleSide,
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
+material.shininess= 15 # For meshPhong only?
+material.specular =0x111111;
 const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
 exportCanvas.width = image.width;
@@ -219,6 +221,8 @@ const displace2= new THREE.CanvasTexture(displaceData);
 material.displacementMap=displace2;
 material.roughness=.85;
 material.metalness=.05;
+material.specularMap=displace2;
+
 // material.roughnessMap=image;
 //bump map
 // Invert the image data
