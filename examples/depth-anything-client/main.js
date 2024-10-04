@@ -79,8 +79,9 @@ varying vec3 vNormal;
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
 gl_FragColor = textureColor;
-vec4 ao = texture2D(uAOTexture, vUv).rgba;
-gl_FragColor = textureColor * ao;
+vec3 ao = texture2D(uAOTexture, vUv).rgb;
+float aoInfluence = 0.5; // Adjust this value (0.0 - 1.0)
+gl_FragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence);
 }
 `;
 
