@@ -8,8 +8,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { pipeline, env, RawImage } from '@xenova/transformers';
 // import { pipeline, env, RawImage } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.14';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-import { FlyControls } from 'three/addons/controls/FlyControls.js';
-import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
+// import { FlyControls } from 'three/addons/controls/FlyControls.js';
+// import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
@@ -19,14 +19,14 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 // import { WebGPURenderer } from 'three/addons/renderers/WebGPURenderer.js';
-import CameraControls from 'camera-controls';
+// import CameraControls from 'camera-controls';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 4;
 env.backends.onnx.wasm.simd = true;
  
-const DEFAULT_SCALE = 0.223;
+const DEFAULT_SCALE = 0.3111;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
