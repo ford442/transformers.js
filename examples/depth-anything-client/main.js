@@ -57,8 +57,6 @@ uniform sampler2D uDisplacementMap;
 uniform float uDisplacementScale; // Control the displacement strength
 varying vec2 vUv;
 varying vec3 vNormal; // Varying for interpolated normals
-varying vec3 vTangent;
-varying vec3 vBitangent;
 
 void main() {
 vUv = uv; 
@@ -74,9 +72,6 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 `;
 
 const fragmentShader = `
-uniform sampler2D uBumpMap;
-varying vec3 vTangent;
-varying vec3 vBitangent;
 uniform sampler2D uAOTexture;
 uniform sampler2D uTexture;
 varying vec2 vUv;
