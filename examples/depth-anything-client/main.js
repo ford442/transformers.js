@@ -57,6 +57,8 @@ uniform sampler2D uDisplacementMap;
 uniform float uDisplacementScale; // Control the displacement strength
 varying vec2 vUv;
 varying vec3 vNormal; // Varying for interpolated normals
+varying vec3 vTangent;
+varying vec3 vBitangent;
 
 void main() {
 vUv = uv; 
@@ -65,6 +67,10 @@ float displacement = texture2D(uDisplacementMap, vUv).r;
 vec3 pos = position;
 vNormal = normalize(normalMatrix * normal); 
 pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+vec3 tangent = normalize(vec3(modelViewMatrix * vec4(objectTangent, 0.0)));
+vec3 bitangent = normalize(cross(vNormal, tangent));
+vTangent = tangent;
+vBitangent = bitangent;
 // Apply displacement
 pos.z += displacement * uDisplacementScale; 
 gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -72,6 +78,9 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 `;
 
 const fragmentShader = `
+uniform sampler2D uBumpMap;
+varying vec3 vTangent;
+varying vec3 vBitangent;
 uniform sampler2D uAOTexture;
 uniform sampler2D uTexture;
 varying vec2 vUv;
@@ -79,6 +88,16 @@ varying vec3 vNormal;
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
 gl_FragColor = textureColor;
+    // Sample the bump map
+vec3 bump = texture2D(uBumpMap, vUv).rgb * 2.0 - 1.0; 
+    // Create the TBN matrix
+mat3 TBN = mat3(vTangent, vBitangent, vNormal);
+    // Perturb the normal with the bump map
+vec3 perturbedNormal = normalize(TBN * bump);
+       // Use the perturbed normal to create a simple shading effect
+vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0)); // Example light direction
+float lightIntensity = max(dot(perturbedNormal, lightDirection), 0.0);
+gl_FragColor = textureColor * lightIntensity;
 vec3 ao = texture2D(uAOTexture, vUv).rgb;
 float aoInfluence = 0.5; // Adjust this value (0.0 - 1.0)
 gl_FragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence);
@@ -162,8 +181,7 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-	uniforms.uTexture.value = image; 
-
+uniforms.uTexture.value = image; 
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader,
