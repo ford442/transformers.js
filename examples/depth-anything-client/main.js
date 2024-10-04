@@ -22,7 +22,7 @@ env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 4;
 env.backends.onnx.wasm.simd = true;
  
-const DEFAULT_SCALE = 0.223;
+const DEFAULT_SCALE = 0.3113;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
@@ -63,6 +63,7 @@ vUv = uv;
 // Sample the displacement map
 float displacement = texture2D(uDisplacementMap, vUv).r; 
 vec3 pos = position;
+vNormal = normalize(normalMatrix * normal); 
 pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
 // Apply displacement
 pos.z += displacement * uDisplacementScale; 
@@ -71,12 +72,15 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 `;
 
 const fragmentShader = `
+uniform sampler2D uAOTexture;
 uniform sampler2D uTexture;
 varying vec2 vUv;
 varying vec3 vNormal;
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
 gl_FragColor = textureColor;
+vec3 ao = texture2D(uAOTexture, vUv).rgb;
+gl_FragColor = textureColor * ao;
 }
 `;
 
