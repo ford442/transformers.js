@@ -79,7 +79,7 @@ varying vec3 vNormal;
 void main(){
 vec4 textureColor = texture2D(uTexture, vUv);
 gl_FragColor = textureColor;
-vec3 ao = texture2D(uAOTexture, vUv).rgb;
+vec4 ao = texture2D(uAOTexture, vUv).rgba;
 gl_FragColor = textureColor * ao;
 }
 `;
