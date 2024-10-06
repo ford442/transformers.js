@@ -26,7 +26,7 @@ env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 4;
 env.backends.onnx.wasm.simd = true;
  
-const DEFAULT_SCALE = 0.3111;
+const DEFAULT_SCALE = 0.24242;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
