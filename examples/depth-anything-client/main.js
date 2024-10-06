@@ -97,7 +97,6 @@ uDisplacementScale: { value: 0.23 }, // Adjust as needed
 
 
 const vertexShader3 = `
-#version 300 es
 precision highp float;
 
 uniform float uTime;
@@ -123,7 +122,6 @@ void main() {
 `;
 
 const fragmentShader3 = `
-#version 300 es
 precision highp float;
 
 uniform sampler2D uAOTexture;
