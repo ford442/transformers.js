@@ -102,21 +102,19 @@ precision highp float;
 uniform float uTime;
 uniform sampler2D uTexture;
 uniform sampler2D uDisplacementMap;
-uniform float uDisplacementScale; // Control the displacement strength
-in vec2 vUv;
-in vec3 vNormal; // Varying for interpolated normals
+uniform float uDisplacementScale; 
+
+in vec2 uv; 
 out vec2 vUvFrag;
 out vec3 vNormalFrag;
 
 void main() {
-    vUvFrag = vUv;
-    // Sample the displacement map
-    float displacement = texture(uDisplacementMap, vUv).r; 
+    vUvFrag = uv;
+    float displacement = texture(uDisplacementMap, uv).r; 
     vec3 pos = position;
     vNormalFrag = normalize(normalMatrix * normal); 
     pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
-    // Apply displacement
-    pos.z += displacement * uDisplacementScale; 
+    pos.z += displacement * uDisplacementScale;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
 `;
@@ -127,15 +125,15 @@ precision highp float;
 uniform sampler2D uAOTexture;
 uniform sampler2D uTexture;
 in vec2 vUvFrag;
-in vec3 vNormalFrag;
+in vec3 vNormalFrag; 
 out vec4 fragColor;
 
 void main() {
     vec4 textureColor = texture(uTexture, vUvFrag);
     fragColor = textureColor;
     vec3 ao = texture(uAOTexture, vUvFrag).rgb;
-    float aoInfluence = 0.5; // Adjust this value (0.0 - 1.0)
-    fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence);
+    float aoInfluence = 0.5; 
+    fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
 }
 `;
 
