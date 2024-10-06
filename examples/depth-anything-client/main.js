@@ -104,7 +104,6 @@ uniform sampler2D uTexture;
 uniform sampler2D uDisplacementMap;
 uniform float uDisplacementScale; 
 
-in vec2 uv; 
 out vec2 vUvFrag;
 out vec3 vNormalFrag;
 
