@@ -98,6 +98,8 @@ uDisplacementScale: { value: 0.23 }, // Adjust as needed
 
 const vertexShader3 = `
 precision highp float;
+precision highp int;
+precision highp sampler2D;
 
 uniform float uTime;
 uniform sampler2D uTexture;
