@@ -89,7 +89,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementScale: { value: 0.3 }, // Adjust as needed
+uDisplacementScale: { value: 0.23 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
