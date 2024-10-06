@@ -95,6 +95,52 @@ uDisplacementScale: { value: 0.23 }, // Adjust as needed
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
 };
 
+
+const vertexShader3 = `
+#version 300 es
+precision highp float;
+
+uniform float uTime;
+uniform sampler2D uTexture;
+uniform sampler2D uDisplacementMap;
+uniform float uDisplacementScale; // Control the displacement strength
+in vec2 vUv;
+in vec3 vNormal; // Varying for interpolated normals
+out vec2 vUvFrag;
+out vec3 vNormalFrag;
+
+void main() {
+    vUvFrag = vUv;
+    // Sample the displacement map
+    float displacement = texture(uDisplacementMap, vUv).r; 
+    vec3 pos = position;
+    vNormalFrag = normalize(normalMatrix * normal); 
+    pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+    // Apply displacement
+    pos.z += displacement * uDisplacementScale; 
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+}
+`;
+
+const fragmentShader3 = `
+#version 300 es
+precision highp float;
+
+uniform sampler2D uAOTexture;
+uniform sampler2D uTexture;
+in vec2 vUvFrag;
+in vec3 vNormalFrag;
+out vec4 fragColor;
+
+void main() {
+    vec4 textureColor = texture(uTexture, vUvFrag);
+    fragColor = textureColor;
+    vec3 ao = texture(uAOTexture, vUvFrag).rgb;
+    float aoInfluence = 0.5; // Adjust this value (0.0 - 1.0)
+    fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence);
+}
+`;
+
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
 const img = new Image();
@@ -165,8 +211,9 @@ image.colorSpace = THREE.SRGBColorSpace;
 uniforms.uTexture.value = image; 
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
-vertexShader: vertexShader,
-fragmentShader: fragmentShader,
+vertexShader: vertexShader3,
+fragmentShader: fragmentShader3,
+glslVersion: THREE.GLSL3
 });
 material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
