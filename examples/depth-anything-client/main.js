@@ -193,8 +193,7 @@ origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
-
-const { depth } = await initializeDepthEstimation(image);
+const { depth } = initializeDepthEstimation(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
 
