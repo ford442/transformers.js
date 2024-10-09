@@ -194,10 +194,6 @@ onSliderChange(parseFloat(e.target.value));
 slider.defaultValue = DEFAULT_SCALE;
 imageContainer.append(slider);
 };
-  })
-  .catch(error => {
-    console.error("Error initializing depth estimator:", error);
-  });
 }
 
 function setupScene(imageDataURL, w, h) {
