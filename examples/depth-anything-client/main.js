@@ -28,6 +28,7 @@ const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
+
 async function initializeDepthEstimator() {
   const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
   return depth_estimator; 
@@ -174,10 +175,10 @@ initializeDepthEstimator()
 	  
 async function initializeDepthEstimation(image) {
 const { depth } = await depth_estimator(image);
-  return depth_estimated; 
+return depth; 
 }
 
-	  async function predict(imageDataURL) {
+async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
