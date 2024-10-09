@@ -29,7 +29,7 @@ const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
-async function initializeDepthEstimator() {
+async function depth_estimator() {
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
 return depth_estimator; 
 }
@@ -166,16 +166,11 @@ void main() {
 }
 `;
 
-let depth_estimator;
+let depth_estimators;
 
-initializeDepthEstimator().then(depthEstimator => {
-depth_estimator = depthEstimator;
+depth_estimator().then(depthEstimator => {
+depth_estimators = depthEstimator;
 });
-
-async function initializeDepthEstimation(image) {
-const { depth } = await depth_estimator(image);
-return depth; 
-}
 
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
@@ -192,7 +187,7 @@ origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
-const { depth } = initializeDepthEstimation(image);
+const { depth } = await depth_estimators(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
 
