@@ -168,7 +168,7 @@ void main() {
 
 initializeDepthEstimator().then(depthEstimator => {
 window.depth_estimator = depthEstimator;
-}
+});
 	  
 async function initializeDepthEstimation(image) {
 const { depth } = await depth_estimator(image);
