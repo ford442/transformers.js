@@ -29,10 +29,17 @@ const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
-async function depth_estimator() {
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
-return depth_estimator; 
-}
+let depthEstimator; // Declare the variable to store the estimator
+
+(async () => {
+  try {
+    depthEstimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf', { dtype: 'fp32', device: 'webgpu' });
+    console.log("Depth estimator initialized:", depthEstimator); // Optional: Log success
+  } catch (error) {
+    console.error("Error initializing depth estimator:", error);
+  }
+})(); // Immediately invoke the async function
+
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
@@ -166,12 +173,6 @@ void main() {
 }
 `;
 
-let depth_estimators;
-
-depth_estimator().then(depthEstimator => {
-depth_estimators = depthEstimator;
-});
-
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
 const img = new Image();
@@ -187,7 +188,7 @@ origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
-const { depth } = await depth_estimators(image);
+  const { depth } = await depthEstimator(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
 
