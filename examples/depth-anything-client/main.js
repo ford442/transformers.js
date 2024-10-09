@@ -31,7 +31,7 @@ status.textContent = 'Loading model...';
   //  const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf',{device:'webgpu'});
 async function initializeDepthEstimator() {
-  const depth_estimator = await pipeline('depth-estimation');
+  const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
   // ... any other initialization code that depends on depth_estimator ...
   return depth_estimator; 
 }
