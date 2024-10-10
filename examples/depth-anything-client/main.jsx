@@ -33,7 +33,7 @@ let depthEstimator; // Declare the variable to store the estimator
 
 (async () => {
   try {
-    depthEstimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf', { dtype: 'fp32', device: 'webgpu' });
+    depthEstimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
     console.log("Depth estimator initialized:", depthEstimator); // Optional: Log success
   } catch (error) {
     console.error("Error initializing depth estimator:", error);
