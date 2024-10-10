@@ -30,8 +30,8 @@ const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
 async function depth_estimator() {
-// const depth_estimator =depthEstimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
+const depth_estimator =depthEstimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
+// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
 return depth_estimator; 
 }
 
