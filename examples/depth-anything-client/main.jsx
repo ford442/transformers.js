@@ -17,6 +17,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 
+import * as htmlToImage from 'html-to-image';
+
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 4;
