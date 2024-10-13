@@ -20,6 +20,10 @@ import { LoopSubdivision } from 'three-subdivide';
 import { init, Wasmer } from "@wasmer/sdk";
 
 await init();
+const wasmBytes = fetch('./mod.wasm').then(res => res.arrayBuffer());
+
+const vm = new Wasmer();
+const instance = await vm.instantiate(wasmBytes);
 
 // import * as htmlToImage from 'html-to-image';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
