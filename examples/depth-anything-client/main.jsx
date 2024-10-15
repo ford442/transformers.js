@@ -81,12 +81,11 @@ vec3 inflatedPos;
 
 // Apply parallax displacement along normals
   if (displacement > 0.07) {
-pos += normalize(vNormal) * scaledDisplacement * uDisplacementScale;
+pos += normalize(vNormal) * scaledDisplacement;
 pos.z += cos(pos.x + uTime) * 0.07; 
 inflateFactor = 1.0 + scaledDisplacement * uInflateScale;
 inflatedPos = position * inflateFactor;
   }
-
 
 gl_Position = projectionMatrix * modelViewMatrix * vec4(inflatedPos, 1.0);
 
