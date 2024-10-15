@@ -71,9 +71,12 @@ float displacement = texture2D(uDisplacementMap, vUv).r;
 vec3 pos = position;
 vNormal = normalize(normalMatrix * normal); 
 
+  float depth = texture2D(uDisplacementMap, vUv).g; // Read the green channel for depth
+  // Scale displacement based on depth
+  float scaledDisplacement = displacement * uDisplacementScale * depth;
 
 // Apply parallax displacement along normals
-pos += normalize(vNormal) * displacement * uDisplacementScale; 
+pos += normalize(vNormal) * scaledDisplacement * uDisplacementScale; 
 
 pos.z += cos(pos.x + uTime) * 0.2; 
 
