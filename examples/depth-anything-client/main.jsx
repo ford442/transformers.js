@@ -71,20 +71,22 @@ float displacement = texture2D(uDisplacementMap, vUv).r;
 vec3 pos = position;
 vNormal = normalize(normalMatrix * normal); 
 
-  float depth = texture2D(uDisplacementMap, vUv).g; // Read the green channel for depth
+float depth = texture2D(uDisplacementMap, vUv).g; // Read the green channel for depth
   // Scale displacement based on depth
-  float scaledDisplacement = displacement * uDisplacementScale * depth;
+float scaledDisplacement = displacement * uDisplacementScale * depth;
+
+float inflateFactor;
+vec3 inflatedPos;
 
 // Apply parallax displacement along normals
-pos += normalize(vNormal) * scaledDisplacement * uDisplacementScale; 
+  if (displacement > 0.07) {
+pos += normalize(vNormal) * scaledDisplacement * uDisplacementScale;
+pos.z += cos(pos.x + uTime) * 0.07; 
+inflateFactor = 1.0 + scaledDisplacement * uInflateScale;
+inflatedPos = position * inflateFactor;
+  }
 
-pos.z += cos(pos.x + uTime) * 0.2; 
 
-// Apply displacement
-pos.z += displacement * uDisplacementScale; 
-
-float inflateFactor = 1.0 + displacement * uInflateScale;
-vec3 inflatedPos = position * inflateFactor;
 gl_Position = projectionMatrix * modelViewMatrix * vec4(inflatedPos, 1.0);
 
 }
