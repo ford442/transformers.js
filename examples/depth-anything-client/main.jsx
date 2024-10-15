@@ -70,7 +70,12 @@ vUv = uv;
 float displacement = texture2D(uDisplacementMap, vUv).r; 
 vec3 pos = position;
 vNormal = normalize(normalMatrix * normal); 
-pos.z += sin(pos.x * 2.0 + uTime) * 0.2; 
+
+// Apply parallax displacement along normals
+pos += normalize(vNormal) * displacement * uDisplacementScale; 
+
+pos.z += cos(pos.x + uTime) * 0.2; 
+
 // Apply displacement
 pos.z += displacement * uDisplacementScale; 
 gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
