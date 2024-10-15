@@ -71,6 +71,7 @@ float displacement = texture2D(uDisplacementMap, vUv).r;
 vec3 pos = position;
 vNormal = normalize(normalMatrix * normal); 
 
+
 // Apply parallax displacement along normals
 pos += normalize(vNormal) * displacement * uDisplacementScale; 
 
@@ -78,7 +79,11 @@ pos.z += cos(pos.x + uTime) * 0.2;
 
 // Apply displacement
 pos.z += displacement * uDisplacementScale; 
-gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+
+float inflateFactor = 1.0 + displacement * uInflateScale;
+vec3 inflatedPos = position * inflateFactor;
+gl_Position = projectionMatrix * modelViewMatrix * vec4(inflatedPos, 1.0);
+
 }
 `;
 
