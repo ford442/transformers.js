@@ -12,8 +12,7 @@
   "dependencies": {
     "vite": "^5.0.13",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@xenova/transformers": "3.00-alpha.22"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
