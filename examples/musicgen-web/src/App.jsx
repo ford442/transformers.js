@@ -4,6 +4,8 @@ import { encodeWAV, share } from './utils.js';
 
 import './App.css';
 
+env.backends.onnx.wasm.proxy = true;
+
 const MODEL_ID = 'Xenova/musicgen-small';
 
 // Adapted from https://huggingface.co/spaces/facebook/MusicGen
