@@ -4,7 +4,10 @@ import { encodeWAV, share } from './utils.js';
 
 import './App.css';
 
+env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
+env.backends.onnx.wasm.numThreads = 1;
+env.backends.onnx.wasm.simd = false;
 
 const MODEL_ID = 'Xenova/musicgen-small';
 
