@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { AutoTokenizer, MusicgenForConditionalGeneration, BaseStreamer } from '@xenova/transformers';
+import { AutoTokenizer, MusicgenForConditionalGeneration, BaseStreamer } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.22';
 import { encodeWAV, share } from './utils.js';
 
 import './App.css';
