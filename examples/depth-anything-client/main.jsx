@@ -25,7 +25,7 @@ env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 4;
 env.backends.onnx.wasm.simd = true;
  
-const DEFAULT_SCALE = 0.2713;
+const DEFAULT_SCALE = 0.3213;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
@@ -35,7 +35,7 @@ status.textContent = 'Loading model...';
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-large', { dtype: 'fp32', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp16',device:'webgpu'});
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
