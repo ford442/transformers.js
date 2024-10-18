@@ -12,7 +12,6 @@
     "vite": "^5.0.13"
   },
   "dependencies": {
-    "@xenova/transformers": "^2.14.1",
     "three": "^0.160.1"
   }
 }
