@@ -229,8 +229,8 @@ for (let i = 0; i < depthDataF.data.length; i++) {
   }
 }
 	
-foregroundTexture = new THREE.DataTexture(foregroundImageData.data, img.width, img.height);
-backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, img.height);
+const foregroundTexture = new THREE.DataTexture(foregroundImageData.data, img.width, img.height);
+const backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, img.height);
 
 setDisplacementMap(depthDataF.data.toCanvas());
 
