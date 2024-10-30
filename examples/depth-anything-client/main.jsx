@@ -282,8 +282,8 @@ renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
 const light = new THREE.AmbientLight(0xcc0000,.49305777);
 scene.add(light);
-foregroundTexture.anisotropy=8;
-foregroundTexture.colorSpace = THREE.SRGBColorSpace;
+// foregroundTexture.anisotropy=8;
+// foregroundTexture.colorSpace = THREE.SRGBColorSpace;
 uniforms.uTexture.value = foregroundTexture; 
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
