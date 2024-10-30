@@ -232,7 +232,7 @@ for (let i = 0; i < depthDataF.data.length; i++) {
 const foregroundTexture = new THREE.DataTexture(foregroundImageData.data, img.width, img.height);
 const backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, img.height);
 
-setDisplacementMap(depthDataF.data.toCanvas());
+setDisplacementMap(depthDataF.toCanvas());
 
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
