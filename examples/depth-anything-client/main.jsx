@@ -363,7 +363,7 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 // data[i + 3] is the alpha channel, leave it unchanged
 }
 // Put the inverted data back on the canvas
-ctx.putImageData(foregroundTexture, 0, 0);
+ctx.putImageData(foregroundImageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
