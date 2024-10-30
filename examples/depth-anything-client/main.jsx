@@ -56,12 +56,6 @@ let yawObject, pitchObject; // Declare these variables at a higher scope
 const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
-let foregroundTexture;
-let backgroundTexture;
-let foregroundDepth;
-let backgroundDepth;
-let foregroundImageData;
-let backgroundImageData;
 
 const vertexShader = `
 uniform float uTime;
@@ -195,55 +189,50 @@ const img = new Image();
 img.src = imageDataURL;
 img.onload = async () => {
 const canvas2 = document.createElement('canvas');
-canvas2.imageSmoothingEnabled =false;
-
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
+// ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, img.width, img.height);
+const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
 
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 
+
 // --- Splitting the image ---
 foregroundImageData = new ImageData(img.width, img.height);
 backgroundImageData = new ImageData(img.width, img.height);
 
-const depthData = depth.data; // Access the depth data
-const threshold = 0.05; // Adjust this threshold as needed
-const foregroundDepthData = new Uint8Array(depthData.length / 4); // Single-channel depth data
-const backgroundDepthData = new Uint8Array(depthData.length / 4);
+const depthDataF = depth; // Access the depth data
+const depthDataB = depth; // Access the depth data
 
-for (let i = 0; i < depthData.length; i++) {
+const threshold = 0.05; // Adjust this threshold as needed
+const foregroundDepthData = new Uint8Array(depthDataF.data.length / 4); // Single-channel depth data
+const backgroundDepthData = new Uint8Array(depthDataF.data.length / 4);
+
+for (let i = 0; i < depthDataF.data.length; i++) {
   const pixelIndex = i * 4; // Each depth value corresponds to 4 color channels (RGBA)
-  if (depthData[i] <= threshold) {
+  if (depthDataF.data[i] <= threshold) {
     // Background pixel
     backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-  backgroundDepthData[i] = depthData[i]; // Scale to 0-255 range
-  
+  depthDataF.data[i] = 0; // Scale to 0-255 range
+      origImageData.data.set(0, pixelIndex);
+
   } else {
     // Foreground pixel
     foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-  foregroundDepthData[i] = depthData[i]; 
+  depthDataB.data[i] = 0; 
   }
 }
 	
 foregroundTexture = new THREE.DataTexture(foregroundImageData.data, img.width, img.height);
 backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, img.height);
 
-const canva = document.createElement('canvas');
-canva.width = img.width;
-canva.height = img.height;
-const ct = canva.getContext('2d');
-const imageDat = ct.createImageData(img.width, img.height);
-imageDat.data.set(foregroundDepthData);   
-ct.putImageData(imageDat, 0, 0);
-
-setDisplacementMap(canva);
+setDisplacementMap(depthDataF.data.toCanvas());
 
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
@@ -290,9 +279,10 @@ renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
 const light = new THREE.AmbientLight(0xcc0000,.49305777);
 scene.add(light);
-// foregroundTexture.anisotropy=8;
-// foregroundTexture.colorSpace = THREE.SRGBColorSpace;
-uniforms.uTexture.value = foregroundTexture; 
+image = new THREE.TextureLoader().load(imageDataURL);
+image.anisotropy=8;
+image.colorSpace = THREE.SRGBColorSpace;
+uniforms.uTexture.value = image; 
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader3,
@@ -303,21 +293,21 @@ material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
-const setDisplacementMap = (foregroundDepth) => {
+const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
-exportCanvas.width = img.width;
-exportCanvas.height = img.height;
+exportCanvas.width = image.width;
+exportCanvas.height = image.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
-const displace= new THREE.CanvasTexture(foregroundDepth);
-displace.anisotropy=4;
+const displace= new THREE.CanvasTexture(depthData);
+// displace.anisotropy=4;
 const imgData=displace.image;
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
-const data = foregroundImageData.data;
+const data = origImageData.data;
 //image displacement
-const dataSize=foregroundImageData.data.length;
+const dataSize=origImageData.data.length;
 for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
 // const greyData16=(data[i]+data[i+1]+data[i+2]/3.)*(65535./255.);
@@ -349,8 +339,7 @@ imgDataD[i+2]+=disData;
 // texture16.needsUpdate = true;
 // const texture8 = new THREE.DataTexture(displaceData, imgData.width, imgData.height, THREE.RGBAFormat);
 // texture8.internalFormat = 'RGBA8_SNORM';
-const displace2= new THREE.CanvasTexture(foregroundDepth);
-displace2.anisotropy=4;
+const displace2= new THREE.CanvasTexture(displaceData);
 uniforms.uDisplacementMap.value = displace2; 
 
 //bump map
