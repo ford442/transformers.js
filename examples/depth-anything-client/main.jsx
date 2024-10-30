@@ -220,7 +220,7 @@ for (let i = 0; i < depthDataF.data.length; i++) {
       origImageData.data.set(0, i);
   } else {
     // Foreground pixel
-    foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
+    foregroundImageData.data.set(origImageData.data.slice(i, i), i);
   
 	  depthDataB.data[i] = 0; 
   }
