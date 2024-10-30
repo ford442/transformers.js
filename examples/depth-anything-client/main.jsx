@@ -58,6 +58,9 @@ let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 let foregroundTexture;
 let backgroundTexture;
+	
+let foregroundImageData;
+let backgroundImageData;
 
 const vertexShader = `
 uniform float uTime;
@@ -206,8 +209,8 @@ status.textContent = 'Analysing...';
 
 
 	
-let foregroundImageData = new ImageData(img.width, img.height);
-let backgroundImageData = new ImageData(img.width, img.height);
+foregroundImageData = new ImageData(img.width, img.height);
+backgroundImageData = new ImageData(img.width, img.height);
 
 // Create separate copies of depth data
 let depthDataF = { data: new Uint8Array(depth.data) }; // Assuming depth.data is a Uint8Array
