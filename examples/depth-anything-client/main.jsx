@@ -240,9 +240,8 @@ const ct = canva.getContext('2d');
 const imageDat = ct.createImageData(img.width, img.height);
 imageDat.data.set(foregroundDepthData);   
 
-ctx.putImageData(imageData, 0, 0);
+ct.putImageData(imageDat, 0, 0);
 
-setDisplacementMap(canvas); 
 setDisplacementMap(foregroundDepth.toCanvas());
 
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
