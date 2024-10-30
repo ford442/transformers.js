@@ -232,9 +232,17 @@ for (let i = 0; i < depthData.length; i++) {
 	
 foregroundTexture = new THREE.DataTexture(foregroundImageData.data, img.width, img.height);
 backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, img.height);
-foregroundDepth = new THREE.DataTexture(foregroundDepthData, img.width, img.height, THREE.LuminanceFormat);
-backgroundDepth = new THREE.DataTexture(backgroundDepthData, img.width, img.height, THREE.LuminanceFormat); 
-	
+
+const canva = document.createElement('canvas');
+canva.width = img.width;
+canva.height = img.height;
+const ct = canva.getContext('2d');
+const imageDat = ct.createImageData(img.width, img.height);
+imageDat.data.set(foregroundDepthData);   
+
+ctx.putImageData(imageData, 0, 0);
+
+setDisplacementMap(canvas); 
 setDisplacementMap(foregroundDepth.toCanvas());
 
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
