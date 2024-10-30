@@ -304,8 +304,8 @@ material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
 const setDisplacementMap = (foregroundDepth) => {
 const exportCanvas = document.createElement('canvas');
-exportCanvas.width = image.width;
-exportCanvas.height = image.height;
+exportCanvas.width = img.width;
+exportCanvas.height = img.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 const displace= new THREE.CanvasTexture(foregroundDepth);
 displace.anisotropy=4;
