@@ -201,7 +201,7 @@ const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
+const { canvas, setDisplacementMap } = setupScene(imageDataURL, img.width, img.height);
 imageContainer.append(canvas);
 
 const { depth } = await depth_estimator(image);
@@ -210,32 +210,32 @@ status.textContent = 'Analysing...';
 // --- Splitting the image ---
 const foregroundImageData = new ImageData(img.width, img.height);
 const backgroundImageData = new ImageData(img.width, img.height);
-const foregroundDepthData = new ImageData(img.width, img.height);
-const backgroundDepthData = new ImageData(img.width, img.height);
 
 const depthData = depth.data; // Access the depth data
 const threshold = 0.05; // Adjust this threshold as needed
+const foregroundDepthData = new Uint8Array(depthData.length / 4); // Single-channel depth data
+const backgroundDepthData = new Uint8Array(depthData.length / 4);
 
 for (let i = 0; i < depthData.length; i++) {
   const pixelIndex = i * 4; // Each depth value corresponds to 4 color channels (RGBA)
   if (depthData[i] <= threshold) {
     // Background pixel
     backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-    backgroundDepthData.data.set(depth.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
+  backgroundDepthData[i] = depthData[i] * 255; // Scale to 0-255 range
   
   } else {
     // Foreground pixel
     foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-    foregroundDepthData.data.set(depth.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
+  foregroundDepthData[i] = depthData[i] * 255; 
   }
 }
 	
 foregroundTexture = new THREE.DataTexture(foregroundImageData.data, img.width, img.height);
 backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, img.height);
-foregroundDepth = new THREE.DataTexture(foregroundDepthData.data, img.width, img.height);
-backgroundDepth = new THREE.DataTexture(backgroundDepthData.data, img.width, img.height);
+foregroundDepth = new THREE.DataTexture(foregroundDepthData, img.width, img.height, THREE.LuminanceFormat);
+backgroundDepth = new THREE.DataTexture(backgroundDepthData, img.width, img.height, THREE.LuminanceFormat); 
 	
-setDisplacementMap(foregroundDepthData.toCanvas());
+setDisplacementMap(foregroundDepth.toCanvas());
 
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
