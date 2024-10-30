@@ -221,12 +221,12 @@ for (let i = 0; i < depthData.length; i++) {
   if (depthData[i] <= threshold) {
     // Background pixel
     backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-    backgroundDepthData.data.set(depthData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
+    backgroundDepthData.data.set(depth.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
   
   } else {
     // Foreground pixel
     foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-    foregroundDepthData.data.set(depthData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
+    foregroundDepthData.data.set(depth.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
   }
 }
 	
