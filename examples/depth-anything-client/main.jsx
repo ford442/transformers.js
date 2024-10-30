@@ -207,25 +207,21 @@ imageContainer.append(canvas);
 const { depth } = await depth_estimator(imageD);
 status.textContent = 'Analysing...';
 
-
-	
 foregroundImageData = new ImageData(img.width, img.height);
 backgroundImageData = new ImageData(img.width, img.height);
 
 // Create separate copies of depth data
-let depthDataF = { data: new Uint8Array(depth.data) }; // Assuming depth.data is a Uint8Array
-let depthDataB = { data: new Uint8Array(depth.data) }; 
+let depthDataF = { data: new Float32Array(depth.data) }; // Assuming depth.data is a Uint8Array
+let depthDataB = { data: new Float32Array(depth.data) }; 
 
 const threshold = 0.05; // Adjust this threshold as needed
 
 for (let i = 0; i < depthDataF.data.length; i++) {
   const pixelIndex = i * 4; // Each depth value corresponds to 4 color channels (RGBA)
-  if (depthDataF.data[i] <= threshold * 255) { // Scale threshold to 0-255 range
-    // Background pixel
+  if (depthDataF.data[i] <= threshold) { // Scale threshold to 0-255 range
     backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
     depthDataF.data[i] = 0; 
   } else {
-    // Foreground pixel
     foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
     depthDataB.data[i] = 0; 
   }
@@ -245,7 +241,6 @@ imageDataF.data.set(depthDataF.data);
 ctxF.putImageData(imageDataF, 0, 0);
 
 setDisplacementMap(canvasF); 
-
 	
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
