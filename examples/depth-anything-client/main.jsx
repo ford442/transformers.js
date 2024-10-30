@@ -197,11 +197,11 @@ const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
-const image = new RawImage(origImageData.data, img.width, img.height,4);
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
+const imageD = new RawImage(origImageData.data, img.width, img.height,4);
+const { canvas, setDisplacementMap } = setupScene(imageDataURL, imageD.width, imageD.height);
 imageContainer.append(canvas);
 
-const { depth } = await depth_estimator(image);
+const { depth } = await depth_estimator(imageD);
 status.textContent = 'Analysing...';
 
 
