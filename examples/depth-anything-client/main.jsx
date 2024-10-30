@@ -295,7 +295,7 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-uniforms.uTexture.value = foregroundTexture; 
+uniforms.uTexture.value = image; 
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader3,
