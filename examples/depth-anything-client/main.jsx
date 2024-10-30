@@ -60,8 +60,8 @@ let foregroundTexture;
 let backgroundTexture;
 let foregroundDepth;
 let backgroundDepth;
-const foregroundImageData;
-const backgroundImageData;
+let foregroundImageData;
+let backgroundImageData;
 
 const vertexShader = `
 uniform float uTime;
