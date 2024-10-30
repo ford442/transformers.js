@@ -215,10 +215,9 @@ const threshold = 0.05; // Adjust this threshold as needed
 for (let i = 0; i < depthDataF.data.length; i++) {
   if (depthDataF.data[i] <= threshold) {
     // Background pixel
-    backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
+    backgroundImageData.data.set(origImageData.data.slice(i, i), i);
   depthDataF.data[i] = 0; // Scale to 0-255 range
-      origImageData.data.set(0, pixelIndex);
-
+      origImageData.data.set(0, i);
   } else {
     // Foreground pixel
     foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
