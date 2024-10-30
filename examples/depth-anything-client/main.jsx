@@ -219,10 +219,10 @@ const threshold = 0.05; // Adjust this threshold as needed
 for (let i = 0; i < depthDataF.data.length; i++) {
   const pixelIndex = i * 4; // Each depth value corresponds to 4 color channels (RGBA)
   if (depthDataF.data[i] <= threshold) { // Scale threshold to 0-255 range
-    backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
+    backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
     depthDataF.data[i] = 0; 
   } else {
-    foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
+    foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
     depthDataB.data[i] = 0; 
   }
 }
