@@ -223,12 +223,12 @@ for (let i = 0; i < depthData.length; i++) {
   if (depthData[i] <= threshold) {
     // Background pixel
     backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-  backgroundDepthData[i] = depthData[i] * 255; // Scale to 0-255 range
+  backgroundDepthData[i] = depthData[i]; // Scale to 0-255 range
   
   } else {
     // Foreground pixel
     foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-  foregroundDepthData[i] = depthData[i] * 255; 
+  foregroundDepthData[i] = depthData[i]; 
   }
 }
 	
@@ -241,7 +241,6 @@ canva.height = img.height;
 const ct = canva.getContext('2d');
 const imageDat = ct.createImageData(img.width, img.height);
 imageDat.data.set(foregroundDepthData);   
-
 ct.putImageData(imageDat, 0, 0);
 
 setDisplacementMap(canva);
