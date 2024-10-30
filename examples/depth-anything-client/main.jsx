@@ -60,6 +60,8 @@ let foregroundTexture;
 let backgroundTexture;
 let foregroundDepth;
 let backgroundDepth;
+const foregroundImageData;
+const backgroundImageData;
 
 const vertexShader = `
 uniform float uTime;
@@ -208,8 +210,8 @@ const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 
 // --- Splitting the image ---
-const foregroundImageData = new ImageData(img.width, img.height);
-const backgroundImageData = new ImageData(img.width, img.height);
+foregroundImageData = new ImageData(img.width, img.height);
+backgroundImageData = new ImageData(img.width, img.height);
 
 const depthData = depth.data; // Access the depth data
 const threshold = 0.05; // Adjust this threshold as needed
