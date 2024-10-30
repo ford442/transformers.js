@@ -195,11 +195,11 @@ const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
-const image = new RawImage(origImageData.data, img.width, img.height,4);
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
+const imageD = new RawImage(origImageData.data, img.width, img.height,4);
+const { canvas, setDisplacementMap } = setupScene(imageDataURL, imageD.width, imageD.height);
 imageContainer.append(canvas);
 
-const { depth } = await depth_estimator(image);
+const { depth } = await depth_estimator(imageD);
 status.textContent = 'Analysing...';
 
 
@@ -211,24 +211,22 @@ const depthDataF = depth; // Access the depth data
 const depthDataB = depth; // Access the depth data
 
 const threshold = 0.05; // Adjust this threshold as needed
-const foregroundDepthData = new Uint8Array(depthDataF.data.length / 4); // Single-channel depth data
-const backgroundDepthData = new Uint8Array(depthDataF.data.length / 4);
 
 for (let i = 0; i < depthDataF.data.length; i++) {
-  const pixelIndex = i * 4; // Each depth value corresponds to 4 color channels (RGBA)
   if (depthDataF.data[i] <= threshold) {
     // Background pixel
-    backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
+    backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
   depthDataF.data[i] = 0; // Scale to 0-255 range
       origImageData.data.set(0, pixelIndex);
 
   } else {
     // Foreground pixel
-    foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex + 4), pixelIndex);
-  depthDataB.data[i] = 0; 
+    foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
+  
+	  depthDataB.data[i] = 0; 
   }
 }
-	
+const image = new RawImage(origImageData.data, img.width, img.height,4);
 const foregroundTexture = new THREE.DataTexture(foregroundImageData.data, img.width, img.height);
 const backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, img.height);
 
