@@ -235,7 +235,7 @@ backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, i
 foregroundDepth = new THREE.DataTexture(foregroundDepthData.data, img.width, img.height);
 backgroundDepth = new THREE.DataTexture(backgroundDepthData.data, img.width, img.height);
 	
-setDisplacementMap(foregroundDepth.toCanvas());
+setDisplacementMap(foregroundDepthData.toCanvas());
 
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
