@@ -204,8 +204,8 @@ status.textContent = 'Analysing...';
 
 
 // --- Splitting the image ---
-foregroundImageData = new ImageData(img.width, img.height);
-backgroundImageData = new ImageData(img.width, img.height);
+const foregroundImageData = new ImageData(img.width, img.height);
+const backgroundImageData = new ImageData(img.width, img.height);
 
 const depthDataF = depth; // Access the depth data
 const depthDataB = depth; // Access the depth data
