@@ -242,7 +242,7 @@ imageDat.data.set(foregroundDepthData);  
 
 ct.putImageData(imageDat, 0, 0);
 
-setDisplacementMap(foregroundDepth.toCanvas());
+setDisplacementMap(canva);
 
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
