@@ -207,13 +207,24 @@ precision highp sampler2DArrayShadow;
 precision highp sampler3D;
 precision highp sampler2D;
 precision highp samplerCube;
+#pragma 'optimize(sse4.2|avx)'
+#pragma 'optionNV(fastmath,off)'
+#pragma 'optionNV(fastprecision,off)'
+#pragma 'omp (OpenMP)'
+#pragma 'multisample'
+#pragma 'optionNV(optimize,full)'
+#pragma '(STGLSL_ESSL30,all)'
+#pragma 'STDGL(strict off)'
+#pragma 'use_srgb'
+#pragma 'enable_fp16'
+#pragma 'optionNV(enable_fp16)'
 
-out vec4 fragColor2;
+out vec4 fragColor;
 in vec2 vUv;
 uniform sampler2D bgTexture;
 
 void main() {
-fragColor2 = texture(bgTexture, vUv); 
+fragColor = texture(bgTexture, vUv); 
 }
 `
 
@@ -276,7 +287,7 @@ const camera = new THREE.PerspectiveCamera(120, width / height, .01, 10000);
 camera.position.z = 1;
 scene.add(camera);
 // const renderer = new THREE.WebGPURenderer();
-const renderer = new THREE.WebGLRenderer({ loadCanvas, antialias: true,premultipliedAlpha:false });
+const renderer = new THREE.WebGLRenderer({ canvas:canvas,context: canvas.getContext('webgl2'), antialias: true,premultipliedAlpha:false });
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
@@ -316,8 +327,6 @@ const exportCanvas = document.createElement('canvas');
 exportCanvas.width = image.width;
 exportCanvas.height = image.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
-
-
 	
 const displace= new THREE.CanvasTexture(depthData);
 // displace.anisotropy=4;
@@ -397,7 +406,7 @@ ctx.putImageData(origImageData, 0, 0);
 
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 
-/*
+
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {} // Your inpainted texture  
@@ -421,7 +430,6 @@ const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg
 newTexture.anisotropy=8;
 shaderMaterialBG.uniforms.bgTexture = newTexture;
 });
-*/
 	
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
