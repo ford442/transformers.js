@@ -283,7 +283,6 @@ const displace= new THREE.CanvasTexture(depthData);
 const imgData=displace.image;
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
-
 	
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
@@ -357,8 +356,7 @@ document.querySelector('#bgBtn').click();
 const shaderMaterial = new THREE.ShaderMaterialBG({
 uniforms: {
 bgTexture: {  } // Your inpainted texture  
-}
-
+},
 vertexShader: `#version 300 es
 in vec3 position;
 in vec2 uv;
@@ -378,13 +376,11 @@ precision highp float;  
 
 in vec2 vUv;
 out vec4 FragColor;
-
 uniform sampler2D bgTexture;
 
 void main() {
 FragColor = texture(bgTexture, vUv); 
 }
-
 `});
 	
 // Create the bg plane 
