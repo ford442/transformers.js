@@ -345,12 +345,12 @@ exportCanvas2.width = image.width;
 exportCanvas2.height = image.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
-tmpimg.src = exportCanvas.toDataURL('image/jpeg', 1.0);
+tmpimg.src = exportCanvas2.toDataURL('image/jpeg', 1.0);
 ctx.putImageData(displaceData, 0, 0);
 const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 tmpdpt.src = depthDataUrl;
 	//  and alert pyodide function
-document.querySelector('#bgBtn').click();
+// document.querySelector('#bgBtn').click();
 
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
