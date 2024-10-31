@@ -290,11 +290,19 @@ tmpimg.height=imgData.height;
 const tmpdpt=document.querySelector('#pydepth');
 tmpdpt.width=imgData.width;
 tmpdpt.height=imgData.height;
-	  //  get a copy of the depth map for HTML/pyodide
+const exportCanvas2 = document.createElement('canvas');
+exportCanvas2.width = image.width;
+exportCanvas2.height = image.height;
+const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
+ctx3.putImageData(origImageData, 0, 0);
+const imageDataUrl = exportCanvas2.toDataURL('image/jpeg', 1.0);
+tmpimg.src = imageDataUrl;
 ctx.putImageData(displaceData, 0, 0);
 const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
-tmpdpt.src=depthDataUrl;
-
+tmpdpt.src = depthDataUrl;
+	//  and alert pyodide function
+document.querySelector('#bgBtn').click();
+	
 	
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
@@ -348,12 +356,8 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 	
 ctx.putImageData(origImageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
-	  //  also a copy of the image for HTML/pyodide
-tmpimg.src=imageDataUrl;
-	
-	//  and alert pyodide function
-document.querySelector('#bgBtn').click();
-	
+
+
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {  } // Your inpainted texture  
@@ -382,21 +386,18 @@ fragColor = texture(bgTexture, vUv);
 // Create the bg plane 
 const geometryP = new THREE.PlaneGeometry(10, 10, 1, 1); 
 const backgroundPlane = new THREE.Mesh(geometryP, shaderMaterialBG);
-// Position the plane (e.g., set it as a background)
 backgroundPlane.position.z = -5; // Move it back slightly 
 backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the ground
-// Add the plane to your scene
 scene.add(backgroundPlane);
 
 document.querySelector('#bgBtn2').addEventListener('click',function(){
 const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg').src);
-uniforms.ShaderMaterialBG.bgTexture.value = newTexture;
+uniforms.ShaderMaterialBG.bgTexture = newTexture;
 });
 	
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 // uniforms.uBumpMap.value = bumpTexture; 
-
 material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
@@ -421,7 +422,6 @@ const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
-
 	
 	//fog
 // scene.tfog = new THREE.Fog( 0x6f00a0, 0.1, 10 );
