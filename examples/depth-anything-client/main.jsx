@@ -370,6 +370,7 @@ maskData[i+3]=255;
 }
 
 ctx.putImageData(maskData, 0, 0);
+document.body.appendChild(exportCanvas);
 
 const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
