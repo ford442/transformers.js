@@ -392,7 +392,7 @@ precision highp sampler3D;
 precision highp sampler2D;
 precision highp samplerCube;
 
-layout (location = 0) out vec4 fragColor2;
+layout (location = 1) out vec4 fragColor2;
 in vec2 vUv;
 uniform sampler2D bgTexture;
 
