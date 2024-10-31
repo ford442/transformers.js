@@ -191,6 +191,8 @@ discard;
 }
 `;
 
+
+
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
 const img = new Image();
@@ -348,6 +350,49 @@ ctx.putImageData(origImageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 	  //  also a copy of the image for HTML/pyodide
 tmpimg.src=imageDataUrl;
+	
+	//  and alert pyodide function
+document.querySelector('#bgBtn').click();
+	
+const shaderMaterial = new THREE.ShaderMaterialBG({
+uniforms: {
+bgTexture: {  }, // Your inpainted texture  
+vertexShader: `#version 300 es
+in vec3 position;
+in vec2 uv;
+out vec2 vUv; 
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+void main() {
+vUv = uv;
+gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`,
+fragmentShader:   
+ `#version 300 es
+precision highp float;   
+
+in vec2 vUv;
+out vec4 FragColor;
+
+uniform sampler2D bgTexture;
+
+void main() {
+FragColor = texture(bgTexture, vUv); 
+}
+`});
+	
+// Create the bg plane 
+const geometryP = new THREE.PlaneGeometry(10, 10, 1, 1); 
+const backgroundPlane = new THREE.Mesh(geometryP, shaderMaterialBG);
+// Position the plane (e.g., set it as a background)
+backgroundPlane.position.z = -5; // Move it back slightly 
+backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the ground
+// Add the plane to your scene
+scene.add(backgroundPlane);
+
 	
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
@@ -540,6 +585,12 @@ setDisplacementMap,
 };
 }
 
+document.querySelector('#bgBtn2').addEventListener('click',function(){
+
+uniforms.ShaderMaterialBG.bgTexture.value=document.querySelector('#pyimg').src;
+
+});
+
 function loadGLTFScene(gltfFilePath) {
 console.log('got file path:',gltfFilePath);
 imageContainer.innerHTML = '';
@@ -575,7 +626,7 @@ sceneL.add(ambientLight);
 cameraL = new THREE.PerspectiveCamera(30, width / height, 0.01, 10);
 cameraL.position.z = 2;
 sceneL.add(cameraL);
-rendererL = new THREE.WebGLRenderer({ loadCanvas, antialias: true });
+rendererL = new THREE.WebGLRenderer({ canvas: loadCanvas, context: loadCanvas.getContext('webgl2'), antialias: true });
 rendererL.setSize(width, height);
 rendererL.setPixelRatio(window.devicePixelRatio);
 rendererL.domElement.id='mvi';
