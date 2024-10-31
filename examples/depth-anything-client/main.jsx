@@ -211,16 +211,16 @@ foregroundImageData = new ImageData(img.width, img.height);
 backgroundImageData = new ImageData(img.width, img.height);
 
 // Create separate copies of depth data
-let depthDataF = { data: new Float32Array(depth.data) }; // Assuming depth.data is a Uint8Array
-let depthDataB = { data: new Float32Array(depth.data) }; 
+let depthDataF = { data: new Uint8Array(depth.data) }; // Assuming depth.data is a Uint8Array
+let depthDataB = { data: new Uint8Array(depth.data) }; 
 
-const threshold = 0.05; // Adjust this threshold as needed
+const threshold = 0.15; // Adjust this threshold as needed
 
 for (let i = 0; i < depthDataF.data.length; i++) {
   const pixelIndex = i * 4; // Each depth value corresponds to 4 color channels (RGBA)
-  if (depthDataF.data[i] <= threshold) { // Scale threshold to 0-255 range
+  if (depthDataF.data[i] <= threshold*255) { // Scale threshold to 0-255 range
     backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
-    depthDataF.data[i] = 0; 
+    depthDataF.data[i] = 0;
   } else {
     foregroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
     depthDataB.data[i] = 0; 
@@ -359,7 +359,7 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 // data[i + 3] is the alpha channel, leave it unchanged
 }
 // Put the inverted data back on the canvas
-ctx.putImageData(origImageData, 0, 0);
+ctx.putImageData(foregroundImageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
