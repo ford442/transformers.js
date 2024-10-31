@@ -360,7 +360,6 @@ bgTexture: {  } // Your inpainted texture
 },
 vertexShader:
 `
-precision highp float;
 out vec2 vUv; 
 
 void main() {
