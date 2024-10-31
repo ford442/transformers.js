@@ -324,16 +324,13 @@ material.displacementScale = DEFAULT_SCALE;
 	
 const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
+const displace= new THREE.CanvasTexture(depthData);
+const imgData=displace.image;
 exportCanvas.width = imgData.width;
 exportCanvas.height = imgData.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
-	
-const displace= new THREE.CanvasTexture(depthData);
-// displace.anisotropy=4;
-const imgData=displace.image;
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
-
 const tmpimg=document.querySelector('#pyimg');
 tmpimg.width=imgData.width;
 tmpimg.height=imgData.height;
