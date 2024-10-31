@@ -393,6 +393,10 @@ backgroundPlane.position.z = -5; // Move it back slightly
 backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the ground
 // Add the plane to your scene
 scene.add(backgroundPlane);
+
+document.querySelector('#bgBtn2').addEventListener('click',function(){
+uniforms.ShaderMaterialBG.bgTexture.value=document.querySelector('#pyimg').src;
+});
 	
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
@@ -423,6 +427,7 @@ plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
 
+	
 	//fog
 // scene.tfog = new THREE.Fog( 0x6f00a0, 0.1, 10 );
 
@@ -584,12 +589,6 @@ canvas: renderer.domElement,
 setDisplacementMap,
 };
 }
-
-document.querySelector('#bgBtn2').addEventListener('click',function(){
-
-uniforms.ShaderMaterialBG.bgTexture.value=document.querySelector('#pyimg').src;
-
-});
 
 function loadGLTFScene(gltfFilePath) {
 console.log('got file path:',gltfFilePath);
