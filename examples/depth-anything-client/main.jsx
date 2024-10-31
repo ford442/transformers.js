@@ -338,8 +338,7 @@ const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 tmpdpt.src = depthDataUrl;
 	//  and alert pyodide function
 document.querySelector('#bgBtn').click();
-	
-	
+
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
@@ -391,17 +390,17 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 // Put the inverted data back on the canvas
 	
 ctx.putImageData(origImageData, 0, 0);
-const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 
+imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 
+/*
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
-bgTexture: {  } // Your inpainted texture  
+bgTexture: {} // Your inpainted texture  
 },
 vertexShader:BGvertexShader3,
 fragmentShader:BGfragmentShader3
 });
-	
 // Create the bg plane 
 const geometryP = new THREE.PlaneGeometry(10, 10, 1, 1); 
 const backgroundPlane = new THREE.Mesh(geometryP, shaderMaterialBG);
@@ -413,6 +412,7 @@ document.querySelector('#bgBtn2').addEventListener('click',function(){
 const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg').src);
 uniforms.ShaderMaterialBG.bgTexture = newTexture;
 });
+*/
 	
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
