@@ -369,8 +369,8 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 `,
 fragmentShader:  
 `
+layout (location = 0) out vec4 fragColor;
 in vec2 vUv;
-out vec4 FragColor;
 uniform sampler2D bgTexture;
 
 void main() {
