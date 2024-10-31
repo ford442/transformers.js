@@ -359,23 +359,16 @@ const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {  } // Your inpainted texture  
 },
-vertexShader: `#version 300 es
-in vec3 position;
-in vec2 uv;
-out vec2 vUv; 
-
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
-
+vertexShader:
+`
 void main() {
 vUv = uv;
 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `,
-fragmentShader:   
-`#version 300 es
+fragmentShader:  
+`
 precision highp float;   
-
 in vec2 vUv;
 out vec4 FragColor;
 uniform sampler2D bgTexture;
@@ -383,7 +376,8 @@ uniform sampler2D bgTexture;
 void main() {
 FragColor = texture(bgTexture, vUv); 
 }
-`});
+`
+});
 	
 // Create the bg plane 
 const geometryP = new THREE.PlaneGeometry(10, 10, 1, 1); 
