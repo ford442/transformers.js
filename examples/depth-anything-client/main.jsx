@@ -356,7 +356,7 @@ const dataSize=origImageData.data.length;
 
 let maskData=displaceData;
 for (var i = 0; i < dataSize; i = i + 4) {
-if(displaceData[i]>10){
+if(displaceData[i]>40){
 maskData[i]=0;
 maskData[i+1]=0;
 maskData[i+2]=0;
