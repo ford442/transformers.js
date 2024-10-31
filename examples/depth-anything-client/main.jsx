@@ -374,7 +374,7 @@ in vec2 vUv;
 uniform sampler2D bgTexture;
 
 void main() {
-FragColor = texture(bgTexture, vUv); 
+fragColor = texture(bgTexture, vUv); 
 }
 `
 });
