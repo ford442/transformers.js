@@ -356,7 +356,9 @@ document.querySelector('#bgBtn').click();
 	
 const shaderMaterial = new THREE.ShaderMaterialBG({
 uniforms: {
-bgTexture: {  }, // Your inpainted texture  
+bgTexture: {  } // Your inpainted texture  
+}
+
 vertexShader: `#version 300 es
 in vec3 position;
 in vec2 uv;
@@ -371,7 +373,7 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `,
 fragmentShader:   
- `#version 300 es
+`#version 300 es
 precision highp float;   
 
 in vec2 vUv;
@@ -382,6 +384,7 @@ uniform sampler2D bgTexture;
 void main() {
 FragColor = texture(bgTexture, vUv); 
 }
+
 `});
 	
 // Create the bg plane 
@@ -392,7 +395,6 @@ backgroundPlane.position.z = -5; // Move it back slightly
 backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the ground
 // Add the plane to your scene
 scene.add(backgroundPlane);
-
 	
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
