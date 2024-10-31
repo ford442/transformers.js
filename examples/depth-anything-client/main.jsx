@@ -324,8 +324,8 @@ material.displacementScale = DEFAULT_SCALE;
 	
 const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
-exportCanvas.width = image.width;
-exportCanvas.height = image.height;
+exportCanvas.width = imgData.width;
+exportCanvas.height = imgData.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 	
 const displace= new THREE.CanvasTexture(depthData);
@@ -341,8 +341,8 @@ const tmpdpt=document.querySelector('#pydepth');
 tmpdpt.width=imgData.width;
 tmpdpt.height=imgData.height;
 const exportCanvas2 = document.createElement('canvas');
-exportCanvas2.width = image.width;
-exportCanvas2.height = image.height;
+exportCanvas2.width = imgData.width;
+exportCanvas2.height = imgData.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
 document.body.appendChild(exportCanvas2);
@@ -412,7 +412,6 @@ ctx.putImageData(origImageData, 0, 0);
 
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 
-
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {} // Your inpainted texture  
@@ -434,7 +433,7 @@ scene.add(backgroundPlane);
 document.querySelector('#bgBtn2').addEventListener('click',function(){
 const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg'));
 newTexture.anisotropy=8;
-shaderMaterialBG.uniforms.bgTexture = newTexture;
+shaderMaterialBG.uniforms.bgTexture.value = newTexture;
 });
 	
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
