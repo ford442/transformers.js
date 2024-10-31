@@ -295,7 +295,6 @@ exportCanvas2.width = image.width;
 exportCanvas2.height = image.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
-const imageDataUrl = exportCanvas2.toDataURL('image/jpeg', 1.0);
 tmpimg.src = imageDataUrl;
 ctx.putImageData(displaceData, 0, 0);
 const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
