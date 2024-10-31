@@ -342,6 +342,8 @@ exportCanvas2.width = imgData.width;
 exportCanvas2.height = imgData.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
+exportCanvas2.id='dvi1';
+
 document.body.appendChild(exportCanvas2);
 	
 let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
@@ -357,7 +359,7 @@ const dataSize=origImageData.data.length;
 
 
 ctx.putImageData(displaceData, 0, 0);
-exportCanvas.id='dvi';
+exportCanvas.id='dvi2';
 document.body.appendChild(exportCanvas);
 
 const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
