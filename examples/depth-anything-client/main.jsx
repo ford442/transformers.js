@@ -346,13 +346,13 @@ exportCanvas2.height = image.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
 let imgDat=exportCanvas2.toDataURL('image/jpeg', 1.0);
-  console.log(imgDat);
+  console.log(origImageData);
 tmpimg.src = imgDat;
 	
 ctx.putImageData(displaceData, 0, 0);
 	
 const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
-  console.log(depthDataUrl);
+  console.log(displaceData);
 tmpdpt.src = depthDataUrl;
 	//  and alert pyodide function
 // document.querySelector('#bgBtn').click();
