@@ -391,7 +391,7 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 	
 ctx.putImageData(origImageData, 0, 0);
 
-imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
+const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 
 /*
 const shaderMaterialBG = new THREE.ShaderMaterial({
