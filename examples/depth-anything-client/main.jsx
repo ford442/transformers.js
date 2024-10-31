@@ -110,6 +110,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
+uDisplacementThreshold: { value: 0.15 },
 uDisplacementScale: { value: 0.272 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
@@ -173,13 +174,20 @@ uniform sampler2D uTexture;
 in vec2 vUvFrag;
 in vec3 vNormalFrag; 
 out vec4 fragColor;
+uniform sampler2D uDisplacementMap;
+uniform float uDisplacementThreshold; // Threshold for transparency
 
 void main() {
-    vec4 textureColor = texture(uTexture, vUvFrag);
-    fragColor = textureColor;
-    vec3 ao = texture(uAOTexture, vUvFrag).rgb;
-    float aoInfluence = 0.5; 
-    fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
+vec4 textureColor = texture(uTexture, vUvFrag);
+fragColor = textureColor;
+vec3 ao = texture(uAOTexture, vUvFrag).rgb;
+float aoInfluence = 0.5; 
+fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
+// Discard fragments with low displacement
+float displacement = texture(uDisplacementMap, vUvFrag).r;
+if (displacement < uDisplacementThreshold) {
+discard;
+}
 }
 `;
 
@@ -251,7 +259,8 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-uniforms.uTexture.value = image; 
+uniforms.uDisplacementThreshold.value = 0.15; // Adjust as needed
+uniforms.uTexture.value = image;
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
 vertexShader: vertexShader3,
