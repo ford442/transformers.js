@@ -391,22 +391,8 @@ precision highp sampler2DArrayShadow;
 precision highp sampler3D;
 precision highp sampler2D;
 precision highp samplerCube;
-#pragma 'optimize(sse4.2|avx)'
-#pragma 'optionNV(fastmath,off)'
-#pragma 'optionNV(fastprecision,off)'
-#pragma 'omp (OpenMP)'
-#pragma 'multisample'
-#pragma 'optionNV(optimize,full)'
-#pragma '(STGLSL_ESSL30,all)'
-#pragma 'STDGL(strict off)'
-#pragma 'use_srgb'
-#pragma 'enable_fp16'
-#pragma 'optionNV(enable_fp16)'
-uniform sampler2D uAOTexture;
-uniform sampler2D uTexture;
-in vec2 vUvFrag;
-in vec3 vNormalFrag; 
-out vec4 fragColor;
+
+layout (location = 0) out vec4 fragColor;
 in vec2 vUv;
 uniform sampler2D bgTexture;
 
