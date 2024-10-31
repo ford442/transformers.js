@@ -191,7 +191,44 @@ discard;
 }
 `;
 
+const BGfragmentShader3 = `
+precision highp float;
+precision highp int;
+highp float;
+highp int;
+highp vec2;
+highp vec3;
+highp vec4;
+precision highp sampler2DArray;precision highp sampler2DShadow;
+precision highp isampler2D;precision highp isampler3D;precision highp isamplerCube;
+precision highp isampler2DArray;precision highp usampler2D;precision highp usampler3D;
+precision highp usamplerCube;precision highp usampler2DArray;precision highp samplerCubeShadow;
+precision highp sampler2DArrayShadow;
+precision highp sampler3D;
+precision highp sampler2D;
+precision highp samplerCube;
 
+out vec4 fragColor2;
+in vec2 vUv;
+uniform sampler2D bgTexture;
+
+void main() {
+fragColor2 = texture(bgTexture, vUv); 
+}
+`
+
+const BGvertexShader3 = `
+precision highp float;
+precision highp int;
+precision highp sampler2D;
+
+out vec2 vUv; 
+
+void main() {
+vUv = uv;
+gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`
 
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
@@ -361,45 +398,8 @@ const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {  } // Your inpainted texture  
 },
-vertexShader:
-`
-precision highp float;
-precision highp int;
-precision highp sampler2D;
-
-out vec2 vUv; 
-
-void main() {
-vUv = uv;
-gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`,
-fragmentShader:  
-`
-precision highp float;
-precision highp int;
-highp float;
-highp int;
-highp vec2;
-highp vec3;
-highp vec4;
-precision highp sampler2DArray;precision highp sampler2DShadow;
-precision highp isampler2D;precision highp isampler3D;precision highp isamplerCube;
-precision highp isampler2DArray;precision highp usampler2D;precision highp usampler3D;
-precision highp usamplerCube;precision highp usampler2DArray;precision highp samplerCubeShadow;
-precision highp sampler2DArrayShadow;
-precision highp sampler3D;
-precision highp sampler2D;
-precision highp samplerCube;
-
-out vec4 fragColor2;
-in vec2 vUv;
-uniform sampler2D bgTexture;
-
-void main() {
-fragColor2 = texture(bgTexture, vUv); 
-}
-`
+vertexShader:BGvertexShader3,
+fragmentShader:BGfragmentShader3
 });
 	
 // Create the bg plane 
