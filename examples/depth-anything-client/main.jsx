@@ -339,8 +339,6 @@ const tmpdpt=document.querySelector('#pydepth');
 tmpdpt.width=image.width;
 tmpdpt.height=image.height;
 	  //  get a copy of the depth map for HTML/pyodide
-
-	
 ctx.putImageData(depthData, 0, 0);
 const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 tmpdpt.src=depthDataUrl;
