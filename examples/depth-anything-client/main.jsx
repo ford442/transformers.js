@@ -353,7 +353,7 @@ const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
 	
 	//  and alert pyodide function
-// document.querySelector('#bgBtn').click();
+document.querySelector('#bgBtn').click();
 
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
