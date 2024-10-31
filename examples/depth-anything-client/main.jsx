@@ -57,6 +57,7 @@ const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 let foregroundTexture;
+let foregroundImage;
 let backgroundTexture;
 	
 let foregroundImageData;
@@ -201,8 +202,6 @@ const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const imageD = new RawImage(origImageData.data, img.width, img.height,4);
-const { canvas, setDisplacementMap } = setupScene(imageDataURL, imageD.width, imageD.height);
-imageContainer.append(canvas);
 
 const { depth } = await depth_estimator(imageD);
 status.textContent = 'Analysing...';
@@ -211,14 +210,14 @@ foregroundImageData = new ImageData(img.width, img.height);
 backgroundImageData = new ImageData(img.width, img.height);
 
 // Create separate copies of depth data
-let depthDataF = { data: new Uint8Array(depth.data) }; // Assuming depth.data is a Uint8Array
-let depthDataB = { data: new Uint8Array(depth.data) }; 
+let depthDataF = depth.data; // Assuming depth.data is a Uint8Array
+let depthDataB = depth.data; 
 
-const threshold = 0.15; // Adjust this threshold as needed
+const threshold = 0.25; // Adjust this threshold as needed
 
 for (let i = 0; i < depthDataF.data.length; i++) {
   const pixelIndex = i * 4; // Each depth value corresponds to 4 color channels (RGBA)
-  if (depthDataF.data[i] <= threshold*255) { // Scale threshold to 0-255 range
+  if (depthDataF.data[i] <= threshold) { // Scale threshold to 0-255 range
     backgroundImageData.data.set(origImageData.data.slice(pixelIndex, pixelIndex), pixelIndex);
     depthDataF.data[i] = 0;
   } else {
@@ -230,6 +229,9 @@ for (let i = 0; i < depthDataF.data.length; i++) {
 foregroundTexture = new THREE.DataTexture(foregroundImageData.data, img.width, img.height);
 backgroundTexture = new THREE.DataTexture(backgroundImageData.data, img.width, img.height);
 const image = new RawImage(foregroundImageData.data, img.width, img.height, 4); 
+foregroundImage = new RawImage(foregroundImageData.data, img.width, img.height, 4); 
+const { canvas, setDisplacementMap } = setupScene(foregroundImage, imageD.width, imageD.height);
+imageContainer.append(canvas);
 
 // Convert depthDataF to a canvas
 const canvasF = document.createElement('canvas');
