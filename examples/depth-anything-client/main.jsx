@@ -345,12 +345,12 @@ exportCanvas2.width = image.width;
 exportCanvas2.height = image.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
-document.appendChild(exportCanvas2);
+document.body.appendChild(exportCanvas2);
 	
 let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
 tmpimg.src = imgDat;
 ctx.putImageData(displaceData, 0, 0);
-document.appendChild(exportCanvas);
+document.body.appendChild(exportCanvas);
 
 const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
