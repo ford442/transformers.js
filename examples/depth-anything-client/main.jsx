@@ -283,6 +283,19 @@ const displace= new THREE.CanvasTexture(depthData);
 const imgData=displace.image;
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
+
+
+const tmpimg=document.querySelector('#pyimg');
+tmpimg.width=image.width;
+tmpimg.height=image.height;
+const tmpdpt=document.querySelector('#pydepth');
+tmpdpt.width=image.width;
+tmpdpt.height=image.height;
+	  //  get a copy of the depth map for HTML/pyodide
+ctx.putImageData(displaceData, 0, 0);
+const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
+tmpdpt.src=depthDataUrl;
+
 	
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
@@ -332,17 +345,6 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 // data[i + 3] is the alpha channel, leave it unchanged
 }
 	
-const tmpimg=document.querySelector('#pyimg');
-tmpimg.width=image.width;
-tmpimg.height=image.height;
-const tmpdpt=document.querySelector('#pydepth');
-tmpdpt.width=image.width;
-tmpdpt.height=image.height;
-	  //  get a copy of the depth map for HTML/pyodide
-ctx.putImageData(depthData, 0, 0);
-const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
-tmpdpt.src=depthDataUrl;
-
 // Put the inverted data back on the canvas
 	
 ctx.putImageData(origImageData, 0, 0);
