@@ -351,25 +351,13 @@ tmpimg.src = imgDat;
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
+	
 //image displacement
 const dataSize=origImageData.data.length;
 
-let maskData=displaceData;
-for (var i = 0; i < dataSize; i = i + 4) {
-if(displaceData[i]>40){
-maskData[i]=0;
-maskData[i+1]=0;
-maskData[i+2]=0;
-maskData[i+3]=0;
-}else{
-maskData[i]=255;
-maskData[i+1]=255;
-maskData[i+2]=255;
-maskData[i+3]=255;
-}
-}
 
-ctx.putImageData(maskData, 0, 0);
+ctx.putImageData(displaceData, 0, 0);
+exportCanvas.id='dvi';
 document.body.appendChild(exportCanvas);
 
 const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
