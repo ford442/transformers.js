@@ -395,7 +395,8 @@ backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the groun
 scene.add(backgroundPlane);
 
 document.querySelector('#bgBtn2').addEventListener('click',function(){
-uniforms.ShaderMaterialBG.bgTexture.value=document.querySelector('#pyimg').src;
+const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg').src);
+uniforms.ShaderMaterialBG.bgTexture.value = newTexture;
 });
 	
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
