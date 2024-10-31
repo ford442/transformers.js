@@ -355,7 +355,7 @@ tmpimg.src=imageDataUrl;
 	//  and alert pyodide function
 document.querySelector('#bgBtn').click();
 	
-const shaderMaterial = new THREE.ShaderMaterialBG({
+const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {  } // Your inpainted texture  
 },
