@@ -363,6 +363,10 @@ bgTexture: {  } // Your inpainted texture
 },
 vertexShader:
 `
+precision highp float;
+precision highp int;
+precision highp sampler2D;
+
 out vec2 vUv; 
 
 void main() {
@@ -372,7 +376,37 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 `,
 fragmentShader:  
 `
-layout (location = 0) out vec4 fragColor;
+precision highp float;
+precision highp int;
+highp float;
+highp int;
+highp vec2;
+highp vec3;
+highp vec4;
+precision highp sampler2DArray;precision highp sampler2DShadow;
+precision highp isampler2D;precision highp isampler3D;precision highp isamplerCube;
+precision highp isampler2DArray;precision highp usampler2D;precision highp usampler3D;
+precision highp usamplerCube;precision highp usampler2DArray;precision highp samplerCubeShadow;
+precision highp sampler2DArrayShadow;
+precision highp sampler3D;
+precision highp sampler2D;
+precision highp samplerCube;
+#pragma 'optimize(sse4.2|avx)'
+#pragma 'optionNV(fastmath,off)'
+#pragma 'optionNV(fastprecision,off)'
+#pragma 'omp (OpenMP)'
+#pragma 'multisample'
+#pragma 'optionNV(optimize,full)'
+#pragma '(STGLSL_ESSL30,all)'
+#pragma 'STDGL(strict off)'
+#pragma 'use_srgb'
+#pragma 'enable_fp16'
+#pragma 'optionNV(enable_fp16)'
+uniform sampler2D uAOTexture;
+uniform sampler2D uTexture;
+in vec2 vUvFrag;
+in vec3 vNormalFrag; 
+out vec4 fragColor;
 in vec2 vUv;
 uniform sampler2D bgTexture;
 
