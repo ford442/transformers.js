@@ -210,8 +210,8 @@ foregroundImageData = new ImageData(img.width, img.height);
 backgroundImageData = new ImageData(img.width, img.height);
 
 // Create separate copies of depth data
-let depthDataF = depth.data; // Assuming depth.data is a Uint8Array
-let depthDataB = depth.data; 
+let depthDataF = depth; // Assuming depth.data is a Uint8Array
+let depthDataB = depth; 
 
 const threshold = 0.25; // Adjust this threshold as needed
 
