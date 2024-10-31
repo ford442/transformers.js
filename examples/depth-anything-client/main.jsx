@@ -344,11 +344,11 @@ const exportCanvas2 = document.createElement('canvas');
 exportCanvas2.width = image.width;
 exportCanvas2.height = image.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
-ctx3.drawImage(origImageData, 0, 0);
-let imgDat=exportCanvas2.toDataURL('image/jpeg', 1.0);
+ctx3.putImageData(origImageData, 0, 0);
+let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
 tmpimg.src = imgDat;
-ctx.drawImage(displaceData, 0, 0);
-const depthDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
+ctx.putImageData(displaceData, 0, 0);
+const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
 	//  and alert pyodide function
 // document.querySelector('#bgBtn').click();
