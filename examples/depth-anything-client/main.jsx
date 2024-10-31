@@ -310,11 +310,15 @@ material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
+	
 const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
 exportCanvas.width = image.width;
 exportCanvas.height = image.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
+
+
+	
 const displace= new THREE.CanvasTexture(depthData);
 // displace.anisotropy=4;
 const imgData=displace.image;
@@ -399,9 +403,13 @@ uniforms: {
 bgTexture: {} // Your inpainted texture  
 },
 vertexShader:BGvertexShader3,
-fragmentShader:BGfragmentShader3
+fragmentShader:BGfragmentShader3,
+glslVersion: THREE.GLSL3
 });
 // Create the bg plane 
+shaderMaterialBG.needsUpdate = true; // Force re-render
+shaderMaterialBG.receiveShadow = true;
+shaderMaterialBG.castShadow = true;
 const geometryP = new THREE.PlaneGeometry(10, 10, 1, 1); 
 const backgroundPlane = new THREE.Mesh(geometryP, shaderMaterialBG);
 backgroundPlane.position.z = -5; // Move it back slightly 
@@ -409,8 +417,9 @@ backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the groun
 scene.add(backgroundPlane);
 
 document.querySelector('#bgBtn2').addEventListener('click',function(){
-const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg').src);
-uniforms.ShaderMaterialBG.bgTexture = newTexture;
+const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg'));
+newTexture.anisotropy=8;
+shaderMaterialBG.uniforms.bgTexture = newTexture;
 });
 */
 	
@@ -422,6 +431,10 @@ material.bumpScale=1.333;
 materialE=material;
 material.needsUpdate = true;
 }
+
+	
+     //  no further image var usage  vvv
+	
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
 }
