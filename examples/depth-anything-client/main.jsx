@@ -176,7 +176,7 @@ in vec3 vNormalFrag;
 out vec4 fragColor;
 uniform sampler2D uDisplacementMap;
 uniform float uDisplacementThreshold; // Threshold for transparency
-// uniform float uDisplacementScale; // Threshold for transparency
+uniform float uDisplacementScale; // Threshold for transparency
 // out float displacementMask; // Add an output variable
 
 void main() {
