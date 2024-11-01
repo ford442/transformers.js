@@ -350,7 +350,7 @@ const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
 const dataSize=origImageData.data.length;
 
-
+/*
 const maskRenderTarget = new THREE.WebGLRenderTarget(imgData.width, imgData.height);
 renderer.setRenderTarget(maskRenderTarget);
 renderer.render(scene, camera);
@@ -366,7 +366,7 @@ const displacementData = ctx4.createImageData(canvas4.width, canvas4.height);
 // Get data from the texture
 renderer.readRenderTargetPixels(displacementMaskTexture, 0, 0, canvas.width, canvas.height, displacementData.data);
 ctx4.putImageData(displacementData, 0, 0);
-
+*/
 exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
 let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
