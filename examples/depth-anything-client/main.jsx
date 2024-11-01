@@ -256,6 +256,7 @@ const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
+origBGData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
@@ -349,25 +350,15 @@ const imgDataD=displaceData.data;
 	
 const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
+const dataBG = origBGData.data;
 const dataSize=origImageData.data.length;
 
-/*
-const maskRenderTarget = new THREE.WebGLRenderTarget(imgData.width, imgData.height);
-renderer.setRenderTarget(maskRenderTarget);
-renderer.render(scene, camera);
-renderer.setRenderTarget(null); // Reset render target
-	// Access the mask texture
-const displacementMaskTexture = maskRenderTarget.texture;
-const canvas4 = document.createElement('canvas');
-canvas4.width = displacementMaskTexture.image.width;
-canvas4.height = displacementMaskTexture.image.height;
-canvas4.id='dvi3';
-const ctx4 = canvas4.getContext('2d');
-const displacementData = ctx4.createImageData(canvas4.width, canvas4.height);
-// Get data from the texture
-renderer.readRenderTargetPixels(displacementMaskTexture, 0, 0, canvas.width, canvas.height, displacementData.data);
-ctx4.putImageData(displacementData, 0, 0);
-*/
+ctx.putImageData(displaceData, 0, 0);
+exportCanvas.id='dvi2';
+document.body.appendChild(exportCanvas);
+const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
+tmpdpt.src = depthDataUrl;
+
 exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
 let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
@@ -407,12 +398,6 @@ imgDataD[i+2]+=disData;
 const displace2= new THREE.CanvasTexture(displaceData);
 uniforms.uDisplacementMap.value = displace2; 
 	
-ctx.putImageData(displaceData, 0, 0);
-exportCanvas.id='dvi2';
-document.body.appendChild(exportCanvas);
-const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
-tmpdpt.src = depthDataUrl;
-
 let tmpcan= document.createElement('canvas');
 tmpcan.height = imgData.height;
 tmpcan.width = imgData.width;
@@ -430,9 +415,9 @@ for (let i = 0; i < imgDataD.length; i += 4) {
   imgDataD[i] = value;     // R
   imgDataD[i + 1] = value; // G
   imgDataD[i + 2] = value; // B
-    data[i] = data[i]+value;     // R
-    data[i + 1] =data[i + 1]+value; // G
-    data[i + 2] =data[i + 2]+value; // B
+    dataBG[i] = dataBG[i]+value;     // R
+    dataBG[i + 1] =dataBG[i + 1]+value; // G
+    dataBG[i + 2] =dataBG[i + 2]+value; // B
   // imgDataD[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
 console.log('After mask: ',data[14]);
@@ -446,7 +431,7 @@ exportCanvas3.height = imgData.height;
 const ctx6 = exportCanvas3.getContext('2d', { alpha: true, antialias: true });
 exportCanvas3.id='dvi3';
 document.body.appendChild(exportCanvas3);
-ctx6.putImageData(origImageData, 0, 0);
+ctx6.putImageData(origBGData, 0, 0);
 	
 		//  and alert pyodide function
 document.querySelector('#bgBtn').click();
