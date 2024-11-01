@@ -22,7 +22,7 @@ env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 8;
 env.backends.onnx.wasm.simd = true;
-const DEFAULT_SCALE = 0.2713;
+const DEFAULT_SCALE = 0.3713;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
@@ -58,8 +58,8 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementThreshold: { value: 0.17 },
-uDisplacementScale: { value: 0.272 }, // Adjust as needed
+uDisplacementThreshold: { value: 0.13 },
+uDisplacementScale: { value: 0.372 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
@@ -343,7 +343,7 @@ const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {},
 uDisplacementMap: {},
-uDisplacementScale: {value: 0.17},
+uDisplacementScale: {value: 0.33},
 uDisplacementThreshold: {value: 0.17},
 	
 },
