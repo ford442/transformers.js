@@ -418,7 +418,7 @@ tmpcan.height = imgData.height;
 tmpcan.width = imgData.width;
 tmpcan.id = 'dvi4';
 document.body.appendChild(tmpcan);
-var ctx5 = tmpcan.getContext('2d');
+var ctx5 = tmpcan.getContext('2d',{alpha:true,antialias:true});
 	
 const threshold = 40;
 console.log('Before mask: ',imgDataD[14]);
