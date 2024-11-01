@@ -174,7 +174,7 @@ uniform float uDisplacementScale; // Threshold for transparency
 
 void main() {
 vec4 textureColor = texture(bgTexture, vUv);
-float displacement = texture(uDisplacementMap, vUvFrag).r;
+float displacement = texture(uDisplacementMap, vUv).r;
 fragColor = textureColor;
 if (displacement > uDisplacementThreshold) {
 discard;
