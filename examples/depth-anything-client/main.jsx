@@ -186,7 +186,7 @@ vec3 ao = texture(uAOTexture, vUvFrag).rgb;
 float aoInfluence = 0.5; 
 fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
 // Discard fragments with low displacement
-float displacement = texture(uDisplacementMap, vUvFrag).r; //  * uDisplacementScale;
+float displacement = texture(uDisplacementMap, vUvFrag).r uDisplacementScale;
 // displacementMask = displacement > uDisplacementThreshold ? 1.0 : 0.0; // Adjust 0.1 as needed
 if (displacement < uDisplacementThreshold) {
 discard;
@@ -415,9 +415,9 @@ for (let i = 0; i < imgDataD.length; i += 4) {
   imgDataD[i] = value;     // R
   imgDataD[i + 1] = value; // G
   imgDataD[i + 2] = value; // B
-    dataBG[i] = dataBG[i]+value;     // R
-    dataBG[i + 1] =dataBG[i + 1]+value; // G
-    dataBG[i + 2] =dataBG[i + 2]+value; // B
+    dataBG[i] = dataBG[i]-value;     // R
+    dataBG[i + 1] =dataBG[i + 1]-value; // G
+    dataBG[i + 2] =dataBG[i + 2]-value; // B
   // imgDataD[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
 console.log('After mask: ',data[14]);
