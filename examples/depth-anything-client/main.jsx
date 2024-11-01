@@ -365,7 +365,8 @@ backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the groun
 scene.add(backgroundPlane);
 
 document.querySelector('#bgBtn2').addEventListener('click',function(){
-const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg'));
+let inpaintData=document.querySelector('#pyimg').src;
+const newTexture = new THREE.TextureLoader().load(inpaintData);
 newTexture.anisotropy=8;
 shaderMaterialBG.uniforms.bgTexture.value = newTexture;
 });
