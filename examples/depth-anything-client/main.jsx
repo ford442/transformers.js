@@ -54,7 +54,7 @@ const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 let yawObject, pitchObject; // Declare these variables at a higher scope
 const clock= new THREE.Clock;
-let displacementTexture, origImageData;
+let displacementTexture, origImageData,origBGData;
 let dnce=document.querySelector('#dance').checked;
 
 const vertexShader = `
