@@ -366,7 +366,7 @@ scene.add(backgroundPlane);
 
 document.querySelector('#bgBtn2').addEventListener('click',function(){
 let inpaint=document.querySelector('#dvi6');
-let inpaintData=inpaint.toDataURL().split(',')[1];
+let inpaintData=inpaint.toDataURL(); //.split(',')[1];
 const newTexture = new THREE.TextureLoader().load(inpaintData);
 newTexture.anisotropy=8;
 shaderMaterialBG.uniforms.bgTexture.value = newTexture;
