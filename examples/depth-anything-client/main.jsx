@@ -389,7 +389,6 @@ ctx.putImageData(displaceData, 0, 0);
 let mctx=exportCanvas.getContext('2d',{alpha:true,antialias:true});
 let maskData=mctx.getImageData(0, 0, imgData.width, imgData.height);
 let dptData=maskData.data;
-   console.log('mask data: ',bgData[128]);
 const threshold = 40;
 
 for (let i = 0; i < dptData.length; i += 4) {
@@ -403,15 +402,16 @@ bgData[i + 1] =bgData[i + 1]-value; // G subtract from BG
 bgData[i + 2] =bgData[i + 2]-value; // B subtract from BG
 // dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
+   console.log('mask data: ',bgData[128]);
 
 	// mask image
 let tmpcan= document.createElement('canvas');
 tmpcan.height = imgData.height;
 tmpcan.width = imgData.width;
 tmpcan.id = 'dvi4';
-document.body.appendChild(tmpcan);
 var ctx5 = tmpcan.getContext('2d',{alpha:true,antialias:true});
 ctx5.putImageData(maskData, 0, 0);
+document.body.appendChild(tmpcan);
 
 	// masked background image
 const exportCanvas3 = document.createElement('canvas');
@@ -419,8 +419,8 @@ exportCanvas3.width = imgData.width;
 exportCanvas3.height = imgData.height;
 const ctx6 = exportCanvas3.getContext('2d', { alpha: true, antialias: true });
 exportCanvas3.id='dvi3';
-document.body.appendChild(exportCanvas3);
 ctx6.putImageData(backData, 0, 0);
+document.body.appendChild(exportCanvas3);
 
 		//  and alert pyodide function
 document.querySelector('#bgBtn').click();
