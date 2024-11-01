@@ -340,8 +340,8 @@ newTexture.anisotropy=8;
 
 	// entact image
 const exportCanvas2 = document.createElement('canvas');
-exportCanvas2.width = image.width;
-exportCanvas2.height = image.height;exportCanvas2.id='dvi1';
+exportCanvas2.width = imgData.width;
+exportCanvas2.height = imgData.height;exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
 	
 	// depth image
@@ -351,13 +351,13 @@ document.body.appendChild(exportCanvas);
 
 	//  background data
 let bctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
-let backData=bctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
+let backData=bctx.getImageData(0, 0, imgData.width, imgData.height);
 let bgData=backData.data;
 
 	//  mask data
 ctx.putImageData(displaceData, 0, 0);
 let mctx=exportCanvas.getContext('2d',{alpha:true,antialias:true});
-let maskData=mctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
+let maskData=mctx.getImageData(0, 0, imgData.width, imgData.height);
 let dptData=maskData.data;
 
 const threshold = 40;
