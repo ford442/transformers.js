@@ -383,9 +383,8 @@ ctx.putImageData(origImageData, 0, 0);
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 
 		//  and alert pyodide function
-document.querySelector('#bgBtn').click();
+// document.querySelector('#bgBtn').click();
 
-	
 	//  background material
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
