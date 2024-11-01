@@ -256,7 +256,6 @@ const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
 // ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
-origBGData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
@@ -335,7 +334,6 @@ exportCanvas.height = imgData.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
-const maskData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
 const tmpimg=document.querySelector('#pyimg');
 tmpimg.width=imgData.width;
 tmpimg.height=imgData.height;
@@ -348,18 +346,17 @@ exportCanvas2.height = imgData.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
 const imgDataD=displaceData.data;
-const dptData=maskData.data;
-	
+const data16 = new Uint16Array(imgDataD.length);
+const data = origImageData.data;
+const dataSize=origImageData.data.length;
+
+	// entact image
 exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
 let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
 tmpimg.src = imgDat;
 	
-const data16 = new Uint16Array(imgDataD.length);
-const data = origImageData.data;
-const dataBG = origBGData.data;
-const dataSize=origImageData.data.length;
-
+	// depth image
 ctx.putImageData(displaceData, 0, 0);
 exportCanvas.id='dvi2';
 document.body.appendChild(exportCanvas);
@@ -413,7 +410,7 @@ dataBG[i + 1] =dataBG[i + 1]-value; // G subtract from BG
 dataBG[i + 2] =dataBG[i + 2]-value; // B subtract from BG
 // dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
-
+	// mask image
 let tmpcan= document.createElement('canvas');
 tmpcan.height = imgData.height;
 tmpcan.width = imgData.width;
@@ -422,6 +419,7 @@ document.body.appendChild(tmpcan);
 var ctx5 = tmpcan.getContext('2d',{alpha:true,antialias:true});
 ctx5.putImageData(maskData, 0, 0);
 
+/*	// masked background image
 const exportCanvas3 = document.createElement('canvas');
 exportCanvas3.width = imgData.width;
 exportCanvas3.height = imgData.height;
@@ -429,13 +427,11 @@ const ctx6 = exportCanvas3.getContext('2d', { alpha: true, antialias: true });
 exportCanvas3.id='dvi3';
 document.body.appendChild(exportCanvas3);
 ctx6.putImageData(origBGData, 0, 0);
-	
+	*/
 		//  and alert pyodide function
 document.querySelector('#bgBtn').click();
-
-
 	
-//bump map
+// bump map
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
 data[i] = 255 - data[i]; // Red
@@ -443,13 +439,12 @@ data[i + 1] = 255 - data[i + 1]; // Green
 data[i + 2] = 255 - data[i + 2]; // Blue
 // data[i + 3] is the alpha channel, leave it unchanged
 }
-	
 // Put the inverted data back on the canvas
-	
 ctx.putImageData(origImageData, 0, 0);
 
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
-	
+
+	//  background material
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {} // Your inpainted texture  
