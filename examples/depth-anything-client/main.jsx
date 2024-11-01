@@ -288,7 +288,6 @@ exportCanvas2.id='dvi1';
 let imctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
 imctx.putImageData(origImageData, 0, 0);
 document.body.appendChild(exportCanvas2);
-
 	
 for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
