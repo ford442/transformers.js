@@ -348,6 +348,11 @@ const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
 const imgDataD=displaceData.data;
 	
+exportCanvas2.id='dvi1';
+document.body.appendChild(exportCanvas2);
+let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
+tmpimg.src = imgDat;
+	
 const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
 const dataBG = origBGData.data;
@@ -359,11 +364,6 @@ document.body.appendChild(exportCanvas);
 const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
 
-exportCanvas2.id='dvi1';
-document.body.appendChild(exportCanvas2);
-let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
-tmpimg.src = imgDat;
-	
 for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
 // const greyData16=(data[i]+data[i+1]+data[i+2]/3.)*(65535./255.);
