@@ -344,8 +344,8 @@ const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {},
 uDisplacementMap: {},
-uDisplacementScale: {0.17},
-uDisplacementThreshold: {0.17},
+uDisplacementScale: {value: 0.17},
+uDisplacementThreshold: {value: 0.17},
 	
 },
 vertexShader:BGvertexShader3,
@@ -582,7 +582,7 @@ if(document.querySelector('#dance').checked==true){
 plane.position.x = Math.min(Math.max(wobbleAmount * Math.sin(time * wobbleSpeed), -maxWobbleX), maxWobbleX);
 plane.position.y = Math.min(Math.max(wobbleAmount * Math.cos(time * 3.13 * 1.5), -maxWobbleY), maxWobbleY);
 const maxRotation = 0.2; // Maximum rotation angle in radians
-const rotationSpeed = 2; 
+const rotationSpeed = 2;
 plane.rotation.y = maxRotation * Math.sin(time * rotationSpeed); 
 plane.rotation.x = maxRotation * Math.cos(time * rotationSpeed*.5); 
 
