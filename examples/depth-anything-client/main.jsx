@@ -322,7 +322,8 @@ vertexShader:BGvertexShader3,
 fragmentShader:BGfragmentShader3,
 glslVersion: THREE.GLSL3
 });
-// Create the bg plane 
+	
+  // Create the bg plane 
 shaderMaterialBG.needsUpdate = true; // Force re-render
 shaderMaterialBG.receiveShadow = true;
 shaderMaterialBG.castShadow = true;
@@ -343,6 +344,9 @@ const exportCanvas2 = document.createElement('canvas');
 exportCanvas2.width = imgData.width;
 exportCanvas2.height = imgData.height;
 exportCanvas2.id='dvi1';
+let imctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
+imctx.drawImage(origImageData.image, 0, 0);
+
 document.body.appendChild(exportCanvas2);
 	
 	// depth image
