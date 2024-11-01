@@ -389,7 +389,6 @@ tmpcan.width = imgData.width;
 tmpcan.id = 'dvi4';
 document.body.appendChild(tmpcan);
 var ctx5 = tmpcan.getContext('2d');
-
 	
 const threshold = 40;
 console.log('Before mask: ',imgDataBG[14]);
@@ -397,7 +396,7 @@ console.log('Before mask: ',imgDataBG[124]);
 console.log('Before mask: ',imgDataBG[164]);
 for (let i = 0; i < imgDataBG.length; i += 4) {
   const avg = (imgDataBG[i] + imgDataBG[i + 1] + imgDataBG[i + 2]) / 3; // Average RGB
-  const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
+  const value = avg < threshold ? 255 : 0; // Or 1 if you prefer 0/1
   imgDataBG[i] = value;     // R
   imgDataBG[i + 1] = value; // G
   imgDataBG[i + 2] = value; // B
