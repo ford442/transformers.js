@@ -176,7 +176,7 @@ in vec3 vNormalFrag;
 out vec4 fragColor;
 uniform sampler2D uDisplacementMap;
 uniform float uDisplacementThreshold; // Threshold for transparency
-uniform float uDisplacementScale; // Threshold for transparency
+// uniform float uDisplacementScale; // Threshold for transparency
 out float displacementMask; // Add an output variable
 
 void main() {
@@ -186,7 +186,7 @@ vec3 ao = texture(uAOTexture, vUvFrag).rgb;
 float aoInfluence = 0.5; 
 fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
 // Discard fragments with low displacement
-float displacement = texture(uDisplacementMap, vUvFrag).r * uDisplacementScale;
+float displacement = texture(uDisplacementMap, vUvFrag).r; //  * uDisplacementScale;
 displacementMask = displacement > uDisplacementThreshold ? 1.0 : 0.0; // Adjust 0.1 as needed
 if (displacement < uDisplacementThreshold) {
 discard;
