@@ -375,6 +375,8 @@ shaderMaterialBG.uniforms.bgTexture.value = newTexture;
 	// depth image
 ctx.putImageData(displaceData, 0, 0);
 exportCanvas.id='dvi2';
+exportCanvas.style.position = 'absolute';
+exportCanvas.style.display = 'block';
 exportCanvas.width = imgData.width;
 exportCanvas.height = imgData.height;
 document.body.appendChild(exportCanvas);
@@ -398,9 +400,9 @@ const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
 dptData[i] = value;     // R subtract from depth for mask
 dptData[i + 1] = value; // G subtract from depth for mask
 dptData[i + 2] = value; // B subtract from depth for mask
-bgData[i] = bgData[i]+value;     // R subtract from BG
-bgData[i + 1] =bgData[i + 1]+value; // G subtract from BG
-bgData[i + 2] =bgData[i + 2]+value; // B subtract from BG
+bgData[i] = bgData[i]-value;     // R subtract from BG
+bgData[i + 1] =bgData[i + 1]-value; // G subtract from BG
+bgData[i + 2] =bgData[i + 2]-value; // B subtract from BG
 // dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
    console.log('mask data: ',bgData[128]);
@@ -410,6 +412,9 @@ let tmpcan= document.createElement('canvas');
 tmpcan.height = imgData.height;
 tmpcan.width = imgData.width;
 tmpcan.id = 'dvi4';
+tmpcan.style.position = 'absolute';
+tmpcan.style.display = 'block';
+	
 var ctx5 = tmpcan.getContext('2d',{alpha:true,antialias:true});
 ctx5.putImageData(maskData, 0, 0);
 document.body.appendChild(tmpcan);
@@ -420,6 +425,8 @@ exportCanvas3.width = imgData.width;
 exportCanvas3.height = imgData.height;
 const ctx6 = exportCanvas3.getContext('2d', { alpha: true, antialias: true });
 exportCanvas3.id='dvi3';
+exportCanvas3.style.position = 'absolute';
+exportCanvas3.style.display = 'block';
 ctx6.putImageData(backData, 0, 0);
 document.body.appendChild(exportCanvas3);
 
