@@ -347,9 +347,7 @@ const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
 const imgDataD=displaceData.data;
 	
-const DataBG=displaceData;
-
-const imgDataBG=DataBG.data;
+const imgDataBG=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
 const dataSize=origImageData.data.length;
@@ -442,7 +440,7 @@ for (let i = 0; i < imgDataBG.length; i += 4) {
 console.log('After mask: ',imgDataBG[14]);
 console.log('After mask: ',imgDataBG[124]);
 console.log('After mask: ',imgDataBG[164]);
-ctx5.putImageData(imgDataBG, 0, 0);
+ctx5.putImageData(displaceData, 0, 0);
 
 		//  and alert pyodide function
 document.querySelector('#bgBtn').click();
