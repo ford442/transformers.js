@@ -345,7 +345,7 @@ exportCanvas2.width = imgData.width;
 exportCanvas2.height = imgData.height;
 exportCanvas2.id='dvi1';
 let imctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
-imctx.drawImage(origImageData.image, 0, 0);
+imctx.putImageData(origImageData.image, 0, 0);
 
 document.body.appendChild(exportCanvas2);
 	
