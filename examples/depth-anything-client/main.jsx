@@ -366,7 +366,7 @@ scene.add(backgroundPlane);
 
 document.querySelector('#bgBtn2').addEventListener('click',function(){
 let inpaint=document.querySelector('#dvi6');
-let inpaintData=inpaint.toDataURL('image/png', 1.0); //.split(',')[1];
+let inpaintData=inpaint.toDataURL().split(',')[1];
 const newTexture = new THREE.TextureLoader().load(inpaintData);
 newTexture.anisotropy=8;
 shaderMaterialBG.uniforms.bgTexture.value = newTexture;
@@ -383,13 +383,13 @@ document.body.appendChild(exportCanvas);
 let bctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
 let backData=bctx.getImageData(0, 0, imgData.width, imgData.height);
 let bgData=backData.data;
-
+   console.log('background data: ',bgData[128]);
 	//  mask data
 ctx.putImageData(displaceData, 0, 0);
 let mctx=exportCanvas.getContext('2d',{alpha:true,antialias:true});
 let maskData=mctx.getImageData(0, 0, imgData.width, imgData.height);
 let dptData=maskData.data;
-
+   console.log('mask data: ',bgData[128]);
 const threshold = 40;
 
 for (let i = 0; i < dptData.length; i += 4) {
