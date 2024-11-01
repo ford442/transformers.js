@@ -404,26 +404,22 @@ tmpcan.width = imgData.width;
 tmpcan.id = 'dvi4';
 document.body.appendChild(tmpcan);
 var ctx5 = tmpcan.getContext('2d',{alpha:true,antialias:true});
-	
+ctx5.putImageData(displaceData, 0, 0);
+
 const threshold = 40;
-console.log('Before mask: ',imgDataD[14]);
-console.log('Before mask: ',imgDataD[124]);
-console.log('Before mask: ',imgDataD[164]);
-for (let i = 0; i < imgDataD.length; i += 4) {
-  const avg = (imgDataD[i] + imgDataD[i + 1] + imgDataD[i + 2]) / 3; // Average RGB
+
+for (let i = 0; i < dataBG.length; i += 4) {
+  const avg = (dataBG[i] + dataBG[i + 1] + dataBG[i + 2]) / 3; // Average RGB
   const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
-  imgDataD[i] = value;     // R
-  imgDataD[i + 1] = value; // G
-  imgDataD[i + 2] = value; // B
+  dataBG[i] = value;     // R
+  dataBG[i + 1] = value; // G
+  dataBG[i + 2] = value; // B
     dataBG[i] = dataBG[i]-value;     // R
     dataBG[i + 1] =dataBG[i + 1]-value; // G
     dataBG[i + 2] =dataBG[i + 2]-value; // B
-  // imgDataD[i + 3] = 255; // Keep alpha at 255 (fully opaque)
+  // dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
-console.log('After mask: ',data[14]);
-console.log('After mask: ',data[124]);
-console.log('After mask: ',data[164]);
-ctx5.putImageData(displaceData, 0, 0);
+
 
 const exportCanvas3 = document.createElement('canvas');
 exportCanvas3.width = imgData.width;
