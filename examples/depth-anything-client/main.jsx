@@ -347,7 +347,6 @@ const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
 const imgDataD=displaceData.data;
 	
-const imgDataBG=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
 const dataSize=origImageData.data.length;
@@ -373,8 +372,6 @@ exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
 let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
 tmpimg.src = imgDat;
-
-	
 	
 for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
@@ -423,25 +420,34 @@ tmpcan.id = 'dvi4';
 document.body.appendChild(tmpcan);
 var ctx5 = tmpcan.getContext('2d');
 	
-const dData = ctx5.createImageData(tmpcan.width, tmpcan.height);
-const dDataD=dData.data;
 const threshold = 40;
-console.log('Before mask: ',imgDataBG[14]);
-console.log('Before mask: ',imgDataBG[124]);
-console.log('Before mask: ',imgDataBG[164]);
-for (let i = 0; i < imgDataBG.length; i += 4) {
-  const avg = (imgDataBG[i] + imgDataBG[i + 1] + imgDataBG[i + 2]) / 3; // Average RGB
+console.log('Before mask: ',imgDataD[14]);
+console.log('Before mask: ',imgDataD[124]);
+console.log('Before mask: ',imgDataD[164]);
+for (let i = 0; i < imgDataD.length; i += 4) {
+  const avg = (imgDataD[i] + imgDataD[i + 1] + imgDataD[i + 2]) / 3; // Average RGB
   const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
-  imgDataBG[i] = value;     // R
-  imgDataBG[i + 1] = value; // G
-  imgDataBG[i + 2] = value; // B
-  // imgDataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
+  imgDataD[i] = value;     // R
+  imgDataD[i + 1] = value; // G
+  imgDataD[i + 2] = value; // B
+    data[i] = value;     // R
+    data[i + 1] = value; // G
+    data[i + 2] = value; // B
+  // imgDataD[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
-console.log('After mask: ',imgDataBG[14]);
-console.log('After mask: ',imgDataBG[124]);
-console.log('After mask: ',imgDataBG[164]);
+console.log('After mask: ',imgDataD[14]);
+console.log('After mask: ',imgDataD[124]);
+console.log('After mask: ',imgDataD[164]);
 ctx5.putImageData(displaceData, 0, 0);
 
+const exportCanvas3 = document.createElement('canvas');
+exportCanvas3.width = imgData.width;
+exportCanvas3.height = imgData.height;
+const ctx6 = exportCanvas3.getContext('2d', { alpha: true, antialias: true });
+exportCanvas3.id='dvi3';
+document.body.appendChild(exportCanvas3);
+ctx6.putImageData(origImageData, 0, 0);
+	
 		//  and alert pyodide function
 document.querySelector('#bgBtn').click();
 
@@ -462,6 +468,8 @@ ctx.putImageData(origImageData, 0, 0);
 
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 
+
+	
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
 bgTexture: {} // Your inpainted texture  
