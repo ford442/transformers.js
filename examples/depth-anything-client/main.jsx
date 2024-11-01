@@ -168,8 +168,17 @@ out vec4 fragColor;
 in vec2 vUv;
 uniform sampler2D bgTexture;
 
+uniform sampler2D uDisplacementMap;
+uniform float uDisplacementThreshold; // Threshold for transparency
+uniform float uDisplacementScale; // Threshold for transparency
+
 void main() {
-fragColor = texture(bgTexture, vUv); 
+vec4 textureColor = texture(bgTexture, vUv);
+float displacement = texture(uDisplacementMap, vUvFrag).r;
+fragColor = textureColor;
+if (displacement > uDisplacementThreshold) {
+discard;
+}
 }
 `
 
@@ -179,9 +188,15 @@ precision highp int;
 precision highp sampler2D;
 out vec2 vUv; 
 
+uniform sampler2D uDisplacementMap;
+uniform float uDisplacementScale; 
+
 void main() {
 vUv = uv;
-gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+vec3 pos = position;
+float displacement = texture(uDisplacementMap, uv).r; 
+pos.z += displacement * uDisplacementScale;
+gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
 `
 
@@ -288,7 +303,7 @@ exportCanvas2.id='dvi1';
 let imctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
 imctx.putImageData(origImageData, 0, 0);
 document.body.appendChild(exportCanvas2);
-	
+
 for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
 // const greyData16=(data[i]+data[i+1]+data[i+2]/3.)*(65535./255.);
@@ -322,17 +337,22 @@ imgDataD[i+2]+=disData;
 // texture8.internalFormat = 'RGBA8_SNORM';
 const displace2= new THREE.CanvasTexture(displaceData);
 uniforms.uDisplacementMap.value = displace2; 
+shaderMaterialBG.uniforms.uDisplacementMap.value = displace2;
 
 		//  background material
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
-bgTexture: {} // Your inpainted texture  
+bgTexture: {},
+uDisplacementMap: {},
+uDisplacementScale: {0.17},
+uDisplacementThreshold: {0.17},
+	
 },
 vertexShader:BGvertexShader3,
 fragmentShader:BGfragmentShader3,
 glslVersion: THREE.GLSL3
 });
-	
+
   // Create the bg plane 
 shaderMaterialBG.needsUpdate = true; // Force re-render
 shaderMaterialBG.receiveShadow = true;
@@ -346,7 +366,7 @@ scene.add(backgroundPlane);
 document.querySelector('#bgBtn2').addEventListener('click',function(){
 const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg'));
 newTexture.anisotropy=8;
-// shaderMaterialBG.uniforms.bgTexture.value = newTexture;
+shaderMaterialBG.uniforms.bgTexture.value = newTexture;
 });
 
 	// depth image
@@ -380,6 +400,7 @@ bgData[i + 1] =bgData[i + 1]-value; // G subtract from BG
 bgData[i + 2] =bgData[i + 2]-value; // B subtract from BG
 // dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
+
 	// mask image
 let tmpcan= document.createElement('canvas');
 tmpcan.height = imgData.height;
