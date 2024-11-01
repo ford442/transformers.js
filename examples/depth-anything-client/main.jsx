@@ -1,6 +1,5 @@
 "use client"
 import './style.css';
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
@@ -16,15 +15,13 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
-
 // import * as htmlToImage from 'html-to-image';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-env.backends.onnx.wasm.numThreads = 4;
+env.backends.onnx.wasm.numThreads = 8;
 env.backends.onnx.wasm.simd = true;
- 
 const DEFAULT_SCALE = 0.2713;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
@@ -33,8 +30,10 @@ const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-large', { dtype: 'fp32', device: 'webgpu' });
-// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
+// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp32', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
+// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp32', device: 'webgpu' });
+// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf', { dtype: 'fp16', device: 'webgpu' });
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
 
 status.textContent = 'Ready';
@@ -57,55 +56,6 @@ const clock= new THREE.Clock;
 let displacementTexture, origImageData,origBGData;
 let dnce=document.querySelector('#dance').checked;
 
-const vertexShader = `
-uniform float uTime;
-uniform sampler2D uTexture;
-uniform sampler2D uDisplacementMap;
-uniform float uDisplacementScale; // Control the displacement strength
-varying vec2 vUv;
-varying vec3 vNormal; // Varying for interpolated normals
-
-void main() {
-vUv = uv; 
-// Sample the displacement map
-float displacement = texture2D(uDisplacementMap, vUv).r; 
-vec3 pos = position;
-vNormal = normalize(normalMatrix * normal); 
-
-float depth = texture2D(uDisplacementMap, vUv).g; // Read the green channel for depth
-  // Scale displacement based on depth
-float scaledDisplacement = displacement * uDisplacementScale * depth;
-
-float inflateFactor;
-vec3 inflatedPos;
-
-// Apply parallax displacement along normals
-  if (displacement > 0.07) {
-pos += normalize(vNormal) * scaledDisplacement;
-pos.z += cos(pos.x + uTime) * 0.07; 
-inflateFactor = 1.0 + scaledDisplacement * uInflateScale;
-inflatedPos = position * inflateFactor;
-  }
-
-gl_Position = projectionMatrix * modelViewMatrix * vec4(inflatedPos, 1.0);
-
-}
-`;
-
-const fragmentShader = `
-uniform sampler2D uAOTexture;
-uniform sampler2D uTexture;
-varying vec2 vUv;
-varying vec3 vNormal;
-void main(){
-vec4 textureColor = texture2D(uTexture, vUv);
-gl_FragColor = textureColor;
-vec3 ao = texture2D(uAOTexture, vUv).rgb;
-float aoInfluence = 0.5; // Adjust this value (0.0 - 1.0)
-gl_FragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence);
-}
-`;
-
 const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
@@ -117,17 +67,14 @@ uDisplacementScale: { value: 0.272 }, // Adjust as needed
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
 };
 
-
 const vertexShader3 = `
 precision highp float;
 precision highp int;
 precision highp sampler2D;
-
 uniform float uTime;
 uniform sampler2D uTexture;
 uniform sampler2D uDisplacementMap;
 uniform float uDisplacementScale; 
-
 out vec2 vUvFrag;
 out vec3 vNormalFrag;
 
@@ -177,7 +124,6 @@ out vec4 fragColor;
 uniform sampler2D uDisplacementMap;
 uniform float uDisplacementThreshold; // Threshold for transparency
 uniform float uDisplacementScale; // Threshold for transparency
-// out float displacementMask; // Add an output variable
 
 void main() {
 vec4 textureColor = texture(uTexture, vUvFrag);
@@ -185,9 +131,7 @@ fragColor = textureColor;
 vec3 ao = texture(uAOTexture, vUvFrag).rgb;
 float aoInfluence = 0.5; 
 fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
-// Discard fragments with low displacement
 float displacement = texture(uDisplacementMap, vUvFrag).r uDisplacementScale;
-// displacementMask = displacement > uDisplacementThreshold ? 1.0 : 0.0; // Adjust 0.1 as needed
 if (displacement < uDisplacementThreshold) {
 discard;
 }
@@ -235,7 +179,6 @@ const BGvertexShader3 = `
 precision highp float;
 precision highp int;
 precision highp sampler2D;
-
 out vec2 vUv; 
 
 void main() {
@@ -253,17 +196,14 @@ const canvas2 = document.createElement('canvas');
 canvas2.width = img.width;
 canvas2.height = img.height;
 const ctx = canvas2.getContext('2d',{alpha:true,antialias:true});
-// ctx.imageSmoothingEnabled =false;
 ctx.drawImage(img, 0, 0);
 origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
-
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
-
 // uniforms.uDisplacementMap.value = new THREE.CanvasTexture(depth.toCanvas()); 
 status.textContent = '';
 const slider = document.createElement('input');
@@ -324,7 +264,6 @@ material.needsUpdate = true; // Force re-render
 material.receiveShadow = true;
 material.castShadow = true;
 material.displacementScale = DEFAULT_SCALE;
-	
 const setDisplacementMap = (depthData) => {
 const exportCanvas = document.createElement('canvas');
 const displace= new THREE.CanvasTexture(depthData);
@@ -429,8 +368,6 @@ exportCanvas3.id='dvi3';
 document.body.appendChild(exportCanvas3);
 ctx6.putImageData(origBGData, 0, 0);
 	*/
-		//  and alert pyodide function
-document.querySelector('#bgBtn').click();
 	
 // bump map
 // Invert the image data
@@ -445,6 +382,10 @@ ctx.putImageData(origImageData, 0, 0);
 
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 
+		//  and alert pyodide function
+document.querySelector('#bgBtn').click();
+
+	
 	//  background material
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
