@@ -341,12 +341,15 @@ newTexture.anisotropy=8;
 	// entact image
 const exportCanvas2 = document.createElement('canvas');
 exportCanvas2.width = imgData.width;
-exportCanvas2.height = imgData.height;exportCanvas2.id='dvi1';
+exportCanvas2.height = imgData.height;
+exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
 	
 	// depth image
 ctx.putImageData(displaceData, 0, 0);
 exportCanvas.id='dvi2';
+exportCanvas.width = imgData.width;
+exportCanvas.height = imgData.height;
 document.body.appendChild(exportCanvas);
 
 	//  background data
