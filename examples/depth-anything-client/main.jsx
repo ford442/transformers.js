@@ -1,6 +1,5 @@
 "use client"
 import './style.css';
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
@@ -16,15 +15,13 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
-
 // import * as htmlToImage from 'html-to-image';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-env.backends.onnx.wasm.numThreads = 4;
+env.backends.onnx.wasm.numThreads = 8;
 env.backends.onnx.wasm.simd = true;
- 
 const DEFAULT_SCALE = 0.2713;
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
@@ -57,76 +54,25 @@ const clock= new THREE.Clock;
 let displacementTexture, origImageData;
 let dnce=document.querySelector('#dance').checked;
 
-const vertexShader = `
-uniform float uTime;
-uniform sampler2D uTexture;
-uniform sampler2D uDisplacementMap;
-uniform float uDisplacementScale; // Control the displacement strength
-varying vec2 vUv;
-varying vec3 vNormal; // Varying for interpolated normals
-
-void main() {
-vUv = uv; 
-// Sample the displacement map
-float displacement = texture2D(uDisplacementMap, vUv).r; 
-vec3 pos = position;
-vNormal = normalize(normalMatrix * normal); 
-
-float depth = texture2D(uDisplacementMap, vUv).g; // Read the green channel for depth
-  // Scale displacement based on depth
-float scaledDisplacement = displacement * uDisplacementScale * depth;
-
-float inflateFactor;
-vec3 inflatedPos;
-
-// Apply parallax displacement along normals
-  if (displacement > 0.07) {
-pos += normalize(vNormal) * scaledDisplacement;
-pos.z += cos(pos.x + uTime) * 0.07; 
-inflateFactor = 1.0 + scaledDisplacement * uInflateScale;
-inflatedPos = position * inflateFactor;
-  }
-
-gl_Position = projectionMatrix * modelViewMatrix * vec4(inflatedPos, 1.0);
-
-}
-`;
-
-const fragmentShader = `
-uniform sampler2D uAOTexture;
-uniform sampler2D uTexture;
-varying vec2 vUv;
-varying vec3 vNormal;
-void main(){
-vec4 textureColor = texture2D(uTexture, vUv);
-gl_FragColor = textureColor;
-vec3 ao = texture2D(uAOTexture, vUv).rgb;
-float aoInfluence = 0.5; // Adjust this value (0.0 - 1.0)
-gl_FragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence);
-}
-`;
-
 const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
+uDisplacementThreshold: { value: 0.25 },
 uDisplacementScale: { value: 0.272 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
 };
 
-
 const vertexShader3 = `
 precision highp float;
 precision highp int;
 precision highp sampler2D;
-
 uniform float uTime;
 uniform sampler2D uTexture;
 uniform sampler2D uDisplacementMap;
 uniform float uDisplacementScale; 
-
 out vec2 vUvFrag;
 out vec3 vNormalFrag;
 
@@ -173,15 +119,71 @@ uniform sampler2D uTexture;
 in vec2 vUvFrag;
 in vec3 vNormalFrag; 
 out vec4 fragColor;
+uniform sampler2D uDisplacementMap;
+uniform float uDisplacementThreshold; // Threshold for transparency
+uniform float uDisplacementScale; // Threshold for transparency
 
 void main() {
-    vec4 textureColor = texture(uTexture, vUvFrag);
-    fragColor = textureColor;
-    vec3 ao = texture(uAOTexture, vUvFrag).rgb;
-    float aoInfluence = 0.5; 
-    fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
+vec4 textureColor = texture(uTexture, vUvFrag);
+fragColor = textureColor;
+vec3 ao = texture(uAOTexture, vUvFrag).rgb;
+float aoInfluence = 0.5; 
+fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
+float displacement = texture(uDisplacementMap, vUvFrag).r uDisplacementScale;
+if (displacement < uDisplacementThreshold) {
+discard;
+}
 }
 `;
+
+const BGfragmentShader3 = `
+precision highp float;
+precision highp int;
+highp float;
+highp int;
+highp vec2;
+highp vec3;
+highp vec4;
+precision highp sampler2DArray;precision highp sampler2DShadow;
+precision highp isampler2D;precision highp isampler3D;precision highp isamplerCube;
+precision highp isampler2DArray;precision highp usampler2D;precision highp usampler3D;
+precision highp usamplerCube;precision highp usampler2DArray;precision highp samplerCubeShadow;
+precision highp sampler2DArrayShadow;
+precision highp sampler3D;
+precision highp sampler2D;
+precision highp samplerCube;
+#pragma 'optimize(sse4.2|avx)'
+#pragma 'optionNV(fastmath,off)'
+#pragma 'optionNV(fastprecision,off)'
+#pragma 'omp (OpenMP)'
+#pragma 'multisample'
+#pragma 'optionNV(optimize,full)'
+#pragma '(STGLSL_ESSL30,all)'
+#pragma 'STDGL(strict off)'
+#pragma 'use_srgb'
+#pragma 'enable_fp16'
+#pragma 'optionNV(enable_fp16)'
+
+out vec4 fragColor;
+in vec2 vUv;
+uniform sampler2D bgTexture;
+
+void main() {
+fragColor = texture(bgTexture, vUv); 
+}
+`
+
+const BGvertexShader3 = `
+precision highp float;
+precision highp int;
+precision highp sampler2D;
+out vec2 vUv; 
+
+void main() {
+vUv = uv;
+gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`
 
 async function predict(imageDataURL) {
 imageContainer.innerHTML = '';
@@ -311,6 +313,31 @@ imgDataD[i+2]+=disData;
 const displace2= new THREE.CanvasTexture(displaceData);
 uniforms.uDisplacementMap.value = displace2; 
 
+		//  background material
+const shaderMaterialBG = new THREE.ShaderMaterial({
+uniforms: {
+bgTexture: {} // Your inpainted texture  
+},
+vertexShader:BGvertexShader3,
+fragmentShader:BGfragmentShader3,
+glslVersion: THREE.GLSL3
+});
+// Create the bg plane 
+shaderMaterialBG.needsUpdate = true; // Force re-render
+shaderMaterialBG.receiveShadow = true;
+shaderMaterialBG.castShadow = true;
+const geometryP = new THREE.PlaneGeometry(10, 10, 1, 1); 
+const backgroundPlane = new THREE.Mesh(geometryP, shaderMaterialBG);
+backgroundPlane.position.z = -5; // Move it back slightly 
+backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the ground
+scene.add(backgroundPlane);
+
+document.querySelector('#bgBtn2').addEventListener('click',function(){
+const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg'));
+newTexture.anisotropy=8;
+// shaderMaterialBG.uniforms.bgTexture.value = newTexture;
+});
+	
 //bump map
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
