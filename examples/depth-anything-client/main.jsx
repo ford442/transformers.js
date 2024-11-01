@@ -398,14 +398,14 @@ console.log('Before mask: ',imgDataBG[164]);
 for (let i = 0; i < imgDataBG.length; i += 4) {
   const avg = (imgDataBG[i] + imgDataBG[i + 1] + imgDataBG[i + 2]) / 3; // Average RGB
   const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
-  dDataD[i] = value;     // R
-  dDataD[i + 1] = value; // G
-  dDataD[i + 2] = value; // B
-  // dDataD[i + 3] = 255; // Keep alpha at 255 (fully opaque)
+  dData[i] = value;     // R
+  dData[i + 1] = value; // G
+  dData[i + 2] = value; // B
+  // dData[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
-console.log('After mask: ',dDataD[14]);
-console.log('After mask: ',dDataD[124]);
-console.log('After mask: ',dDataD[164]);
+console.log('After mask: ',dData[14]);
+console.log('After mask: ',dData[124]);
+console.log('After mask: ',dData[164]);
 ctx5.putImageData(dData, 0, 0);
 
 		//  and alert pyodide function
