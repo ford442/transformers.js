@@ -337,7 +337,6 @@ imgDataD[i+2]+=disData;
 // texture8.internalFormat = 'RGBA8_SNORM';
 const displace2= new THREE.CanvasTexture(displaceData);
 uniforms.uDisplacementMap.value = displace2; 
-shaderMaterialBG.uniforms.uDisplacementMap.value = displace2;
 
 		//  background material
 const shaderMaterialBG = new THREE.ShaderMaterial({
@@ -352,6 +351,8 @@ vertexShader:BGvertexShader3,
 fragmentShader:BGfragmentShader3,
 glslVersion: THREE.GLSL3
 });
+	
+shaderMaterialBG.uniforms.uDisplacementMap.value = displace2;
 
   // Create the bg plane 
 shaderMaterialBG.needsUpdate = true; // Force re-render
