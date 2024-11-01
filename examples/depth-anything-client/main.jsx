@@ -384,8 +384,8 @@ const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
 	//  and alert pyodide function
 let tmpcan= document.createElement('canvas');
-tmpcan.height = imgg.height;
-tmpcan.width = imgg.width;
+tmpcan.height = imgData.height;
+tmpcan.width = imgData.width;
 tmpcan.id = 'dvi4';
 document.body.appendChild(tmpcan);
 var ctx5 = tmpcan.getContext('2d');
