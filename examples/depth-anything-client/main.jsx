@@ -176,7 +176,7 @@ in vec3 vNormalFrag;
 out vec4 fragColor;
 uniform sampler2D uDisplacementMap;
 uniform float uDisplacementThreshold; // Threshold for transparency
-uniform float uDisplacementScale; // Threshold for transparency
+// uniform float uDisplacementScale; // Threshold for transparency
 // out float displacementMask; // Add an output variable
 
 void main() {
@@ -186,7 +186,7 @@ vec3 ao = texture(uAOTexture, vUvFrag).rgb;
 float aoInfluence = 0.5; 
 fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
 // Discard fragments with low displacement
-float displacement = texture(uDisplacementMap, vUvFrag).r * uDisplacementScale;
+float displacement = texture(uDisplacementMap, vUvFrag).r; //  * uDisplacementScale;
 // displacementMask = displacement > uDisplacementThreshold ? 1.0 : 0.0; // Adjust 0.1 as needed
 if (displacement < uDisplacementThreshold) {
 discard;
@@ -290,7 +290,7 @@ const camera = new THREE.PerspectiveCamera(120, width / height, .01, 10000);
 camera.position.z = 1;
 scene.add(camera);
 // const renderer = new THREE.WebGPURenderer();
-const renderer = new THREE.WebGLRenderer({ canvas:canvas,context: canvas.getContext('webgl2'), alpha:true,antialias: true,premultipliedAlpha:false });
+const renderer = new THREE.WebGLRenderer({ canvas:canvas,context: canvas.getContext('webgl2'), antialias: true,premultipliedAlpha:false });
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
@@ -418,10 +418,8 @@ tmpcan.height = imgData.height;
 tmpcan.width = imgData.width;
 tmpcan.id = 'dvi4';
 document.body.appendChild(tmpcan);
-var ctx5 = tmpcan.getContext('2d', { alpha: true, antialias: true });
-
-let BGImageData = ctx3.getImageData(0, 0, img.width, img.height);
-let BGData=BGImageData.data;
+var ctx5 = tmpcan.getContext('2d');
+	
 const threshold = 40;
 console.log('Before mask: ',imgDataD[14]);
 console.log('Before mask: ',imgDataD[124]);
@@ -432,10 +430,10 @@ for (let i = 0; i < imgDataD.length; i += 4) {
   imgDataD[i] = value;     // R
   imgDataD[i + 1] = value; // G
   imgDataD[i + 2] = value; // B
-    BGData[i] = value;     // R
-    BGData[i + 1] = value; // G
-    BGData[i + 2] = value; // B
-   // BGData[i + 3] = 255; // Keep alpha at 255 (fully opaque)
+    data[i] = value;     // R
+    data[i + 1] = value; // G
+    data[i + 2] = value; // B
+  // imgDataD[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
 console.log('After mask: ',imgDataD[14]);
 console.log('After mask: ',imgDataD[124]);
@@ -448,8 +446,8 @@ exportCanvas3.height = imgData.height;
 const ctx6 = exportCanvas3.getContext('2d', { alpha: true, antialias: true });
 exportCanvas3.id='dvi3';
 document.body.appendChild(exportCanvas3);
-ctx6.putImageData(BGImageData, 0, 0);
-
+ctx6.putImageData(origImageData, 0, 0);
+	
 		//  and alert pyodide function
 document.querySelector('#bgBtn').click();
 
