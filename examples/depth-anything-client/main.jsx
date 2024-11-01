@@ -364,7 +364,7 @@ canvas4.id='dvi3';
 const ctx4 = canvas4.getContext('2d');
 const displacementData = ctx4.createImageData(canvas4.width, canvas4.height);
 // Get data from the texture
-renderer.readRenderTargetPixels(displacementMaskTexture, 0, 0, canvas.width, canvas.height, imageData.data);
+renderer.readRenderTargetPixels(displacementMaskTexture, 0, 0, canvas.width, canvas.height, displacementData.data);
 ctx4.putImageData(displacementData, 0, 0);
 
 exportCanvas2.id='dvi1';
