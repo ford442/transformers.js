@@ -430,14 +430,14 @@ for (let i = 0; i < imgDataD.length; i += 4) {
   imgDataD[i] = value;     // R
   imgDataD[i + 1] = value; // G
   imgDataD[i + 2] = value; // B
-    data[i] = value;     // R
-    data[i + 1] = value; // G
-    data[i + 2] = value; // B
+    data[i] = data[i]+value;     // R
+    data[i + 1] =data[i + 1]+value; // G
+    data[i + 2] =data[i + 2]+value; // B
   // imgDataD[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
-console.log('After mask: ',imgDataD[14]);
-console.log('After mask: ',imgDataD[124]);
-console.log('After mask: ',imgDataD[164]);
+console.log('After mask: ',data[14]);
+console.log('After mask: ',data[124]);
+console.log('After mask: ',data[164]);
 ctx5.putImageData(displaceData, 0, 0);
 
 const exportCanvas3 = document.createElement('canvas');
@@ -467,8 +467,6 @@ data[i + 2] = 255 - data[i + 2]; // Blue
 ctx.putImageData(origImageData, 0, 0);
 
 const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
-
-
 	
 const shaderMaterialBG = new THREE.ShaderMaterial({
 uniforms: {
