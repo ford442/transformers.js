@@ -335,6 +335,7 @@ exportCanvas.height = imgData.height;
 const ctx = exportCanvas.getContext('2d',{alpha:true,antialias:true});
 const ctx2 = imgData.getContext('2d',{alpha:true,antialias:true});
 const displaceData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
+const maskData = ctx2.getImageData(0, 0, imgData.width, imgData.height);
 const tmpimg=document.querySelector('#pyimg');
 tmpimg.width=imgData.width;
 tmpimg.height=imgData.height;
@@ -347,6 +348,7 @@ exportCanvas2.height = imgData.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
 const imgDataD=displaceData.data;
+const dptData=maskData.data;
 	
 exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
@@ -398,28 +400,27 @@ imgDataD[i+2]+=disData;
 const displace2= new THREE.CanvasTexture(displaceData);
 uniforms.uDisplacementMap.value = displace2; 
 	
+const threshold = 40;
+
+for (let i = 0; i < dptData.length; i += 4) {
+const avg = (dptData[i] + dptData[i + 1] + dptData[i + 2]) / 3; // Average RGB
+const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
+dptData[i] = value;     // R subtract from depth for mask
+dptData[i + 1] = value; // G subtract from depth for mask
+dptData[i + 2] = value; // B subtract from depth for mask
+dataBG[i] = dataBG[i]-value;     // R subtract from BG
+dataBG[i + 1] =dataBG[i + 1]-value; // G subtract from BG
+dataBG[i + 2] =dataBG[i + 2]-value; // B subtract from BG
+// dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
+}
+
 let tmpcan= document.createElement('canvas');
 tmpcan.height = imgData.height;
 tmpcan.width = imgData.width;
 tmpcan.id = 'dvi4';
 document.body.appendChild(tmpcan);
 var ctx5 = tmpcan.getContext('2d',{alpha:true,antialias:true});
-ctx5.putImageData(displaceData, 0, 0);
-
-const threshold = 40;
-
-for (let i = 0; i < dataBG.length; i += 4) {
-  const avg = (dataBG[i] + dataBG[i + 1] + dataBG[i + 2]) / 3; // Average RGB
-  const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
-  dataBG[i] = value;     // R
-  dataBG[i + 1] = value; // G
-  dataBG[i + 2] = value; // B
-    dataBG[i] = dataBG[i]-value;     // R
-    dataBG[i + 1] =dataBG[i + 1]-value; // G
-    dataBG[i + 2] =dataBG[i + 2]-value; // B
-  // dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
-}
-
+ctx5.putImageData(maskData, 0, 0);
 
 const exportCanvas3 = document.createElement('canvas');
 exportCanvas3.width = imgData.width;
