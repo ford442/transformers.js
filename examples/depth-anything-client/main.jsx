@@ -348,8 +348,6 @@ document.body.appendChild(exportCanvas2);
 ctx.putImageData(displaceData, 0, 0);
 exportCanvas.id='dvi2';
 document.body.appendChild(exportCanvas);
-const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
-tmpdpt.src = depthDataUrl;
 
 	//  background data
 let bctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
