@@ -338,7 +338,7 @@ newTexture.anisotropy=8;
 // shaderMaterialBG.uniforms.bgTexture.value = newTexture;
 });
 
-/*
+
 
 	// entact image
 exportCanvas2.id='dvi1';
@@ -352,7 +352,7 @@ exportCanvas.id='dvi2';
 document.body.appendChild(exportCanvas);
 const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
-*/
+
 
 	//  background data
 let bctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
@@ -395,7 +395,10 @@ const ctx6 = exportCanvas3.getContext('2d', { alpha: true, antialias: true });
 exportCanvas3.id='dvi3';
 document.body.appendChild(exportCanvas3);
 ctx6.putImageData(backData, 0, 0);
-	
+
+		//  and alert pyodide function
+document.querySelector('#bgBtn').click();
+
       // bump map
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
