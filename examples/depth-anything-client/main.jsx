@@ -58,7 +58,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementThreshold: { value: 0.25 },
+uDisplacementThreshold: { value: 0.1 },
 uDisplacementScale: { value: 0.272 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
@@ -337,8 +337,66 @@ const newTexture = new THREE.TextureLoader().load(document.querySelector('#pyimg
 newTexture.anisotropy=8;
 // shaderMaterialBG.uniforms.bgTexture.value = newTexture;
 });
+
+/*
+
+	// entact image
+exportCanvas2.id='dvi1';
+document.body.appendChild(exportCanvas2);
+let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
+tmpimg.src = imgDat;
 	
-//bump map
+	// depth image
+ctx.putImageData(displaceData, 0, 0);
+exportCanvas.id='dvi2';
+document.body.appendChild(exportCanvas);
+const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
+tmpdpt.src = depthDataUrl;
+*/
+
+	//  background data
+let bctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
+let backData=bctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
+let bgData=backData.data;
+
+	//  mask data
+ctx.putImageData(displaceData, 0, 0);
+let mctx=exportCanvas.getContext('2d',{alpha:true,antialias:true});
+let maskData=mctx.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
+let dptData=maskData.data;
+
+const threshold = 40;
+
+for (let i = 0; i < dptData.length; i += 4) {
+const avg = (dptData[i] + dptData[i + 1] + dptData[i + 2]) / 3; // Average RGB
+const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
+dptData[i] = value;     // R subtract from depth for mask
+dptData[i + 1] = value; // G subtract from depth for mask
+dptData[i + 2] = value; // B subtract from depth for mask
+bgData[i] = bgData[i]-value;     // R subtract from BG
+bgData[i + 1] =bgData[i + 1]-value; // G subtract from BG
+bgData[i + 2] =bgData[i + 2]-value; // B subtract from BG
+// dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
+}
+	// mask image
+let tmpcan= document.createElement('canvas');
+tmpcan.height = imgData.height;
+tmpcan.width = imgData.width;
+tmpcan.id = 'dvi4';
+document.body.appendChild(tmpcan);
+var ctx5 = tmpcan.getContext('2d',{alpha:true,antialias:true});
+ctx5.putImageData(maskData, 0, 0);
+
+	// masked background image
+const exportCanvas3 = document.createElement('canvas');
+exportCanvas3.width = imgData.width;
+exportCanvas3.height = imgData.height;
+const ctx6 = exportCanvas3.getContext('2d', { alpha: true, antialias: true });
+exportCanvas3.id='dvi3';
+document.body.appendChild(exportCanvas3);
+ctx6.putImageData(backData, 0, 0);
+	
+      // bump map
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
 data[i] = 255 - data[i]; // Red
@@ -352,12 +410,12 @@ const imageDataUrl = exportCanvas.toDataURL('image/jpeg', 1.0);
 const bumpTexture =new THREE.CanvasTexture(exportCanvas);
 bumpTexture.colorSpace = THREE.LinearSRGBColorSpace; // SRGBColorSpace
 // uniforms.uBumpMap.value = bumpTexture; 
-
 material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
 material.needsUpdate = true;
 }
+	
 const setDisplacementScale = (scale) => {
 material.displacementScale = scale;
 }
@@ -377,7 +435,6 @@ const plane = new THREE.Mesh(geometry, material);
 plane.receiveShadow = true;
 plane.castShadow = true;
 scene.add(plane);
-
 	//fog
 // scene.tfog = new THREE.Fog( 0x6f00a0, 0.1, 10 );
 
