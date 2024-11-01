@@ -129,7 +129,7 @@ fragColor = textureColor;
 vec3 ao = texture(uAOTexture, vUvFrag).rgb;
 float aoInfluence = 0.5; 
 fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
-float displacement = texture(uDisplacementMap, vUvFrag).r * uDisplacementScale;
+float displacement = texture(uDisplacementMap, vUvFrag).r;
 if (displacement < uDisplacementThreshold) {
 discard;
 }
