@@ -176,6 +176,8 @@ in vec3 vNormalFrag;
 out vec4 fragColor;
 uniform sampler2D uDisplacementMap;
 uniform float uDisplacementThreshold; // Threshold for transparency
+uniform float uDisplacementScale; // Threshold for transparency
+out float displacementMask; // Add an output variable
 
 void main() {
 vec4 textureColor = texture(uTexture, vUvFrag);
@@ -184,7 +186,8 @@ vec3 ao = texture(uAOTexture, vUvFrag).rgb;
 float aoInfluence = 0.5; 
 fragColor.rgb = textureColor.rgb * (1.0 - aoInfluence + ao * aoInfluence); 
 // Discard fragments with low displacement
-float displacement = texture(uDisplacementMap, vUvFrag).r;
+float displacement = texture(uDisplacementMap, vUvFrag).r * uDisplacementScale;
+displacementMask = displacement > uDisplacementThreshold ? 1.0 : 0.0; // Adjust 0.1 as needed
 if (displacement < uDisplacementThreshold) {
 discard;
 }
@@ -342,31 +345,41 @@ exportCanvas2.width = imgData.width;
 exportCanvas2.height = imgData.height;
 const ctx3 = exportCanvas2.getContext('2d', { alpha: true, antialias: true });
 ctx3.putImageData(origImageData, 0, 0);
-exportCanvas2.id='dvi1';
-
-document.body.appendChild(exportCanvas2);
-	
-let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
-tmpimg.src = imgDat;
-	
-
 const imgDataD=displaceData.data;
 const data16 = new Uint16Array(imgDataD.length);
 const data = origImageData.data;
-	
-//image displacement
 const dataSize=origImageData.data.length;
 
 
+const maskRenderTarget = new THREE.WebGLRenderTarget(imgData.width, imgData.height);
+renderer.setRenderTarget(maskRenderTarget);
+renderer.render(scene, camera);
+renderer.setRenderTarget(null); // Reset render target
+	// Access the mask texture
+const displacementMaskTexture = maskRenderTarget.texture;
+const canvas4 = document.createElement('canvas');
+canvas4.width = displacementMaskTexture.image.width;
+canvas4.height = displacementMaskTexture.image.height;
+canvas4.id='dvi3';
+const ctx4 = canvas4.getContext('2d');
+const displacementData = ctx4.createImageData(canvas4.width, canvas4.height);
+// Get data from the texture
+renderer.readRenderTargetPixels(displacementMaskTexture, 0, 0, canvas.width, canvas.height, imageData.data);
+ctx4.putImageData(displacementData, 0, 0);
+
+exportCanvas2.id='dvi1';
+document.body.appendChild(exportCanvas2);
+let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
+tmpimg.src = imgDat;
 ctx.putImageData(displaceData, 0, 0);
 exportCanvas.id='dvi2';
 document.body.appendChild(exportCanvas);
-
 const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
-	
 	//  and alert pyodide function
 document.querySelector('#bgBtn').click();
+
+	
 	
 for(var i=0;i<dataSize;i=i+4){
 const greyData=data[i]+data[i+1]+data[i+2]/3.;
