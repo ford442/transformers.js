@@ -343,8 +343,6 @@ const exportCanvas2 = document.createElement('canvas');
 exportCanvas2.width = image.width;
 exportCanvas2.height = image.height;exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
-let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
-tmpimg.src = imgDat;
 	
 	// depth image
 ctx.putImageData(displaceData, 0, 0);
@@ -352,7 +350,6 @@ exportCanvas.id='dvi2';
 document.body.appendChild(exportCanvas);
 const depthDataUrl = exportCanvas.toDataURL('image/png', 1.0);
 tmpdpt.src = depthDataUrl;
-
 
 	//  background data
 let bctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
