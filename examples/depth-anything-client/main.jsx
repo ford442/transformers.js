@@ -397,6 +397,7 @@ imgDataD[i+2]+=disData;
 const displace2= new THREE.CanvasTexture(displaceData);
 uniforms.uDisplacementMap.value = displace2; 
 	
+	/*
 const threshold = 40;
 
 for (let i = 0; i < dptData.length; i += 4) {
@@ -419,7 +420,7 @@ document.body.appendChild(tmpcan);
 var ctx5 = tmpcan.getContext('2d',{alpha:true,antialias:true});
 ctx5.putImageData(maskData, 0, 0);
 
-/*	// masked background image
+	// masked background image
 const exportCanvas3 = document.createElement('canvas');
 exportCanvas3.width = imgData.width;
 exportCanvas3.height = imgData.height;
