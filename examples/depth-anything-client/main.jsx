@@ -110,7 +110,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementThreshold: { value: 0.35 },
+uDisplacementThreshold: { value: 0.25 },
 uDisplacementScale: { value: 0.272 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
@@ -312,7 +312,7 @@ scene.add(light);
 image = new THREE.TextureLoader().load(imageDataURL);
 image.anisotropy=8;
 image.colorSpace = THREE.SRGBColorSpace;
-uniforms.uDisplacementThreshold.value = 0.35; // Adjust as needed
+uniforms.uDisplacementThreshold.value = 0.25; // Adjust as needed
 uniforms.uTexture.value = image;
 const material = new THREE.ShaderMaterial({
 uniforms: uniforms,
