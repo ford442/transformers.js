@@ -384,6 +384,7 @@ let bctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
 let backData=bctx.getImageData(0, 0, imgData.width, imgData.height);
 let bgData=backData.data;
    console.log('background data: ',bgData[128]);
+	
 	//  mask data
 ctx.putImageData(displaceData, 0, 0);
 let mctx=exportCanvas.getContext('2d',{alpha:true,antialias:true});
@@ -397,9 +398,9 @@ const value = avg > threshold ? 255 : 0; // Or 1 if you prefer 0/1
 dptData[i] = value;     // R subtract from depth for mask
 dptData[i + 1] = value; // G subtract from depth for mask
 dptData[i + 2] = value; // B subtract from depth for mask
-bgData[i] = bgData[i]-value;     // R subtract from BG
-bgData[i + 1] =bgData[i + 1]-value; // G subtract from BG
-bgData[i + 2] =bgData[i + 2]-value; // B subtract from BG
+bgData[i] = bgData[i]+value;     // R subtract from BG
+bgData[i + 1] =bgData[i + 1]+value; // G subtract from BG
+bgData[i + 2] =bgData[i + 2]+value; // B subtract from BG
 // dataBG[i + 3] = 255; // Keep alpha at 255 (fully opaque)
 }
    console.log('mask data: ',bgData[128]);
