@@ -338,10 +338,10 @@ newTexture.anisotropy=8;
 // shaderMaterialBG.uniforms.bgTexture.value = newTexture;
 });
 
-
-
 	// entact image
-exportCanvas2.id='dvi1';
+const exportCanvas2 = document.createElement('canvas');
+exportCanvas2.width = image.width;
+exportCanvas2.height = image.height;exportCanvas2.id='dvi1';
 document.body.appendChild(exportCanvas2);
 let imgDat=exportCanvas2.toDataURL('image/png', 1.0);
 tmpimg.src = imgDat;
