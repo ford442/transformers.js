@@ -300,7 +300,7 @@ const exportCanvas2 = document.createElement('canvas');
 exportCanvas2.width = imgData.width;
 exportCanvas2.height = imgData.height;
 exportCanvas2.id='dvi1';
-exportCanvas2.hidden=true;
+exportCanvas2.style.display='none';
 let imctx=exportCanvas2.getContext('2d',{alpha:true,antialias:true});
 imctx.putImageData(origImageData, 0, 0);
 document.body.appendChild(exportCanvas2);
@@ -376,7 +376,7 @@ shaderMaterialBG.uniforms.bgTexture.value = newTexture;
 	// depth image
 ctx.putImageData(displaceData, 0, 0);
 exportCanvas.id='dvi2';
-exportCanvas.hidden=true;
+exportCanvas.style.display='none';
 exportCanvas.style.position = 'absolute';
 exportCanvas.style.display = 'block';
 exportCanvas.width = imgData.width;
