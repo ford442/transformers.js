@@ -48,7 +48,7 @@ dtype: 'fp32'}
 return { model, processor };
 }
 
-const inpainter = await pipeline('image-to-image', 'ford442/deepfillv2-inpainting',{dtype:'fp32',device:'webgpu'});
+// const inpainter = await pipeline('image-to-image', 'ford442/deepfillv2-inpainting',{dtype:'fp32',device:'webgpu'});
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
