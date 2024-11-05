@@ -227,6 +227,7 @@ function normalize(value, oldMin, oldMax, newMin, newMax) {
 }
 
 function preprocess(imageData, maskData) {
+console.log('got ORT pre');
 
   // Normalize pixel values to -1 to 1
   const inputTensor = createTensorFromImageData(imageData, [-1, 1]); 
@@ -236,6 +237,8 @@ function preprocess(imageData, maskData) {
 }
 
 function postprocess(outputTensor) {
+	console.log('got ORT post');
+
   const { data, dims } = outputTensor; // Get the tensor data and dimensions
   const [batchSize, channels, height, width] = dims; 
 
@@ -261,7 +264,8 @@ function denormalize(value, oldMin, oldMax, newMin, newMax) {
 
 async function inpaintImage() {
   const inpaintingSession = await InferenceSession.create('https://noahcohn.com/model/model_float32.onnx',{ executionProviders: ["wasm"] });
-  const inputCanvas = document.getElementById('dvi1');
+console.log('got ORT session');
+	const inputCanvas = document.getElementById('dvi1');
   const maskCanvas = document.getElementById('dvi4');
   const imageData = inputCanvas.getContext('2d').getImageData(0, 0, inputCanvas.width, inputCanvas.height);
   const maskData = maskCanvas.getContext('2d').getImageData(0, 0, maskCanvas.width, maskCanvas.height);
@@ -269,6 +273,7 @@ async function inpaintImage() {
   const [inputTensor, maskTensor] = preprocess(imageData, maskData);
 
   const output = await inpaintingSession.run({ image: inputTensor, mask: maskTensor });
+console.log('got ORT run');
 
   const inpaintedImageData = postprocess(output.output);
 
