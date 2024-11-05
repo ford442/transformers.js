@@ -253,7 +253,7 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 
 async function predict(imageDataURL) {
 
-const {inpaint_model, inpaint_processor} = loadModelHuggingface();
+// const {inpaint_model, inpaint_processor} = loadModelHuggingface();
 	
 imageContainer.innerHTML = '';
 const img = new Image();
