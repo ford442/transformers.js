@@ -5,7 +5,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-import { AutoModel, AutoProcessor, pipeline, env, RawImage } from '@xenova/transformers';
+import { AutoModel, AutoProcessor, AutoImageProcessor, pipeline, env, RawImage } from '@xenova/transformers';
 
 // import { pipeline, env, RawImage } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.14';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
@@ -39,11 +39,10 @@ const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anythin
 
 async function loadModel() {
 const model = await AutoModel.from_pretrained('ford442/deepfillv2-inpainting', {
-config: { model_type: 'image-to-image' }
+device: 'webgpu',
+dtype: 'fp32'
 });
 const processor = await AutoProcessor.from_pretrained('ford442/deepfillv2-inpainting', {
-device: 'webgpu',
-dtype: 'fp32'}
 );
 return { model, processor };
 }
