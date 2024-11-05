@@ -44,7 +44,7 @@ const inpainter_model = await AutoModel.from_pretrained('ford442/deepfillv2-inpa
   from_flax: false,    // If your model is in Flax format
   from_tf: false,     // If your model is in TensorFlow format
   from_pytorch: false  // If your model is in PyTorch format
-});
+
 });
 
 const inpainter_processor = await AutoImageProcessor.from_pretrained('ford442/deepfillv2-inpainting', {
