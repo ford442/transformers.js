@@ -34,6 +34,7 @@ status.textContent = 'Loading model...';
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
+const inpainter = await pipeline('image-to-image', 'ford442/deepfillv2-inpainting',{dtype:'fp32',device:'webgpu'});
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
@@ -515,7 +516,7 @@ ctx6.putImageData(backData, 0, 0);
 document.body.appendChild(exportCanvas3);
 
 		//  and alert pyodide function
-document.querySelector('#bgBtn').click();
+// document.querySelector('#bgBtn').click();
 // inpaintImage();
 
 	
