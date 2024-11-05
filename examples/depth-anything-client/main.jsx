@@ -515,8 +515,8 @@ ctx6.putImageData(backData, 0, 0);
 document.body.appendChild(exportCanvas3);
 
 		//  and alert pyodide function
-// document.querySelector('#bgBtn2').click();
-inpaintImage();
+document.querySelector('#bgBtn2').click();
+// inpaintImage();
 
 	
       // bump map
