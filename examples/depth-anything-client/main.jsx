@@ -4,7 +4,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { pipeline, env, RawImage } from '@xenova/transformers';
+
+import { AutoModel, AutoProcessor, pipeline, env, RawImage } from '@xenova/transformers';
+
 // import { pipeline, env, RawImage } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0-alpha.14';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 // import { FlyControls } from 'three/addons/controls/FlyControls.js';
@@ -34,7 +36,16 @@ status.textContent = 'Loading model...';
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
-const inpainter = await pipeline('image-to-image', 'ford442/deepfillv2-inpainting',{dtype:'fp32',device:'webgpu'});
+
+// const inpainter = await pipeline('image-to-image', 'ford442/deepfillv2-inpainting',{dtype:'fp32',device:'webgpu'});
+
+const inpainter_model = await AutoModel.from_pretrained('ford442/deepfillv2-inpainting', {
+
+});
+
+const inpainter_processor = await AutoImageProcessor.from_pretrained('ford442/deepfillv2-inpainting', {
+
+});
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
