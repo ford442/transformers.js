@@ -300,7 +300,7 @@ const camera = new THREE.PerspectiveCamera(120, width / height, .01, 10000);
 camera.position.z = 1;
 scene.add(camera);
 // const renderer = new THREE.WebGPURenderer();
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true,premultipliedAlpha:false });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, stencil:true, premultipliedAlpha:false, powerPreference: 'high-performance' });
 renderer.autoClear = false;
 fxaaPass = new ShaderPass( FXAAShader );
 const outputPass = new OutputPass();
