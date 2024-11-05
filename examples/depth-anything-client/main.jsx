@@ -41,7 +41,7 @@ async function loadModel() {
 const model = await AutoModel.from_pretrained('ford442/deepfillv2-inpainting', {
 config: { model_type: 'image-to-image' }
 });
-const processor = await AutoImageProcessor.from_pretrained('ford442/deepfillv2-inpainting', {
+const processor = await AutoProcessor.from_pretrained('ford442/deepfillv2-inpainting', {
 device: 'webgpu',
 dtype: 'fp32'}
 );
@@ -299,7 +299,7 @@ console.log('got ORT run');
 
 async function predict(imageDataURL) {
 
-	loadModel();
+const {inpaint_model, inpaint_processor} = loadModel();
 	
 imageContainer.innerHTML = '';
 const img = new Image();
