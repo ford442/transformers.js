@@ -20,7 +20,7 @@
     "camera-controls": "^2.9.0",
     "html-to-image": "1.11.11",
     "onnxruntime-web": "^1.19.0",
-    "tfjs": "^0.6.0",
+    "@tensorflow/tfjs": "^4.22.0",
     "three": "^0.170.0"
   }
 }
