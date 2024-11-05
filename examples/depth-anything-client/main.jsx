@@ -37,16 +37,18 @@ status.textContent = 'Loading model...';
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
 const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
 
-// const inpainter = await pipeline('image-to-image', 'ford442/deepfillv2-inpainting',{dtype:'fp32',device:'webgpu'});
-
-const inpainter_model = await AutoModel.from_pretrained('ford442/deepfillv2-inpainting', {
+async function loadModel() {
+const model = await AutoModel.from_pretrained('ford442/deepfillv2-inpainting', {
+config: { model_type: 'image-to-image' }
+});
+const processor = await AutoProcessor.from_pretrained('ford442/deepfillv2-inpainting', {
 device: 'webgpu',
-dtype: 'fp32',
-});
+dtype: 'fp32'}
+);
+return { model, processor };
+}
 
-const inpainter_processor = await AutoImageProcessor.from_pretrained('ford442/deepfillv2-inpainting', {
-
-});
+const inpainter = await pipeline('image-to-image', 'ford442/deepfillv2-inpainting',{dtype:'fp32',device:'webgpu'});
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
@@ -296,6 +298,9 @@ console.log('got ORT run');
 }
 
 async function predict(imageDataURL) {
+
+	loadModel();
+	
 imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
