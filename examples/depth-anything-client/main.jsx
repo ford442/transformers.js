@@ -260,7 +260,7 @@ function denormalize(value, oldMin, oldMax, newMin, newMax) {
 }
 
 async function inpaintImage() {
-  const inpaintingSession = await InferenceSession.create('https://noahcohn.com/model/model_float32.onnx',{ executionProviders: ["webgpu"] });
+  const inpaintingSession = await InferenceSession.create('https://noahcohn.com/model/model_float32.onnx',{ executionProviders: ["wasm"] });
   const inputCanvas = document.getElementById('dvi1');
   const maskCanvas = document.getElementById('dvi4');
   const imageData = inputCanvas.getContext('2d').getImageData(0, 0, inputCanvas.width, inputCanvas.height);
