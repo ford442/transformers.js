@@ -20,6 +20,42 @@ import { LoopSubdivision } from 'three-subdivide';
 // import * as htmlToImage from 'html-to-image';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import { Tensor, InferenceSession } from "onnxruntime-web";
+import * as tf from '@tensorflow/tfjs';
+
+async function loadModel() {
+  const model = await tf.loadLayersModel('./model/deepfill.onnx'); 
+  return model;
+}
+
+async function inpaintImage(imageCanvas, maskCanvas) {
+  const model = await loadModel();
+
+  // Get image data from canvases
+  const imageData = imageCanvas.getContext('2d').getImageData(0, 0, imageCanvas.width, imageCanvas.height);
+  const maskData = maskCanvas.getContext('2d').getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+
+  // Preprocess the image and mask data (resize, normalize, etc.)
+  const imageTensor = preprocessImage(imageData); 
+  const maskTensor = preprocessMask(maskData); 
+
+  // Prepare the input tensors
+  const inputTensors = tf.concat([imageTensor, maskTensor], -1); // Concatenate along the last axis
+
+  // Run inference
+  const outputTensor = model.predict(inputTensors);
+
+  // Postprocess the output (denormalize, convert to ImageData, etc.)
+  const inpaintedImageData = postprocessOutput(outputTensor);
+
+  // Draw the inpainted image onto a new canvas (or update an existing one)
+  const outputCanvas = document.createElement('canvas');
+  outputCanvas.width = imageCanvas.width;
+  outputCanvas.height = imageCanvas.height;
+  const outputCtx = outputCanvas.getContext('2d');
+  outputCtx.putImageData(inpaintedImageData, 0, 0);
+
+  return outputCanvas; // Return the canvas with the inpainted image
+}
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
@@ -463,6 +499,7 @@ const backgroundPlane = new THREE.Mesh(geometryP, shaderMaterialBG);
 backgroundPlane.position.z = -5; // Move it back slightly 
 backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the ground
 scene.add(backgroundPlane);
+	
 
 document.querySelector('#bgBtn2').addEventListener('click',function(){
 let inpaint=document.querySelector('#dvi1');
@@ -534,7 +571,7 @@ document.body.appendChild(exportCanvas3);
 		//  and alert pyodide function
 // document.querySelector('#bgBtn').click();
 // inpaintImage();
-
+inpaintImage(exportCanvas3, tmpcan);
 	
       // bump map
 // Invert the image data
@@ -788,6 +825,10 @@ animate();
 console.error(error);
 });
 }
+
+document.querySelector('#bgBtn').addEventListener('click',function(){
+	
+});
 
 function animate() {
 requestAnimationFrame( animate );
