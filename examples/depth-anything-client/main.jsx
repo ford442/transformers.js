@@ -17,6 +17,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 // import * as htmlToImage from 'html-to-image';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+import { InferenceSession } from 'onnxruntime-web';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
@@ -278,8 +279,9 @@ const onnx_session = {
 
 async function inpaintImage() {
 
-  const inpaintingSession = await onnx_session.get_session('https://noahcohn.com/model/model_float32.onnx');
-
+  const inpaintingSession = await ort.InferenceSession.create(
+'https://noahcohn.com/model/model_float32.onnx',
+{ executionProviders: ["webgpu"] });
   const inputCanvas = document.getElementById('dvi1');
   const maskCanvas = document.getElementById('dvi4');
   const imageData = inputCanvas.getContext('2d').getImageData(0, 0, inputCanvas.width, inputCanvas.height);
