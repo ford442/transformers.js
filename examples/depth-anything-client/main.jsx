@@ -59,7 +59,7 @@ async function inpaintImage(imageCanvas, maskCanvas) {
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
-env.backends.onnx.wasm.numThreads = 8;
+env.backends.onnx.wasm.numThreads = 2;
 env.backends.onnx.wasm.simd = true;
 const DEFAULT_SCALE = 0.3713;
 const status = document.getElementById('status');
