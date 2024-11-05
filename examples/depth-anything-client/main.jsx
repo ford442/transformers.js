@@ -201,6 +201,9 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 `
 
 async function predict(imageDataURL) {
+
+	  const inpaintingSession = await ort.InferenceSession.create('./model/model_float32.onnx');
+
 imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
