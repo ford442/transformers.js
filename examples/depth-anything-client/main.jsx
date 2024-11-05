@@ -43,7 +43,7 @@ device: 'webgpu',
 dtype: 'fp32'
 });
 const processor = await AutoProcessor.from_pretrained('ford442/deepfillv2-inpainting', {
-);
+});
 return { model, processor };
 }
 
