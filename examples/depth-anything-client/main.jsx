@@ -200,10 +200,85 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
 `
 
+
+function createTensorFromImageData(imageData, normalizeRange = [0, 1]) {
+  const { width, height, data } = imageData;
+  const dataLength = width * height * 4; // 4 channels (RGBA)
+  const tensorData = new Float32Array(width * height * 3); // 3 channels (RGB)
+
+  // Extract RGB channels and normalize
+  for (let i = 0, j = 0; i < dataLength; i += 4, j += 3) {
+    const [r, g, b] = [data[i], data[i + 1], data[i + 2]];
+
+    // Normalize pixel values to the specified range
+    tensorData[j] = normalize(r, 0, 255, normalizeRange[0], normalizeRange[1]);
+    tensorData[j + 1] = normalize(g, 0, 255, normalizeRange[0], normalizeRange[1]);
+    tensorData[j + 2] = normalize(b, 0, 255, normalizeRange[0], normalizeRange[1]);
+  }
+
+  // Create an ONNX Runtime tensor
+  const tensor = new ort.Tensor('float32', tensorData, [1, 3, height, width]); // Adjust shape if needed
+  return tensor;
+}
+
+// Helper function for normalization
+function normalize(value, oldMin, oldMax, newMin, newMax) {
+  return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
+}
+
+function preprocess(imageData, maskData) {
+
+  // Normalize pixel values to -1 to 1
+  const inputTensor = createTensorFromImageData(imageData, [-1, 1]); 
+  const maskTensor = createTensorFromImageData(maskData, [-1, 1]); 
+
+  return [inputTensor, maskTensor];
+}
+
+function postprocess(outputTensor) {
+  const { data, dims } = outputTensor; // Get the tensor data and dimensions
+  const [batchSize, channels, height, width] = dims; 
+
+  // Create an ImageData object
+  const inpaintedImageData = new ImageData(width, height);
+
+  // Denormalize and convert to RGBA
+  for (let i = 0, j = 0; i < data.length; i += 3, j += 4) {
+    // Assuming the data is normalized to -1 to 1
+    inpaintedImageData.data[j] = denormalize(data[i], -1, 1, 0, 255);     // R
+    inpaintedImageData.data[j + 1] = denormalize(data[i + 1], -1, 1, 0, 255); // G
+    inpaintedImageData.data[j + 2] = denormalize(data[i + 2], -1, 1, 0, 255); // B
+    inpaintedImageData.data[j + 3] = 255;                                  // A
+  }
+
+  return inpaintedImageData;
+}
+
+// Helper function for denormalization
+function denormalize(value, oldMin, oldMax, newMin, newMax) {
+  return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
+}
+
+async function inpaintImage() {
+  const inpaintingSession = await ort.InferenceSession.create('./model/model_float32.onnx');
+
+  const inputCanvas = document.getElementById('dvi1');
+  const maskCanvas = document.getElementById('dvi4');
+  const imageData = inputCanvas.getContext('2d').getImageData(0, 0, inputCanvas.width, inputCanvas.height);
+  const maskData = maskCanvas.getContext('2d').getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+
+  const [inputTensor, maskTensor] = preprocess(imageData, maskData);
+
+  const output = await inpaintingSession.run({ image: inputTensor, mask: maskTensor });
+
+  const inpaintedImageData = postprocess(output.output);
+
+  const outputCanvas = document.getElementById('dvi1');
+  const outputCtx = outputCanvas.getContext('2d');
+  outputCtx.putImageData(inpaintedImageData, 0, 0);
+}
+
 async function predict(imageDataURL) {
-
-	  const inpaintingSession = await ort.InferenceSession.create('./model/model_float32.onnx');
-
 imageContainer.innerHTML = '';
 const img = new Image();
 img.src = imageDataURL;
@@ -369,7 +444,7 @@ backgroundPlane.rotation.x = -Math.PI / 2; // Rotate to be parallel to the groun
 scene.add(backgroundPlane);
 
 document.querySelector('#bgBtn2').addEventListener('click',function(){
-let inpaint=document.querySelector('#dvi6');
+let inpaint=document.querySelector('#dvi1');
 let inpaintData=inpaint.toDataURL(); //.split(',')[1];
 const newTexture = new THREE.TextureLoader().load(inpaintData);
 newTexture.anisotropy=8;
@@ -436,8 +511,10 @@ ctx6.putImageData(backData, 0, 0);
 document.body.appendChild(exportCanvas3);
 
 		//  and alert pyodide function
-document.querySelector('#bgBtn').click();
+// document.querySelector('#bgBtn2').click();
+inpaintImage();
 
+	
       // bump map
 // Invert the image data
 for (let i = 0; i < data.length; i += 4) {
