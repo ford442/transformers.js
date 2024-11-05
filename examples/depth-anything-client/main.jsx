@@ -263,7 +263,7 @@ function denormalize(value, oldMin, oldMax, newMin, newMax) {
 }
 
 async function inpaintImage() {
-  const inpaintingSession = await InferenceSession.create('https://noahcohn.com/model/model_float32.onnx',{ executionProviders: ["wasm"] });
+  const inpaintingSession = await InferenceSession.create('https://noahcohn.com/model/model_float32.onnx');
 console.log('got ORT session');
 	const inputCanvas = document.getElementById('dvi1');
   const maskCanvas = document.getElementById('dvi4');
