@@ -17,7 +17,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 // import * as htmlToImage from 'html-to-image';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
-import { InferenceSession } from 'onnxruntime-web';
+import { Tensor, InferenceSession } from "onnxruntime-web";
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
@@ -201,7 +201,6 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
 `
 
-
 function createTensorFromImageData(imageData, normalizeRange = [0, 1]) {
   const { width, height, data } = imageData;
   const dataLength = width * height * 4; // 4 channels (RGBA)
@@ -218,7 +217,7 @@ function createTensorFromImageData(imageData, normalizeRange = [0, 1]) {
   }
 
   // Create an ONNX Runtime tensor
-  const tensor = new ort.Tensor('float32', tensorData, [1, 3, height, width]); // Adjust shape if needed
+  const tensor = new Tensor('float32', tensorData, [1, 3, height, width]); // Adjust shape if needed
   return tensor;
 }
 
@@ -260,28 +259,8 @@ function denormalize(value, oldMin, oldMax, newMin, newMax) {
   return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
 }
 
-const onnx_session = {
-    sessions: {},
-    get_session: async function(onnx_path) {
-        if (!(onnx_path in this.sessions)) {
-            try {
-                this.sessions[onnx_path] = await ort.InferenceSession.create(
-                    onnx_path,
-                    { executionProviders: ["webgpu"] });
-            } catch (error) {
-                console.log(error);
-                return null;
-            }
-        }
-        return this.sessions[onnx_path];
-    }
-};
-
 async function inpaintImage() {
-
-  const inpaintingSession = await ort.InferenceSession.create(
-'https://noahcohn.com/model/model_float32.onnx',
-{ executionProviders: ["webgpu"] });
+  const inpaintingSession = await InferenceSession.create('https://noahcohn.com/model/model_float32.onnx',{ executionProviders: ["webgpu"] });
   const inputCanvas = document.getElementById('dvi1');
   const maskCanvas = document.getElementById('dvi4');
   const imageData = inputCanvas.getContext('2d').getImageData(0, 0, inputCanvas.width, inputCanvas.height);
