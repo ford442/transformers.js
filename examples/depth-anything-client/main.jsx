@@ -259,8 +259,26 @@ function denormalize(value, oldMin, oldMax, newMin, newMax) {
   return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
 }
 
+const onnx_session = {
+    sessions: {},
+    get_session: async function(onnx_path) {
+        if (!(onnx_path in this.sessions)) {
+            try {
+                this.sessions[onnx_path] = await ort.InferenceSession.create(
+                    onnx_path,
+                    { executionProviders: ["webgpu"] });
+            } catch (error) {
+                console.log(error);
+                return null;
+            }
+        }
+        return this.sessions[onnx_path];
+    }
+};
+
 async function inpaintImage() {
-  const inpaintingSession = await ort.InferenceSession.create('./model/model_float32.onnx');
+
+  const inpaintingSession = await onnx_session.get_session('https://noahcohn.com/model/model_float32.onnx');
 
   const inputCanvas = document.getElementById('dvi1');
   const maskCanvas = document.getElementById('dvi4');
