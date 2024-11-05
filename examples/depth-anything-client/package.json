@@ -9,12 +9,18 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "apng-handler": "^0.1.4",
+    "three-subdivide": "^1.1.5",
+    "transformers": "file:../..",
     "vite": "^5.0.13"
   },
   "dependencies": {
+    "@webgpu/types": "^0.1.51",
     "@xenova/transformers": "2.17.2",
-    "three": "^0.160.1",
+    "camera-controls": "^2.9.0",
     "html-to-image": "1.11.11",
-    "onnxruntime-web": "^1.19.0"
+    "onnxruntime-web": "^1.19.0",
+    "tfjs": "^0.6.0",
+    "three": "^0.170.0"
   }
 }
