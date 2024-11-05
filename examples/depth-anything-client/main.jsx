@@ -23,7 +23,7 @@ import { Tensor, InferenceSession } from "onnxruntime-web";
 import * as tf from '@tensorflow/tfjs';
 
 async function loadModel() {
-  const model = await tf.loadLayersModel('./model/deepfill.onnx'); 
+  const model = await tf.loadLayersModel('./model/deepfill.pb'); 
   return model;
 }
 
