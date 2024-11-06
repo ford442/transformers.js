@@ -34,7 +34,7 @@ async function loadModel() {
 }
 
 async function inpaintImage(imageCanvas, maskCanvas) {
-  const model = await loadModel();
+  const model = await loadModelDNN();
 
   // Get image data from canvases
   const imageData = imageCanvas.getContext('2d').getImageData(0, 0, imageCanvas.width, imageCanvas.height);
@@ -259,7 +259,7 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 
 async function predict(imageDataURL) {
 	
-loadModelDNN();
+// loadModelDNN();
 	
 // const {inpaint_model, inpaint_processor} = loadModelHuggingface();
 	
