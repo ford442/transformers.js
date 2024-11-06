@@ -24,8 +24,9 @@ import * as tf from '@tensorflow/tfjs';
 import * as WebDNN from 'webdnn';
 
 async function loadModelDNN() {
-  const model = await WebDNN.load('./model/deepfillv2.onnx'); // Replace with the path to your WebDNN model directory
-  return model;
+//  const model = await WebDNN.load('./model/deepfillv2.onnx'); // Replace with the path to your WebDNN model directory
+const model = await webdnn.load('https://noahcohn.com/model/deepfillv2.onnx', { backendOrder: ['webgl', 'webassembly', 'fallback'] });
+return model;
 }
 
 async function loadModel() {
