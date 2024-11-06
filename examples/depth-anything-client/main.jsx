@@ -21,6 +21,12 @@ import { LoopSubdivision } from 'three-subdivide';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import { Tensor, InferenceSession } from "onnxruntime-web";
 import * as tf from '@tensorflow/tfjs';
+import * as webdnn from 'webdnn';
+
+async function loadModelDNN() {
+  const model = await WebDNN.load('./model/deepfillv2.onnx'); // Replace with the path to your WebDNN model directory
+  return model;
+}
 
 async function loadModel() {
   const model = await tf.loadLayersModel('./model/deepfill.tflite'); 
@@ -252,7 +258,9 @@ gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 `
 
 async function predict(imageDataURL) {
-
+	
+loadModelDNN();
+	
 // const {inpaint_model, inpaint_processor} = loadModelHuggingface();
 	
 imageContainer.innerHTML = '';
