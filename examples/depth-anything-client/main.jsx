@@ -25,7 +25,7 @@ env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 2;
 env.backends.onnx.wasm.simd = true;
 
-const DEFAULT_SCALE = 0.4713;
+const DEFAULT_SCALE = 0.3513;
 
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
@@ -36,7 +36,7 @@ status.textContent = 'Loading model...';
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-large', { dtype: 'fp32', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
-const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf',{dtype:'fp32',device:'webgpu'});
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu'});
 
 status.textContent = 'Ready';
 const channel = new BroadcastChannel('imageChannel');
@@ -111,7 +111,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementScale: { value: 0.472 }, // Adjust as needed
+uDisplacementScale: { value: 0.3532 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
