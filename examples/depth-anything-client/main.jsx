@@ -34,7 +34,9 @@ async function loadModel() {
 }
 
 async function inpaintImage(imageCanvas, maskCanvas) {
+	console.log('loading dnn');
   const model = await loadModelDNN();
+	console.log('loaded dnn');
 
   // Get image data from canvases
   const imageData = imageCanvas.getContext('2d').getImageData(0, 0, imageCanvas.width, imageCanvas.height);
@@ -498,10 +500,7 @@ exportCanvas3.style.display = 'block';
 ctx6.putImageData(backData, 0, 0);
 document.body.appendChild(exportCanvas3);
 
-		//  and alert pyodide function
-// document.querySelector('#bgBtn').click();
-// inpaintImage();
-inpaintImage(exportCanvas3, tmpcan);
+
 	
       // bump map
 // Invert the image data
@@ -521,6 +520,11 @@ material.bumpMap=bumpTexture;
 material.bumpScale=1.333;
 materialE=material;
 material.needsUpdate = true;
+
+			//  and alert pyodide function
+// document.querySelector('#bgBtn').click();
+// inpaintImage();
+inpaintImage(exportCanvas3, tmpcan);
 }
 	
 const setDisplacementScale = (scale) => {
