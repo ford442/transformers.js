@@ -199,6 +199,9 @@ origImageData = ctx.getImageData(0, 0, img.width, img.height);
 const image = new RawImage(origImageData.data, img.width, img.height,4);
 const { canvas, setDisplacementMap } = setupScene(imageDataURL, image.width, image.height);
 imageContainer.append(canvas);
+document.querySelector('#tvi').style.position = 'absolute';
+document.querySelector('#tvi').style.zIndex = 3100;
+document.querySelector('#tvi').style.pointerEvents = 'auto';
 
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
