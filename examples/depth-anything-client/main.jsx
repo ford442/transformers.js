@@ -24,8 +24,6 @@ env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = true;
 env.backends.onnx.wasm.numThreads = 2;
 env.backends.onnx.wasm.simd = true;
-ort.env.wasm.wasmPaths = 'https://noahcohn.com/ort/';
-
 
 const DEFAULT_SCALE = 0.4713;
 
