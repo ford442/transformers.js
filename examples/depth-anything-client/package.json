@@ -21,6 +21,7 @@
     "html-to-image": "1.11.11",
     "onnxruntime-web": "^1.19.0",
     "@tensorflow/tfjs": "^4.22.0",
+    "webdnn": "^1.2.11",
     "three": "^0.170.0"
   }
 }
