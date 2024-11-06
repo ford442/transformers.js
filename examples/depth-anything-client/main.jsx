@@ -21,7 +21,7 @@ import { LoopSubdivision } from 'three-subdivide';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import { Tensor, InferenceSession } from "onnxruntime-web";
 import * as tf from '@tensorflow/tfjs';
-import * as webdnn from 'webdnn';
+import * as WebDNN from 'webdnn';
 
 async function loadModelDNN() {
   const model = await WebDNN.load('./model/deepfillv2.onnx'); // Replace with the path to your WebDNN model directory
