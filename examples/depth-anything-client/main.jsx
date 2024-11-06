@@ -21,11 +21,14 @@ import { LoopSubdivision } from 'three-subdivide';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 
 env.allowLocalModels = false;
-env.backends.onnx.wasm.proxy = false;
-env.backends.onnx.wasm.numThreads = 16;
+env.backends.onnx.wasm.proxy = true;
+env.backends.onnx.wasm.numThreads = 2;
 env.backends.onnx.wasm.simd = true;
- 
-const DEFAULT_SCALE = 0.2713;
+ort.env.wasm.wasmPaths = 'https://noahcohn.com/ort/ort-wasm-simd-threaded.jsep.wasm';
+
+
+const DEFAULT_SCALE = 0.4713;
+
 const status = document.getElementById('status');
 const fileUpload = document.getElementById('upload');
 const imageContainer = document.getElementById('container');
@@ -110,7 +113,7 @@ const uniforms = {
 uTime: { value: 0.0 },
 uTexture: { },
 uDisplacementMap: { },
-uDisplacementScale: { value: 0.272 }, // Adjust as needed
+uDisplacementScale: { value: 0.472 }, // Adjust as needed
 // uBumpMap: { }, // Assuming 'bumpTexture' is your Three.js texture
 // uSpotLight1Position: { value: new THREE.Vector3() }, // Position of spotlight 1
 // uSpotLight1Color: { value: new THREE.Color() }, // Color of spotlight 1
