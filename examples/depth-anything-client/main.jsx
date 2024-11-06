@@ -22,7 +22,7 @@ import { LoopSubdivision } from 'three-subdivide';
 
 env.allowLocalModels = false;
 env.backends.onnx.wasm.proxy = false;
-env.backends.onnx.wasm.numThreads = 1;
+env.backends.onnx.wasm.numThreads = 16;
 env.backends.onnx.wasm.simd = true;
  
 const DEFAULT_SCALE = 0.2713;
