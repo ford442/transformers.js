@@ -34,6 +34,16 @@ const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
+const generator = await pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-783M', {
+            progress_callback: (progress) => {
+                console.log(`Loading model: ${progress.file} (${(progress.loaded / progress.total * 100).toFixed(2)}%)`);
+                if (typeof document !== 'undefined' && document.getElementById('outputText')) {
+                    document.getElementById('outputText').textContent = `Loading model: ${progress.file} - ${progress.status}... (${(progress.loaded / progress.total * 100).toFixed(2)}%)`;
+                }
+            }
+});
+console.log("Pipeline loaded.");
+
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-large', { dtype: 'fp32', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
@@ -204,15 +214,7 @@ document.querySelector('#tvi').style.position = 'absolute';
 document.querySelector('#tvi').style.zIndex = 3100;
 document.querySelector('#tvi').style.pointerEvents = 'auto';
 
-const generator = await pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-783M', {
-            progress_callback: (progress) => {
-                console.log(`Loading model: ${progress.file} (${(progress.loaded / progress.total * 100).toFixed(2)}%)`);
-                if (typeof document !== 'undefined' && document.getElementById('outputText')) {
-                    document.getElementById('outputText').textContent = `Loading model: ${progress.file} - ${progress.status}... (${(progress.loaded / progress.total * 100).toFixed(2)}%)`;
-                }
-            }
-});
-console.log("Pipeline loaded.");
+
 	
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
