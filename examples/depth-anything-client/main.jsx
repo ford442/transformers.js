@@ -17,6 +17,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { LoopSubdivision } from 'three-subdivide';
 
+
 // import * as htmlToImage from 'html-to-image';
 // import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 
@@ -203,6 +204,16 @@ document.querySelector('#tvi').style.position = 'absolute';
 document.querySelector('#tvi').style.zIndex = 3100;
 document.querySelector('#tvi').style.pointerEvents = 'auto';
 
+const generator = await pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-783M', {
+            progress_callback: (progress) => {
+                console.log(`Loading model: ${progress.file} (${(progress.loaded / progress.total * 100).toFixed(2)}%)`);
+                if (typeof document !== 'undefined' && document.getElementById('outputText')) {
+                    document.getElementById('outputText').textContent = `Loading model: ${progress.file} - ${progress.status}... (${(progress.loaded / progress.total * 100).toFixed(2)}%)`;
+                }
+            }
+});
+console.log("Pipeline loaded.");
+	
 const { depth } = await depth_estimator(image);
 status.textContent = 'Analysing...';
 setDisplacementMap(depth.toCanvas());
