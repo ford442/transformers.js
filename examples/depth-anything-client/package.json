@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "vite": "^5.0.13",
-    "@xenova/transformers": "3.0.0"
+    "@xenova/transformers": "latest"
   },
   "dependencies": {
     "three": "^0.160.1"
