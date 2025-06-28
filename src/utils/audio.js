@@ -12,9 +12,11 @@ import {
 } from './hub.js';
 import { FFT, max } from './maths.js';
 import {
-    calculateReflectOffset,
+    calculateReflectOffset, saveBlob,
 } from './core.js';
-
+import { apis } from '../env.js';
+import { Tensor, matmul } from './tensor.js';
+import fs from 'node:fs';
 
 /**
  * Helper function to read audio from a path/URL.
@@ -78,27 +80,53 @@ export async function read_audio(url, sampling_rate) {
 }
 
 /**
- * Generates a Hanning window of length M.
- *
- * @param {number} M The length of the Hanning window to generate.
- * @returns {Float64Array} The generated Hanning window.
+ * Helper function to generate windows that are special cases of the generalized cosine window.
+ * See https://www.mathworks.com/help/signal/ug/generalized-cosine-windows.html for more information.
+ * @param {number} M Number of points in the output window. If zero or less, an empty array is returned.
+ * @param {number} a_0 Offset for the generalized cosine window.
+ * @returns {Float64Array} The generated window.
  */
-export function hanning(M) {
+function generalized_cosine_window(M, a_0) {
     if (M < 1) {
         return new Float64Array();
     }
     if (M === 1) {
         return new Float64Array([1]);
     }
-    const denom = M - 1;
-    const factor = Math.PI / denom;
+
+    const a_1 = 1 - a_0;
+    const factor = 2 * Math.PI / (M - 1);
+
     const cos_vals = new Float64Array(M);
     for (let i = 0; i < M; ++i) {
-        const n = 2 * i - denom;
-        cos_vals[i] = 0.5 + 0.5 * Math.cos(factor * n);
+        cos_vals[i] = a_0 - a_1 * Math.cos(i * factor);
     }
     return cos_vals;
 }
+
+/**
+ * Generates a Hanning window of length M.
+ * See https://numpy.org/doc/stable/reference/generated/numpy.hanning.html for more information.
+ *
+ * @param {number} M The length of the Hanning window to generate.
+ * @returns {Float64Array} The generated Hanning window.
+ */
+export function hanning(M) {
+    return generalized_cosine_window(M, 0.5);
+}
+
+
+/**
+ * Generates a Hamming window of length M.
+ * See https://numpy.org/doc/stable/reference/generated/numpy.hamming.html for more information.
+ *
+ * @param {number} M The length of the Hamming window to generate.
+ * @returns {Float64Array} The generated Hamming window.
+ */
+export function hamming(M) {
+    return generalized_cosine_window(M, 0.54);
+}
+
 
 const HERTZ_TO_MEL_MAPPING = {
     "htk": (/** @type {number} */ freq) => 2595.0 * Math.log10(1.0 + (freq / 700.0)),
@@ -121,6 +149,7 @@ function hertz_to_mel(freq, mel_scale = "htk") {
         throw new Error('mel_scale should be one of "htk", "slaney" or "kaldi".');
     }
 
+    // @ts-expect-error ts(2322)
     return typeof freq === 'number' ? fn(freq) : freq.map(x => fn(x));
 }
 
@@ -144,6 +173,7 @@ function mel_to_hertz(mels, mel_scale = "htk") {
         throw new Error('mel_scale should be one of "htk", "slaney" or "kaldi".');
     }
 
+    // @ts-expect-error ts(2322)
     return typeof mels === 'number' ? fn(mels) : mels.map(x => fn(x));
 }
 
@@ -204,7 +234,8 @@ function linspace(start, end, num) {
  * various implementation exist, which differ in the number of filters, the shape of the filters, the way the filters
  * are spaced, the bandwidth of the filters, and the manner in which the spectrum is warped. The goal of these
  * features is to approximate the non-linear human perception of the variation in pitch with respect to the frequency.
- * @param {number} num_frequency_bins Number of frequencies used to compute the spectrogram (should be the same as in `stft`).
+ * @param {number} num_frequency_bins Number of frequency bins (should be the same as `n_fft // 2 + 1`
+ * where `n_fft` is the size of the Fourier Transform used to compute the spectrogram).
  * @param {number} num_mel_filters Number of mel filters to generate.
  * @param {number} min_frequency Lowest frequency of interest in Hz.
  * @param {number} max_frequency Highest frequency of interest in Hz. This should not exceed `sampling_rate / 2`.
@@ -230,6 +261,14 @@ export function mel_filter_bank(
         throw new Error('norm must be one of null or "slaney"');
     }
 
+    if (num_frequency_bins < 2) {
+        throw new Error(`Require num_frequency_bins: ${num_frequency_bins} >= 2`);
+    }
+
+    if (min_frequency > max_frequency) {
+        throw new Error(`Require min_frequency: ${min_frequency} <= max_frequency: ${max_frequency}`);
+    }
+
     const mel_min = hertz_to_mel(min_frequency, mel_scale);
     const mel_max = hertz_to_mel(max_frequency, mel_scale);
     const mel_freqs = linspace(mel_min, mel_max, num_mel_filters + 2);
@@ -238,7 +277,7 @@ export function mel_filter_bank(
     let fft_freqs; // frequencies of FFT bins in Hz
 
     if (triangularize_in_mel_space) {
-        const fft_bin_width = sampling_rate / (num_frequency_bins * 2);
+        const fft_bin_width = sampling_rate / ((num_frequency_bins - 1) * 2);
         fft_freqs = hertz_to_mel(Float64Array.from({ length: num_frequency_bins }, (_, i) => i * fft_bin_width), mel_scale);
         filter_freqs = mel_freqs;
     } else {
@@ -411,6 +450,7 @@ function power_to_db(spectrogram, reference = 1.0, min_value = 1e-10, db_range =
  * @param {boolean} [options.onesided=true] If `true`, only computes the positive frequencies and returns a spectrogram containing `fft_length // 2 + 1`
  * frequency bins. If `false`, also computes the negative frequencies and returns `fft_length` frequency bins.
  * @param {number} [options.preemphasis=null] Coefficient for a low-pass filter that applies pre-emphasis before the DFT.
+ * @param {boolean} [options.preemphasis_htk_flavor=true] Whether to apply the pre-emphasis filter in the HTK flavor.
  * @param {number[][]} [options.mel_filters=null] The mel filter bank of shape `(num_freq_bins, num_mel_filters)`.
  * If supplied, applies this filter bank to create a mel spectrogram.
  * @param {number} [options.mel_floor=1e-10] Minimum value of mel frequency banks.
@@ -427,11 +467,12 @@ function power_to_db(spectrogram, reference = 1.0, min_value = 1e-10, db_range =
  * @param {boolean} [options.remove_dc_offset=null] Subtract mean from waveform on each frame, applied before pre-emphasis. This should be set to `true` in
  * order to get the same results as `torchaudio.compliance.kaldi.fbank` when computing mel filters.
  * @param {number} [options.max_num_frames=null] If provided, limits the number of frames to compute to this value.
+ * @param {number} [options.min_num_frames=null] If provided, ensures the number of frames to compute is at least this value.
  * @param {boolean} [options.do_pad=true] If `true`, pads the output spectrogram to have `max_num_frames` frames.
  * @param {boolean} [options.transpose=false] If `true`, the returned spectrogram will have shape `(num_frames, num_frequency_bins/num_mel_filters)`. If `false`, the returned spectrogram will have shape `(num_frequency_bins/num_mel_filters, num_frames)`.
- * @returns {{data: Float32Array, dims: number[]}} Spectrogram of shape `(num_frequency_bins, length)` (regular spectrogram) or shape `(num_mel_filters, length)` (mel spectrogram).
+ * @returns {Promise<Tensor>} Spectrogram of shape `(num_frequency_bins, length)` (regular spectrogram) or shape `(num_mel_filters, length)` (mel spectrogram).
  */
-export function spectrogram(
+export async function spectrogram(
     waveform,
     window,
     frame_length,
@@ -443,6 +484,7 @@ export function spectrogram(
         pad_mode = "reflect",
         onesided = true,
         preemphasis = null,
+        preemphasis_htk_flavor = true,
         mel_filters = null,
         mel_floor = 1e-10,
         log_mel = null,
@@ -452,6 +494,7 @@ export function spectrogram(
         remove_dc_offset = null,
 
         // Custom parameters for efficiency reasons
+        min_num_frames = null,
         max_num_frames = null,
         do_pad = true,
         transpose = false,
@@ -480,6 +523,12 @@ export function spectrogram(
         );
     }
 
+    if (!preemphasis_htk_flavor) {
+        throw new Error(
+            "`preemphasis_htk_flavor=false` is not currently supported."
+        );
+    }
+
     if (center) {
         if (pad_mode !== 'reflect') {
             throw new Error(`pad_mode="${pad_mode}" not implemented yet.`)
@@ -489,8 +538,10 @@ export function spectrogram(
     }
 
     // split waveform into frames of frame_length size
-    const num_frames = Math.floor(1 + Math.floor((waveform.length - frame_length) / hop_length))
-
+    let num_frames = Math.floor(1 + Math.floor((waveform.length - frame_length) / hop_length))
+    if (min_num_frames !== null && num_frames < min_num_frames) {
+        num_frames = min_num_frames
+    }
     const num_frequency_bins = onesided ? Math.floor(fft_length / 2) + 1 : fft_length
 
     let d1 = num_frames;
@@ -511,34 +562,43 @@ export function spectrogram(
     const fft = new FFT(fft_length);
     const inputBuffer = new Float64Array(fft_length);
     const outputBuffer = new Float64Array(fft.outputBufferSize);
-    const magnitudes = new Array(d1);
+    const transposedMagnitudeData = new Float32Array(num_frequency_bins * d1Max);
 
     for (let i = 0; i < d1; ++i) {
         // Populate buffer with waveform data
         const offset = i * hop_length;
-        for (let j = 0; j < frame_length; ++j) {
+        const buffer_size = Math.min(waveform.length - offset, frame_length);
+        if (buffer_size !== frame_length) {
+            // The full buffer is not needed, so we need to reset it (avoid overflow from previous iterations)
+            // NOTE: We don't need to reset the buffer if it's full since we overwrite the first
+            // `frame_length` values and the rest (`fft_length - frame_length`) remains zero.
+            inputBuffer.fill(0, 0, frame_length);
+        }
+
+        for (let j = 0; j < buffer_size; ++j) {
             inputBuffer[j] = waveform[offset + j];
         }
 
         if (remove_dc_offset) {
             let sum = 0;
-            for (let j = 0; j < frame_length; ++j) {
+            for (let j = 0; j < buffer_size; ++j) {
                 sum += inputBuffer[j];
             }
-            const mean = sum / frame_length;
-            for (let j = 0; j < frame_length; ++j) {
+            const mean = sum / buffer_size;
+            for (let j = 0; j < buffer_size; ++j) {
                 inputBuffer[j] -= mean;
             }
         }
 
         if (preemphasis !== null) {
-            // Done in reverse to avoid copies and distructive modification
-            for (let j = frame_length - 1; j >= 1; --j) {
+            // Done in reverse to avoid copies and destructive modification
+            for (let j = buffer_size - 1; j >= 1; --j) {
                 inputBuffer[j] -= preemphasis * inputBuffer[j - 1];
             }
             inputBuffer[0] *= 1 - preemphasis;
         }
 
+        // Apply window function
         for (let j = 0; j < window.length; ++j) {
             inputBuffer[j] *= window[j];
         }
@@ -546,74 +606,63 @@ export function spectrogram(
         fft.realTransform(outputBuffer, inputBuffer);
 
         // compute magnitudes
-        const row = new Array(num_frequency_bins);
-        for (let j = 0; j < row.length; ++j) {
+        for (let j = 0; j < num_frequency_bins; ++j) {
             const j2 = j << 1;
-            row[j] = outputBuffer[j2] ** 2 + outputBuffer[j2 + 1] ** 2;
+
+            // NOTE: We transpose the data here to avoid doing it later
+            transposedMagnitudeData[j * d1Max + i] = outputBuffer[j2] ** 2 + outputBuffer[j2 + 1] ** 2;
         }
-        magnitudes[i] = row;
     }
 
     if (power !== null && power !== 2) {
         // slight optimization to not sqrt
-        const pow = 2 / power; // we use 2 since we already squared
-        for (let i = 0; i < magnitudes.length; ++i) {
-            const magnitude = magnitudes[i];
-            for (let j = 0; j < magnitude.length; ++j) {
-                magnitude[j] **= pow;
-            }
+        const pow = power / 2; // we use 2 since we already squared
+        for (let i = 0; i < transposedMagnitudeData.length; ++i) {
+            transposedMagnitudeData[i] **= pow;
         }
     }
 
     // TODO: What if `mel_filters` is null?
     const num_mel_filters = mel_filters.length;
 
-    // Only here do we create Float32Array
-    const mel_spec = new Float32Array(num_mel_filters * d1Max);
-
     // Perform matrix muliplication:
     // mel_spec = mel_filters @ magnitudes.T
     //  - mel_filters.shape=(80, 201)
-    //  - magnitudes.shape=(3000, 201) => - magnitudes.T.shape=(201, 3000)
+    //  - magnitudes.shape=(3000, 201) => magnitudes.T.shape=(201, 3000)
     //  - mel_spec.shape=(80, 3000)
-    const dims = transpose ? [d1Max, num_mel_filters] : [num_mel_filters, d1Max];
-    for (let i = 0; i < num_mel_filters; ++i) { // num melfilters (e.g., 80)
-        const filter = mel_filters[i];
-        for (let j = 0; j < d1; ++j) { // num frames (e.g., 3000)
-            const magnitude = magnitudes[j];
+    let mel_spec = await matmul(
+        // TODO: Make `mel_filters` a Tensor during initialization
+        new Tensor('float32', mel_filters.flat(), [num_mel_filters, num_frequency_bins]),
+        new Tensor('float32', transposedMagnitudeData, [num_frequency_bins, d1Max]),
+    );
+    if (transpose) {
+        mel_spec = mel_spec.transpose(1, 0);
+    }
 
-            let sum = 0;
-            for (let k = 0; k < num_frequency_bins; ++k) { // num frequency bins (e.g., 201)
-                sum += filter[k] * magnitude[k];
-            }
-
-            mel_spec[
-                transpose
-                    ? j * num_mel_filters + i
-                    : i * d1 + j
-            ] = Math.max(mel_floor, sum);
-        }
+    const mel_spec_data = /** @type {Float32Array} */(mel_spec.data);
+    for (let i = 0; i < mel_spec_data.length; ++i) {
+        mel_spec_data[i] = Math.max(mel_floor, mel_spec_data[i]);
     }
 
     if (power !== null && log_mel !== null) {
-        const o = Math.min(mel_spec.length, d1 * num_mel_filters);
+        const o = Math.min(mel_spec_data.length, d1 * num_mel_filters);
+        // NOTE: operates in-place
         switch (log_mel) {
             case 'log':
                 for (let i = 0; i < o; ++i) {
-                    mel_spec[i] = Math.log(mel_spec[i]);
+                    mel_spec_data[i] = Math.log(mel_spec_data[i]);
                 }
                 break;
             case 'log10':
                 for (let i = 0; i < o; ++i) {
-                    mel_spec[i] = Math.log10(mel_spec[i]);
+                    mel_spec_data[i] = Math.log10(mel_spec_data[i]);
                 }
                 break;
             case 'dB':
                 if (power === 1.0) {
-                    // NOTE: operates in-place
-                    amplitude_to_db(mel_spec, reference, min_value, db_range);
+                    amplitude_to_db(mel_spec_data, reference, min_value, db_range);
                 } else if (power === 2.0) {
-                    power_to_db(mel_spec, reference, min_value, db_range);
+                    power_to_db(mel_spec_data, reference, min_value, db_range);
                 } else {
                     throw new Error(`Cannot use log_mel option '${log_mel}' with power ${power}`)
                 }
@@ -623,7 +672,7 @@ export function spectrogram(
         }
     }
 
-    return { data: mel_spec, dims };
+    return mel_spec;
 }
 
 /**
@@ -652,6 +701,9 @@ export function window_function(window_length, name, {
         case 'hann_window':
             window = hanning(length);
             break;
+        case 'hamming':
+            window = hamming(length);
+            break;
         case 'povey':
             window = hanning(length).map(x => Math.pow(x, 0.85));
             break;
@@ -669,4 +721,114 @@ export function window_function(window_length, name, {
     }
 
     return window;
+}
+
+/**
+ * Encode audio data to a WAV file.
+ * WAV file specs : https://en.wikipedia.org/wiki/WAV#WAV_File_header
+ * 
+ * Adapted from https://www.npmjs.com/package/audiobuffer-to-wav
+ * @param {Float32Array} samples The audio samples.
+ * @param {number} rate The sample rate.
+ * @returns {ArrayBuffer} The WAV audio buffer.
+ */
+function encodeWAV(samples, rate) {
+    let offset = 44;
+    const buffer = new ArrayBuffer(offset + samples.length * 4);
+    const view = new DataView(buffer);
+
+    /* RIFF identifier */
+    writeString(view, 0, "RIFF");
+    /* RIFF chunk length */
+    view.setUint32(4, 36 + samples.length * 4, true);
+    /* RIFF type */
+    writeString(view, 8, "WAVE");
+    /* format chunk identifier */
+    writeString(view, 12, "fmt ");
+    /* format chunk length */
+    view.setUint32(16, 16, true);
+    /* sample format (raw) */
+    view.setUint16(20, 3, true);
+    /* channel count */
+    view.setUint16(22, 1, true);
+    /* sample rate */
+    view.setUint32(24, rate, true);
+    /* byte rate (sample rate * block align) */
+    view.setUint32(28, rate * 4, true);
+    /* block align (channel count * bytes per sample) */
+    view.setUint16(32, 4, true);
+    /* bits per sample */
+    view.setUint16(34, 32, true);
+    /* data chunk identifier */
+    writeString(view, 36, "data");
+    /* data chunk length */
+    view.setUint32(40, samples.length * 4, true);
+
+    for (let i = 0; i < samples.length; ++i, offset += 4) {
+        view.setFloat32(offset, samples[i], true);
+    }
+
+    return buffer;
+}
+
+function writeString(view, offset, string) {
+    for (let i = 0; i < string.length; ++i) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+    }
+}
+
+
+export class RawAudio {
+
+    /**
+     * Create a new `RawAudio` object.
+     * @param {Float32Array} audio Audio data
+     * @param {number} sampling_rate Sampling rate of the audio data
+     */
+    constructor(audio, sampling_rate) {
+        this.audio = audio
+        this.sampling_rate = sampling_rate
+    }
+
+    /**
+     * Convert the audio to a wav file buffer.
+     * @returns {ArrayBuffer} The WAV file.
+     */
+    toWav() {
+        return encodeWAV(this.audio, this.sampling_rate)
+    }
+
+    /**
+     * Convert the audio to a blob.
+     * @returns {Blob}
+     */
+    toBlob() {
+        const wav = this.toWav();
+        const blob = new Blob([wav], { type: 'audio/wav' });
+        return blob;
+    }
+
+    /**
+     * Save the audio to a wav file.
+     * @param {string} path
+     */
+    async save(path) {
+        let fn;
+
+        if (apis.IS_BROWSER_ENV) {
+            if (apis.IS_WEBWORKER_ENV) {
+                throw new Error('Unable to save a file from a Web Worker.')
+            }
+            fn = saveBlob;
+        } else if (apis.IS_FS_AVAILABLE) {
+            fn = async (/** @type {string} */ path, /** @type {Blob} */ blob) => {
+                let buffer = await blob.arrayBuffer();
+                fs.writeFileSync(path, Buffer.from(buffer));
+            }
+        } else {
+            throw new Error('Unable to save because filesystem is disabled in this environment.')
+        }
+
+        await fn(path, this.toBlob())
+    }
 }
