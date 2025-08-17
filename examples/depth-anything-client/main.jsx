@@ -35,8 +35,8 @@ status.textContent = 'Loading model...';
 
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small', { device: 'webgpu',executionProviders: ['webgpu'] });
 // const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-base', {device: 'webgpu',executionProviders: ['webgpu'] });
-const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-large', { dtype: 'uint8', device: 'webgpu',executionProviders: ['webgpu'] });
-// const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'uint8', device: 'webgpu',executionProviders: ['webgpu'] });
+// const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-large', { dtype: 'uint8', device: 'webgpu',executionProviders: ['webgpu'] });
+const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { device: 'webnn',executionProviders: ['webnn'] });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', {device: 'webgpu',executionProviders: ['webgpu']});
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-small-hf',{dtype:'fp32',device:'webgpu',executionProviders: ['webgpu']});
