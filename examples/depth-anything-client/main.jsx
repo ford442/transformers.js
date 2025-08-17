@@ -33,7 +33,7 @@ const imageContainer = document.getElementById('container');
 const example = document.getElementById('example');
 status.textContent = 'Loading model...';
 
-const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-base', { device: 'webgpu',executionProviders: ['webgpu'] });
+const depth_estimator = await pipeline('depth-estimation', 'onnx-community/depth-anything-v2-small', { device: 'webgpu',executionProviders: ['webgpu'] });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-large-hf', { dtype: 'fp16', device: 'webgpu',executionProviders: ['webgpu'] });
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', {device: 'webgpu',executionProviders: ['webgpu']});
 // const depth_estimator = await pipeline('depth-estimation', 'Xenova/depth-anything-base-hf', { dtype: 'fp16', device: 'webgpu' });
